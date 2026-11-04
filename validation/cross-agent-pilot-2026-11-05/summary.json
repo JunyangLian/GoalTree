@@ -1,0 +1,71 @@
+{
+  "agents": {
+    "apecode": {
+      "planned_runs": 8,
+      "attempted_runs": 0,
+      "not_started": 8,
+      "functional_passes": 0,
+      "functional_rate": null,
+      "workflow_passes": 0,
+      "workflow_rate": null,
+      "failure_categories": {},
+      "elapsed_ms": {
+        "observed_runs": 0,
+        "total": null,
+        "mean": null
+      },
+      "input_tokens": {
+        "observed_runs": 0,
+        "total": null,
+        "mean": null
+      },
+      "output_tokens": {
+        "observed_runs": 0,
+        "total": null,
+        "mean": null
+      },
+      "tool_steps": {
+        "observed_runs": 0,
+        "total": null,
+        "mean": null
+      },
+      "per_task": {}
+    },
+    "codetrail": {
+      "planned_runs": 8,
+      "attempted_runs": 0,
+      "not_started": 8,
+      "functional_passes": 0,
+      "functional_rate": null,
+      "workflow_passes": 0,
+      "workflow_rate": null,
+      "failure_categories": {},
+      "elapsed_ms": {
+        "observed_runs": 0,
+        "total": null,
+        "mean": null
+      },
+      "input_tokens": {
+        "observed_runs": 0,
+        "total": null,
+        "mean": null
+      },
+      "output_tokens": {
+        "observed_runs": 0,
+        "total": null,
+        "mean": null
+      },
+      "tool_steps": {
+        "observed_runs": 0,
+        "total": null,
+        "mean": null
+      },
+      "per_task": {}
+    }
+  },
+  "planned_slots": 16,
+  "attempted_runs": 0,
+  "complete": false,
+  "cross_agent_conclusion_available": false,
+  "comparison_type": "same-model, policy-adapted harness comparison; tool sets and system prompts differ; no single-feature causal claim"
+}
