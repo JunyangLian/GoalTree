@@ -1,0 +1,18 @@
+{
+  "benchmarks/results/final-agent-90-2026-10-25/evidence.zip": {
+    "sha256": "2fc5e42cf764504137d4243b509171bcba46d3df6a254896e827ed42487d1c76",
+    "unchanged": true
+  },
+  "benchmarks/results/reliability-v2-2026-10-25/evidence.zip": {
+    "sha256": "3c17fcb7eeb80d00e90ffc672058716c7e6cb7ffc95464054c0cb2b526c2ce3a",
+    "unchanged": true
+  },
+  "benchmarks/results/tabbit-e2e-2026-10-25/evidence.zip": {
+    "sha256": "24493c57dc899f7ff13b868d734ef0e549f1b8e5177ab5a9240c9f9338a476bb",
+    "unchanged": true
+  },
+  "validation/cross-agent-pilot-2026-11-05/evidence.zip": {
+    "sha256": "c74e567b19d967d99c67de82f160761a2a3c33f5531c3615b561b225eb9ef3f2",
+    "unchanged": true
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "distinct_tasks": 4,
+  "original_started": 9,
+  "original_functional_passes": 3,
+  "original_configuration_errors": 6,
+  "corrected_started": 16,
+  "corrected_functional_passes": 16,
+  "corrected_workflow_passes": 16,
+  "all_started_runs": 25,
+  "all_functional_passes": 19,
+  "all_failures": 6,
+  "failure_evidence": [
+    "artifacts/cross-agent-deepseek-pilot-2026-11-05/runs/02-apecode-humanize_fractional-r2/result.json",
+    "artifacts/cross-agent-deepseek-pilot-2026-11-05/runs/03-apecode-user_lookup_contract-r1/result.json",
+    "artifacts/cross-agent-deepseek-pilot-2026-11-05/runs/05-apecode-humanize_fractional-r1/result.json",
+    "artifacts/cross-agent-deepseek-pilot-2026-11-05/runs/06-apecode-user_lookup_contract-r2/result.json",
+    "artifacts/cross-agent-deepseek-pilot-2026-11-05/runs/07-apecode-pagination_boundaries-r2/result.json",
+    "artifacts/cross-agent-deepseek-pilot-2026-11-05/runs/08-apecode-boltons_isoparse-r2/result.json"
+  ],
+  "interpretation": "Report by source/config cohort; initial adapter failures are not a model ability comparison. No original results replaced."
+}

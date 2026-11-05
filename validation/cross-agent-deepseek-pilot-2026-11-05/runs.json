@@ -1,0 +1,1565 @@
+[
+  {
+    "run_key": "01-codetrail-pagination_boundaries-r1",
+    "agent": "codetrail",
+    "task_id": "pagination_boundaries",
+    "repeat": 1,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 6,
+    "elapsed_ms": 26063,
+    "input_tokens": 25129,
+    "output_tokens": 880,
+    "read_calls": 2,
+    "exact_repeated_reads": 0,
+    "protocol_errors": [],
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2675,
+        "completion_tokens": 87,
+        "total_tokens": 2762,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 1139
+      },
+      {
+        "prompt_tokens": 4209,
+        "completion_tokens": 86,
+        "total_tokens": 4295,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 4
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 2033
+      },
+      {
+        "prompt_tokens": 5658,
+        "completion_tokens": 345,
+        "total_tokens": 6003,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 61
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 3482
+      },
+      {
+        "prompt_tokens": 6128,
+        "completion_tokens": 54,
+        "total_tokens": 6182,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 3952
+      },
+      {
+        "prompt_tokens": 6459,
+        "completion_tokens": 308,
+        "total_tokens": 6767,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 4283
+      }
+    ]
+  },
+  {
+    "run_key": "02-apecode-humanize_fractional-r2",
+    "agent": "apecode",
+    "task_id": "humanize_fractional",
+    "repeat": 2,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 6,
+    "elapsed_ms": 21190,
+    "input_tokens": 24144,
+    "output_tokens": 1069,
+    "read_calls": 2,
+    "exact_repeated_reads": 0,
+    "protocol_errors": null,
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2502,
+        "completion_tokens": 55,
+        "total_tokens": 2557,
+        "prompt_tokens_details": {
+          "cached_tokens": 384
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 2118
+      },
+      {
+        "prompt_tokens": 3175,
+        "completion_tokens": 52,
+        "total_tokens": 3227,
+        "prompt_tokens_details": {
+          "cached_tokens": 2432
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2432,
+        "prompt_cache_miss_tokens": 743
+      },
+      {
+        "prompt_tokens": 4002,
+        "completion_tokens": 208,
+        "total_tokens": 4210,
+        "prompt_tokens_details": {
+          "cached_tokens": 3200
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 166
+        },
+        "prompt_cache_hit_tokens": 3200,
+        "prompt_cache_miss_tokens": 802
+      },
+      {
+        "prompt_tokens": 4453,
+        "completion_tokens": 388,
+        "total_tokens": 4841,
+        "prompt_tokens_details": {
+          "cached_tokens": 4096
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 231
+        },
+        "prompt_cache_hit_tokens": 4096,
+        "prompt_cache_miss_tokens": 357
+      },
+      {
+        "prompt_tokens": 4860,
+        "completion_tokens": 46,
+        "total_tokens": 4906,
+        "prompt_tokens_details": {
+          "cached_tokens": 4608
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 4608,
+        "prompt_cache_miss_tokens": 252
+      },
+      {
+        "prompt_tokens": 5152,
+        "completion_tokens": 320,
+        "total_tokens": 5472,
+        "prompt_tokens_details": {
+          "cached_tokens": 4864
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 4864,
+        "prompt_cache_miss_tokens": 288
+      }
+    ]
+  },
+  {
+    "run_key": "03-apecode-user_lookup_contract-r1",
+    "agent": "apecode",
+    "task_id": "user_lookup_contract",
+    "repeat": 1,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 8,
+    "elapsed_ms": 15784,
+    "input_tokens": 26270,
+    "output_tokens": 752,
+    "read_calls": 4,
+    "exact_repeated_reads": 0,
+    "protocol_errors": null,
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2590,
+        "completion_tokens": 59,
+        "total_tokens": 2649,
+        "prompt_tokens_details": {
+          "cached_tokens": 384
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 2206
+      },
+      {
+        "prompt_tokens": 5224,
+        "completion_tokens": 138,
+        "total_tokens": 5362,
+        "prompt_tokens_details": {
+          "cached_tokens": 2560
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2560,
+        "prompt_cache_miss_tokens": 2664
+      },
+      {
+        "prompt_tokens": 5874,
+        "completion_tokens": 213,
+        "total_tokens": 6087,
+        "prompt_tokens_details": {
+          "cached_tokens": 5248
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 26
+        },
+        "prompt_cache_hit_tokens": 5248,
+        "prompt_cache_miss_tokens": 626
+      },
+      {
+        "prompt_tokens": 6119,
+        "completion_tokens": 46,
+        "total_tokens": 6165,
+        "prompt_tokens_details": {
+          "cached_tokens": 5888
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 5888,
+        "prompt_cache_miss_tokens": 231
+      },
+      {
+        "prompt_tokens": 6463,
+        "completion_tokens": 296,
+        "total_tokens": 6759,
+        "prompt_tokens_details": {
+          "cached_tokens": 6144
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 6144,
+        "prompt_cache_miss_tokens": 319
+      }
+    ]
+  },
+  {
+    "run_key": "04-codetrail-boltons_isoparse-r1",
+    "agent": "codetrail",
+    "task_id": "boltons_isoparse",
+    "repeat": 1,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 9,
+    "elapsed_ms": 34891,
+    "input_tokens": 33440,
+    "output_tokens": 1858,
+    "read_calls": 4,
+    "exact_repeated_reads": 0,
+    "protocol_errors": [],
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2614,
+        "completion_tokens": 71,
+        "total_tokens": 2685,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 1078
+      },
+      {
+        "prompt_tokens": 3952,
+        "completion_tokens": 70,
+        "total_tokens": 4022,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 1776
+      },
+      {
+        "prompt_tokens": 5044,
+        "completion_tokens": 684,
+        "total_tokens": 5728,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 612
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 2868
+      },
+      {
+        "prompt_tokens": 6466,
+        "completion_tokens": 530,
+        "total_tokens": 6996,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 143
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 4290
+      },
+      {
+        "prompt_tokens": 7524,
+        "completion_tokens": 47,
+        "total_tokens": 7571,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 5348
+      },
+      {
+        "prompt_tokens": 7840,
+        "completion_tokens": 456,
+        "total_tokens": 8296,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 5664
+      }
+    ]
+  },
+  {
+    "run_key": "05-apecode-humanize_fractional-r1",
+    "agent": "apecode",
+    "task_id": "humanize_fractional",
+    "repeat": 1,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 6,
+    "elapsed_ms": 18018,
+    "input_tokens": 22971,
+    "output_tokens": 949,
+    "read_calls": 2,
+    "exact_repeated_reads": 0,
+    "protocol_errors": null,
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2502,
+        "completion_tokens": 74,
+        "total_tokens": 2576,
+        "prompt_tokens_details": {
+          "cached_tokens": 384
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 2118
+      },
+      {
+        "prompt_tokens": 3185,
+        "completion_tokens": 68,
+        "total_tokens": 3253,
+        "prompt_tokens_details": {
+          "cached_tokens": 2560
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 14
+        },
+        "prompt_cache_hit_tokens": 2560,
+        "prompt_cache_miss_tokens": 625
+      },
+      {
+        "prompt_tokens": 3287,
+        "completion_tokens": 72,
+        "total_tokens": 3359,
+        "prompt_tokens_details": {
+          "cached_tokens": 3072
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 3072,
+        "prompt_cache_miss_tokens": 215
+      },
+      {
+        "prompt_tokens": 4285,
+        "completion_tokens": 396,
+        "total_tokens": 4681,
+        "prompt_tokens_details": {
+          "cached_tokens": 3328
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 182
+        },
+        "prompt_cache_hit_tokens": 3328,
+        "prompt_cache_miss_tokens": 957
+      },
+      {
+        "prompt_tokens": 4700,
+        "completion_tokens": 65,
+        "total_tokens": 4765,
+        "prompt_tokens_details": {
+          "cached_tokens": 4480
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 4480,
+        "prompt_cache_miss_tokens": 220
+      },
+      {
+        "prompt_tokens": 5012,
+        "completion_tokens": 274,
+        "total_tokens": 5286,
+        "prompt_tokens_details": {
+          "cached_tokens": 4736
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 4736,
+        "prompt_cache_miss_tokens": 276
+      }
+    ]
+  },
+  {
+    "run_key": "06-apecode-user_lookup_contract-r2",
+    "agent": "apecode",
+    "task_id": "user_lookup_contract",
+    "repeat": 2,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 8,
+    "elapsed_ms": 16896,
+    "input_tokens": 26020,
+    "output_tokens": 675,
+    "read_calls": 4,
+    "exact_repeated_reads": 0,
+    "protocol_errors": null,
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2590,
+        "completion_tokens": 59,
+        "total_tokens": 2649,
+        "prompt_tokens_details": {
+          "cached_tokens": 384
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 2206
+      },
+      {
+        "prompt_tokens": 5178,
+        "completion_tokens": 131,
+        "total_tokens": 5309,
+        "prompt_tokens_details": {
+          "cached_tokens": 2560
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2560,
+        "prompt_cache_miss_tokens": 2618
+      },
+      {
+        "prompt_tokens": 5821,
+        "completion_tokens": 180,
+        "total_tokens": 6001,
+        "prompt_tokens_details": {
+          "cached_tokens": 5248
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 12
+        },
+        "prompt_cache_hit_tokens": 5248,
+        "prompt_cache_miss_tokens": 573
+      },
+      {
+        "prompt_tokens": 6043,
+        "completion_tokens": 46,
+        "total_tokens": 6089,
+        "prompt_tokens_details": {
+          "cached_tokens": 5888
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 5888,
+        "prompt_cache_miss_tokens": 155
+      },
+      {
+        "prompt_tokens": 6388,
+        "completion_tokens": 259,
+        "total_tokens": 6647,
+        "prompt_tokens_details": {
+          "cached_tokens": 6016
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 6016,
+        "prompt_cache_miss_tokens": 372
+      }
+    ]
+  },
+  {
+    "run_key": "07-apecode-pagination_boundaries-r2",
+    "agent": "apecode",
+    "task_id": "pagination_boundaries",
+    "repeat": 2,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 5,
+    "elapsed_ms": 15974,
+    "input_tokens": 21464,
+    "output_tokens": 709,
+    "read_calls": 2,
+    "exact_repeated_reads": 0,
+    "protocol_errors": null,
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2575,
+        "completion_tokens": 55,
+        "total_tokens": 2630,
+        "prompt_tokens_details": {
+          "cached_tokens": 384
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 2191
+      },
+      {
+        "prompt_tokens": 3991,
+        "completion_tokens": 71,
+        "total_tokens": 4062,
+        "prompt_tokens_details": {
+          "cached_tokens": 2560
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2560,
+        "prompt_cache_miss_tokens": 1431
+      },
+      {
+        "prompt_tokens": 4666,
+        "completion_tokens": 277,
+        "total_tokens": 4943,
+        "prompt_tokens_details": {
+          "cached_tokens": 3968
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 77
+        },
+        "prompt_cache_hit_tokens": 3968,
+        "prompt_cache_miss_tokens": 698
+      },
+      {
+        "prompt_tokens": 4962,
+        "completion_tokens": 46,
+        "total_tokens": 5008,
+        "prompt_tokens_details": {
+          "cached_tokens": 4736
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 4736,
+        "prompt_cache_miss_tokens": 226
+      },
+      {
+        "prompt_tokens": 5270,
+        "completion_tokens": 260,
+        "total_tokens": 5530,
+        "prompt_tokens_details": {
+          "cached_tokens": 4992
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 4992,
+        "prompt_cache_miss_tokens": 278
+      }
+    ]
+  },
+  {
+    "run_key": "08-apecode-boltons_isoparse-r2",
+    "agent": "apecode",
+    "task_id": "boltons_isoparse",
+    "repeat": 2,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 12,
+    "elapsed_ms": 27938,
+    "input_tokens": 33439,
+    "output_tokens": 1857,
+    "read_calls": 7,
+    "exact_repeated_reads": 0,
+    "protocol_errors": null,
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2514,
+        "completion_tokens": 58,
+        "total_tokens": 2572,
+        "prompt_tokens_details": {
+          "cached_tokens": 384
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 2130
+      },
+      {
+        "prompt_tokens": 3600,
+        "completion_tokens": 71,
+        "total_tokens": 3671,
+        "prompt_tokens_details": {
+          "cached_tokens": 2560
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 3
+        },
+        "prompt_cache_hit_tokens": 2560,
+        "prompt_cache_miss_tokens": 1040
+      },
+      {
+        "prompt_tokens": 4178,
+        "completion_tokens": 194,
+        "total_tokens": 4372,
+        "prompt_tokens_details": {
+          "cached_tokens": 3584
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 6
+        },
+        "prompt_cache_hit_tokens": 3584,
+        "prompt_cache_miss_tokens": 594
+      },
+      {
+        "prompt_tokens": 4915,
+        "completion_tokens": 856,
+        "total_tokens": 5771,
+        "prompt_tokens_details": {
+          "cached_tokens": 4352
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 582
+        },
+        "prompt_cache_hit_tokens": 4352,
+        "prompt_cache_miss_tokens": 563
+      },
+      {
+        "prompt_tokens": 5791,
+        "completion_tokens": 263,
+        "total_tokens": 6054,
+        "prompt_tokens_details": {
+          "cached_tokens": 5632
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 5632,
+        "prompt_cache_miss_tokens": 159
+      },
+      {
+        "prompt_tokens": 6074,
+        "completion_tokens": 46,
+        "total_tokens": 6120,
+        "prompt_tokens_details": {
+          "cached_tokens": 5888
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 5888,
+        "prompt_cache_miss_tokens": 186
+      },
+      {
+        "prompt_tokens": 6367,
+        "completion_tokens": 369,
+        "total_tokens": 6736,
+        "prompt_tokens_details": {
+          "cached_tokens": 6016
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 6016,
+        "prompt_cache_miss_tokens": 351
+      }
+    ]
+  },
+  {
+    "run_key": "09-codetrail-user_lookup_contract-r2",
+    "agent": "codetrail",
+    "task_id": "user_lookup_contract",
+    "repeat": 2,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 8,
+    "elapsed_ms": 25359,
+    "input_tokens": 30231,
+    "output_tokens": 655,
+    "read_calls": 4,
+    "exact_repeated_reads": 0,
+    "protocol_errors": [],
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2655,
+        "completion_tokens": 59,
+        "total_tokens": 2714,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 1119
+      },
+      {
+        "prompt_tokens": 5358,
+        "completion_tokens": 136,
+        "total_tokens": 5494,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 5
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 3182
+      },
+      {
+        "prompt_tokens": 7050,
+        "completion_tokens": 250,
+        "total_tokens": 7300,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 26
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 4874
+      },
+      {
+        "prompt_tokens": 7417,
+        "completion_tokens": 47,
+        "total_tokens": 7464,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 5241
+      },
+      {
+        "prompt_tokens": 7751,
+        "completion_tokens": 163,
+        "total_tokens": 7914,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 5575
+      }
+    ]
+  },
+  {
+    "run_key": "10-apecode-pagination_boundaries-r1",
+    "agent": "apecode",
+    "task_id": "pagination_boundaries",
+    "repeat": 1,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 5,
+    "elapsed_ms": 16938,
+    "input_tokens": 21403,
+    "output_tokens": 730,
+    "read_calls": 2,
+    "exact_repeated_reads": 0,
+    "protocol_errors": null,
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2575,
+        "completion_tokens": 56,
+        "total_tokens": 2631,
+        "prompt_tokens_details": {
+          "cached_tokens": 384
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 2191
+      },
+      {
+        "prompt_tokens": 3987,
+        "completion_tokens": 82,
+        "total_tokens": 4069,
+        "prompt_tokens_details": {
+          "cached_tokens": 2560
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 11
+        },
+        "prompt_cache_hit_tokens": 2560,
+        "prompt_cache_miss_tokens": 1427
+      },
+      {
+        "prompt_tokens": 4673,
+        "completion_tokens": 241,
+        "total_tokens": 4914,
+        "prompt_tokens_details": {
+          "cached_tokens": 3968
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 41
+        },
+        "prompt_cache_hit_tokens": 3968,
+        "prompt_cache_miss_tokens": 705
+      },
+      {
+        "prompt_tokens": 4933,
+        "completion_tokens": 46,
+        "total_tokens": 4979,
+        "prompt_tokens_details": {
+          "cached_tokens": 4736
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 4736,
+        "prompt_cache_miss_tokens": 197
+      },
+      {
+        "prompt_tokens": 5235,
+        "completion_tokens": 305,
+        "total_tokens": 5540,
+        "prompt_tokens_details": {
+          "cached_tokens": 4864
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 4864,
+        "prompt_cache_miss_tokens": 371
+      }
+    ]
+  },
+  {
+    "run_key": "11-apecode-boltons_isoparse-r1",
+    "agent": "apecode",
+    "task_id": "boltons_isoparse",
+    "repeat": 1,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 7,
+    "elapsed_ms": 20915,
+    "input_tokens": 24221,
+    "output_tokens": 1398,
+    "read_calls": 3,
+    "exact_repeated_reads": 0,
+    "protocol_errors": null,
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2514,
+        "completion_tokens": 50,
+        "total_tokens": 2564,
+        "prompt_tokens_details": {
+          "cached_tokens": 384
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 384,
+        "prompt_cache_miss_tokens": 2130
+      },
+      {
+        "prompt_tokens": 2609,
+        "completion_tokens": 46,
+        "total_tokens": 2655,
+        "prompt_tokens_details": {
+          "cached_tokens": 2432
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2432,
+        "prompt_cache_miss_tokens": 177
+      },
+      {
+        "prompt_tokens": 3690,
+        "completion_tokens": 103,
+        "total_tokens": 3793,
+        "prompt_tokens_details": {
+          "cached_tokens": 2560
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2560,
+        "prompt_cache_miss_tokens": 1130
+      },
+      {
+        "prompt_tokens": 4549,
+        "completion_tokens": 714,
+        "total_tokens": 5263,
+        "prompt_tokens_details": {
+          "cached_tokens": 3712
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 399
+        },
+        "prompt_cache_hit_tokens": 3712,
+        "prompt_cache_miss_tokens": 837
+      },
+      {
+        "prompt_tokens": 5283,
+        "completion_tokens": 46,
+        "total_tokens": 5329,
+        "prompt_tokens_details": {
+          "cached_tokens": 5120
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 5120,
+        "prompt_cache_miss_tokens": 163
+      },
+      {
+        "prompt_tokens": 5576,
+        "completion_tokens": 439,
+        "total_tokens": 6015,
+        "prompt_tokens_details": {
+          "cached_tokens": 5248
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 5248,
+        "prompt_cache_miss_tokens": 328
+      }
+    ]
+  },
+  {
+    "run_key": "12-codetrail-pagination_boundaries-r2",
+    "agent": "codetrail",
+    "task_id": "pagination_boundaries",
+    "repeat": 2,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 6,
+    "elapsed_ms": 30360,
+    "input_tokens": 24794,
+    "output_tokens": 690,
+    "read_calls": 2,
+    "exact_repeated_reads": 0,
+    "protocol_errors": [],
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2675,
+        "completion_tokens": 59,
+        "total_tokens": 2734,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 1139
+      },
+      {
+        "prompt_tokens": 4178,
+        "completion_tokens": 71,
+        "total_tokens": 4249,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 2002
+      },
+      {
+        "prompt_tokens": 5609,
+        "completion_tokens": 270,
+        "total_tokens": 5879,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 69
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 3433
+      },
+      {
+        "prompt_tokens": 6002,
+        "completion_tokens": 47,
+        "total_tokens": 6049,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 3826
+      },
+      {
+        "prompt_tokens": 6330,
+        "completion_tokens": 243,
+        "total_tokens": 6573,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 4154
+      }
+    ]
+  },
+  {
+    "run_key": "13-codetrail-humanize_fractional-r2",
+    "agent": "codetrail",
+    "task_id": "humanize_fractional",
+    "repeat": 2,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 6,
+    "elapsed_ms": 34172,
+    "input_tokens": 22850,
+    "output_tokens": 822,
+    "read_calls": 2,
+    "exact_repeated_reads": 0,
+    "protocol_errors": [],
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2571,
+        "completion_tokens": 77,
+        "total_tokens": 2648,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 1035
+      },
+      {
+        "prompt_tokens": 3455,
+        "completion_tokens": 72,
+        "total_tokens": 3527,
+        "prompt_tokens_details": {
+          "cached_tokens": 2048
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2048,
+        "prompt_cache_miss_tokens": 1407
+      },
+      {
+        "prompt_tokens": 5331,
+        "completion_tokens": 237,
+        "total_tokens": 5568,
+        "prompt_tokens_details": {
+          "cached_tokens": 2048
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 49
+        },
+        "prompt_cache_hit_tokens": 2048,
+        "prompt_cache_miss_tokens": 3283
+      },
+      {
+        "prompt_tokens": 5587,
+        "completion_tokens": 47,
+        "total_tokens": 5634,
+        "prompt_tokens_details": {
+          "cached_tokens": 2048
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2048,
+        "prompt_cache_miss_tokens": 3539
+      },
+      {
+        "prompt_tokens": 5906,
+        "completion_tokens": 389,
+        "total_tokens": 6295,
+        "prompt_tokens_details": {
+          "cached_tokens": 2048
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2048,
+        "prompt_cache_miss_tokens": 3858
+      }
+    ]
+  },
+  {
+    "run_key": "14-codetrail-boltons_isoparse-r2",
+    "agent": "codetrail",
+    "task_id": "boltons_isoparse",
+    "repeat": 2,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 6,
+    "elapsed_ms": 33953,
+    "input_tokens": 32091,
+    "output_tokens": 1742,
+    "read_calls": 2,
+    "exact_repeated_reads": 0,
+    "protocol_errors": [],
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2614,
+        "completion_tokens": 59,
+        "total_tokens": 2673,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 1078
+      },
+      {
+        "prompt_tokens": 3841,
+        "completion_tokens": 73,
+        "total_tokens": 3914,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 1665
+      },
+      {
+        "prompt_tokens": 5287,
+        "completion_tokens": 670,
+        "total_tokens": 5957,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 557
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 3111
+      },
+      {
+        "prompt_tokens": 6089,
+        "completion_tokens": 547,
+        "total_tokens": 6636,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 287
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 3913
+      },
+      {
+        "prompt_tokens": 6966,
+        "completion_tokens": 47,
+        "total_tokens": 7013,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 4790
+      },
+      {
+        "prompt_tokens": 7294,
+        "completion_tokens": 346,
+        "total_tokens": 7640,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 5118
+      }
+    ]
+  },
+  {
+    "run_key": "15-codetrail-humanize_fractional-r1",
+    "agent": "codetrail",
+    "task_id": "humanize_fractional",
+    "repeat": 1,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 6,
+    "elapsed_ms": 24985,
+    "input_tokens": 23033,
+    "output_tokens": 928,
+    "read_calls": 2,
+    "exact_repeated_reads": 0,
+    "protocol_errors": [],
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2571,
+        "completion_tokens": 71,
+        "total_tokens": 2642,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 1035
+      },
+      {
+        "prompt_tokens": 3441,
+        "completion_tokens": 72,
+        "total_tokens": 3513,
+        "prompt_tokens_details": {
+          "cached_tokens": 2048
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2048,
+        "prompt_cache_miss_tokens": 1393
+      },
+      {
+        "prompt_tokens": 5315,
+        "completion_tokens": 355,
+        "total_tokens": 5670,
+        "prompt_tokens_details": {
+          "cached_tokens": 2048
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 201
+        },
+        "prompt_cache_hit_tokens": 2048,
+        "prompt_cache_miss_tokens": 3267
+      },
+      {
+        "prompt_tokens": 5692,
+        "completion_tokens": 47,
+        "total_tokens": 5739,
+        "prompt_tokens_details": {
+          "cached_tokens": 2048
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2048,
+        "prompt_cache_miss_tokens": 3644
+      },
+      {
+        "prompt_tokens": 6014,
+        "completion_tokens": 383,
+        "total_tokens": 6397,
+        "prompt_tokens_details": {
+          "cached_tokens": 2048
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2048,
+        "prompt_cache_miss_tokens": 3966
+      }
+    ]
+  },
+  {
+    "run_key": "16-codetrail-user_lookup_contract-r1",
+    "agent": "codetrail",
+    "task_id": "user_lookup_contract",
+    "repeat": 1,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "tool_steps": 8,
+    "elapsed_ms": 28594,
+    "input_tokens": 30321,
+    "output_tokens": 801,
+    "read_calls": 4,
+    "exact_repeated_reads": 0,
+    "protocol_errors": [],
+    "explicit_denials": 0,
+    "source_scope_valid": true,
+    "failure_category": "success",
+    "agent_error": null,
+    "observed_model_ids": [
+      "deepseek-flash"
+    ],
+    "fingerprints": [
+      "bc19ba97cbe016479903222bb1578db6"
+    ],
+    "raw_response_usage": [
+      {
+        "prompt_tokens": 2655,
+        "completion_tokens": 77,
+        "total_tokens": 2732,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 1119
+      },
+      {
+        "prompt_tokens": 5370,
+        "completion_tokens": 131,
+        "total_tokens": 5501,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 3194
+      },
+      {
+        "prompt_tokens": 7049,
+        "completion_tokens": 205,
+        "total_tokens": 7254,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 17
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 4873
+      },
+      {
+        "prompt_tokens": 7441,
+        "completion_tokens": 71,
+        "total_tokens": 7512,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 5265
+      },
+      {
+        "prompt_tokens": 7806,
+        "completion_tokens": 317,
+        "total_tokens": 8123,
+        "prompt_tokens_details": {
+          "cached_tokens": 2176
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 2176,
+        "prompt_cache_miss_tokens": 5630
+      }
+    ]
+  }
+]

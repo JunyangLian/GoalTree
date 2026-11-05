@@ -1,0 +1,113 @@
+{
+  "agents": {
+    "apecode": {
+      "planned_runs": 8,
+      "attempted_runs": 8,
+      "not_started": 0,
+      "functional_passes": 8,
+      "functional_rate": 1.0,
+      "workflow_passes": 8,
+      "workflow_rate": 1.0,
+      "failure_categories": {},
+      "elapsed_ms": {
+        "observed_runs": 8,
+        "total": 153653,
+        "mean": 19206.625
+      },
+      "input_tokens": {
+        "observed_runs": 8,
+        "total": 199932,
+        "mean": 24991.5
+      },
+      "output_tokens": {
+        "observed_runs": 8,
+        "total": 8139,
+        "mean": 1017.375
+      },
+      "tool_steps": {
+        "observed_runs": 8,
+        "total": 57,
+        "mean": 7.125
+      },
+      "per_task": {
+        "pagination_boundaries": {
+          "attempted": 2,
+          "functional": 2,
+          "workflow": 2
+        },
+        "user_lookup_contract": {
+          "attempted": 2,
+          "functional": 2,
+          "workflow": 2
+        },
+        "boltons_isoparse": {
+          "attempted": 2,
+          "functional": 2,
+          "workflow": 2
+        },
+        "humanize_fractional": {
+          "attempted": 2,
+          "functional": 2,
+          "workflow": 2
+        }
+      }
+    },
+    "codetrail": {
+      "planned_runs": 8,
+      "attempted_runs": 8,
+      "not_started": 0,
+      "functional_passes": 8,
+      "functional_rate": 1.0,
+      "workflow_passes": 8,
+      "workflow_rate": 1.0,
+      "failure_categories": {},
+      "elapsed_ms": {
+        "observed_runs": 8,
+        "total": 238377,
+        "mean": 29797.125
+      },
+      "input_tokens": {
+        "observed_runs": 8,
+        "total": 221889,
+        "mean": 27736.125
+      },
+      "output_tokens": {
+        "observed_runs": 8,
+        "total": 8376,
+        "mean": 1047.0
+      },
+      "tool_steps": {
+        "observed_runs": 8,
+        "total": 55,
+        "mean": 6.875
+      },
+      "per_task": {
+        "pagination_boundaries": {
+          "attempted": 2,
+          "functional": 2,
+          "workflow": 2
+        },
+        "user_lookup_contract": {
+          "attempted": 2,
+          "functional": 2,
+          "workflow": 2
+        },
+        "boltons_isoparse": {
+          "attempted": 2,
+          "functional": 2,
+          "workflow": 2
+        },
+        "humanize_fractional": {
+          "attempted": 2,
+          "functional": 2,
+          "workflow": 2
+        }
+      }
+    }
+  },
+  "planned_slots": 16,
+  "attempted_runs": 16,
+  "complete": true,
+  "cross_agent_conclusion_available": true,
+  "comparison_type": "same-model, policy-adapted harness comparison; tool sets and system prompts differ; no single-feature causal claim"
+}

@@ -1,0 +1,439 @@
+{
+  "groups": {
+    "codetrail": {
+      "runs": 8,
+      "functional": 8,
+      "workflow": 8,
+      "protocol_errors": 0,
+      "read_calls": 22,
+      "exact_repeated_reads": 0,
+      "mean_tools": 6.875,
+      "input_tokens": 221889,
+      "output_tokens": 8376,
+      "p50_seconds": 29.477,
+      "p95_seconds": 34.63935,
+      "explicit_denials": 0
+    },
+    "apecode": {
+      "runs": 8,
+      "functional": 8,
+      "workflow": 8,
+      "protocol_errors": null,
+      "read_calls": 26,
+      "exact_repeated_reads": 0,
+      "mean_tools": 7.125,
+      "input_tokens": 199932,
+      "output_tokens": 8139,
+      "p50_seconds": 17.478,
+      "p95_seconds": 25.576199999999996,
+      "explicit_denials": 0
+    }
+  },
+  "percentiles": "linear interpolation at (n-1)*q",
+  "repeat_definition": "Same read_file arguments, canonical file path and unchanged before-file SHA; overlapping ranges not assessed",
+  "protocol_definition": "CodeTrail explicit native parser protocol_error; ApeCode has no equivalent parser diagnostic and is null; raw events retained. Neither is a broad semantic correctness score",
+  "cost": {
+    "at": "2026-11-05T01:44:08.564142+00:00",
+    "initial_balance_cny": "2.71",
+    "current_balance_cny": "2.03",
+    "observed_account_delta_cny": "0.68",
+    "tariff_estimate_known_cny": "0.67795052",
+    "usage_observed_requests": 115,
+    "unknown_request_ids": [],
+    "includes_non_task_probes": true,
+    "attribution_limit": "Account delta may include other account activity; token tariff estimate separately retained"
+  },
+  "independent_audit": {
+    "runs": 16,
+    "all_source_snapshots_match": true,
+    "all_results_reproduced": true,
+    "original_results_unchanged": true,
+    "revalidated_functional_passes": 16,
+    "checks": [
+      {
+        "run_key": "01-codetrail-pagination_boundaries-r1",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_empty (test_pagination.PaginationTests) ... ok\r\ntest_exact_boundary_no_next (test_pagination.PaginationTests) ... ok\r\ntest_first_page (test_pagination.PaginationTests) ... ok\r\ntest_invalid_page (test_pagination.PaginationTests) ... ok\r\ntest_invalid_size (test_pagination.PaginationTests) ... ok\r\ntest_last_partial_page (test_pagination.PaginationTests) ... ok\r\ntest_page_beyond_end (test_pagination.PaginationTests) ... ok\r\ntest_second_page (test_pagination.PaginationTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.002s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "02-apecode-humanize_fractional-r2",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_01 (test_acceptance.RepairTests) ... ok\r\ntest_02 (test_acceptance.RepairTests) ... ok\r\ntest_03 (test_acceptance.RepairTests) ... ok\r\ntest_04 (test_acceptance.RepairTests) ... ok\r\ntest_05 (test_acceptance.RepairTests) ... ok\r\ntest_06 (test_acceptance.RepairTests) ... ok\r\ntest_07 (test_acceptance.RepairTests) ... ok\r\ntest_08 (test_acceptance.RepairTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.058s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "03-apecode-user_lookup_contract-r1",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_direct_repository_normalizes (test_user_lookup.LookupTests) ... ok\r\ntest_empty_id_is_unknown (test_user_lookup.LookupTests) ... ok\r\ntest_empty_mapping (test_user_lookup.LookupTests) ... ok\r\ntest_input_mapping_is_unchanged (test_user_lookup.LookupTests) ... ok\r\ntest_none_id_is_rejected (test_user_lookup.LookupTests) ... ok\r\ntest_service_normalizes (test_user_lookup.LookupTests) ... ok\r\ntest_service_uses_correct_argument_order (test_user_lookup.LookupTests) ... ok\r\ntest_unknown_returns_none (test_user_lookup.LookupTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.001s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "04-codetrail-boltons_isoparse-r1",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_01 (test_acceptance.RepairTests) ... ok\r\ntest_02 (test_acceptance.RepairTests) ... ok\r\ntest_03 (test_acceptance.RepairTests) ... ok\r\ntest_04 (test_acceptance.RepairTests) ... ok\r\ntest_05 (test_acceptance.RepairTests) ... ok\r\ntest_06 (test_acceptance.RepairTests) ... ok\r\ntest_07 (test_acceptance.RepairTests) ... ok\r\ntest_08 (test_acceptance.RepairTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.001s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "05-apecode-humanize_fractional-r1",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_01 (test_acceptance.RepairTests) ... ok\r\ntest_02 (test_acceptance.RepairTests) ... ok\r\ntest_03 (test_acceptance.RepairTests) ... ok\r\ntest_04 (test_acceptance.RepairTests) ... ok\r\ntest_05 (test_acceptance.RepairTests) ... ok\r\ntest_06 (test_acceptance.RepairTests) ... ok\r\ntest_07 (test_acceptance.RepairTests) ... ok\r\ntest_08 (test_acceptance.RepairTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.052s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "06-apecode-user_lookup_contract-r2",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_direct_repository_normalizes (test_user_lookup.LookupTests) ... ok\r\ntest_empty_id_is_unknown (test_user_lookup.LookupTests) ... ok\r\ntest_empty_mapping (test_user_lookup.LookupTests) ... ok\r\ntest_input_mapping_is_unchanged (test_user_lookup.LookupTests) ... ok\r\ntest_none_id_is_rejected (test_user_lookup.LookupTests) ... ok\r\ntest_service_normalizes (test_user_lookup.LookupTests) ... ok\r\ntest_service_uses_correct_argument_order (test_user_lookup.LookupTests) ... ok\r\ntest_unknown_returns_none (test_user_lookup.LookupTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.001s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "07-apecode-pagination_boundaries-r2",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_empty (test_pagination.PaginationTests) ... ok\r\ntest_exact_boundary_no_next (test_pagination.PaginationTests) ... ok\r\ntest_first_page (test_pagination.PaginationTests) ... ok\r\ntest_invalid_page (test_pagination.PaginationTests) ... ok\r\ntest_invalid_size (test_pagination.PaginationTests) ... ok\r\ntest_last_partial_page (test_pagination.PaginationTests) ... ok\r\ntest_page_beyond_end (test_pagination.PaginationTests) ... ok\r\ntest_second_page (test_pagination.PaginationTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.001s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "08-apecode-boltons_isoparse-r2",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_01 (test_acceptance.RepairTests) ... ok\r\ntest_02 (test_acceptance.RepairTests) ... ok\r\ntest_03 (test_acceptance.RepairTests) ... ok\r\ntest_04 (test_acceptance.RepairTests) ... ok\r\ntest_05 (test_acceptance.RepairTests) ... ok\r\ntest_06 (test_acceptance.RepairTests) ... ok\r\ntest_07 (test_acceptance.RepairTests) ... ok\r\ntest_08 (test_acceptance.RepairTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.001s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "09-codetrail-user_lookup_contract-r2",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_direct_repository_normalizes (test_user_lookup.LookupTests) ... ok\r\ntest_empty_id_is_unknown (test_user_lookup.LookupTests) ... ok\r\ntest_empty_mapping (test_user_lookup.LookupTests) ... ok\r\ntest_input_mapping_is_unchanged (test_user_lookup.LookupTests) ... ok\r\ntest_none_id_is_rejected (test_user_lookup.LookupTests) ... ok\r\ntest_service_normalizes (test_user_lookup.LookupTests) ... ok\r\ntest_service_uses_correct_argument_order (test_user_lookup.LookupTests) ... ok\r\ntest_unknown_returns_none (test_user_lookup.LookupTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.002s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "10-apecode-pagination_boundaries-r1",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_empty (test_pagination.PaginationTests) ... ok\r\ntest_exact_boundary_no_next (test_pagination.PaginationTests) ... ok\r\ntest_first_page (test_pagination.PaginationTests) ... ok\r\ntest_invalid_page (test_pagination.PaginationTests) ... ok\r\ntest_invalid_size (test_pagination.PaginationTests) ... ok\r\ntest_last_partial_page (test_pagination.PaginationTests) ... ok\r\ntest_page_beyond_end (test_pagination.PaginationTests) ... ok\r\ntest_second_page (test_pagination.PaginationTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.001s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "11-apecode-boltons_isoparse-r1",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_01 (test_acceptance.RepairTests) ... ok\r\ntest_02 (test_acceptance.RepairTests) ... ok\r\ntest_03 (test_acceptance.RepairTests) ... ok\r\ntest_04 (test_acceptance.RepairTests) ... ok\r\ntest_05 (test_acceptance.RepairTests) ... ok\r\ntest_06 (test_acceptance.RepairTests) ... ok\r\ntest_07 (test_acceptance.RepairTests) ... ok\r\ntest_08 (test_acceptance.RepairTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.001s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "12-codetrail-pagination_boundaries-r2",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_empty (test_pagination.PaginationTests) ... ok\r\ntest_exact_boundary_no_next (test_pagination.PaginationTests) ... ok\r\ntest_first_page (test_pagination.PaginationTests) ... ok\r\ntest_invalid_page (test_pagination.PaginationTests) ... ok\r\ntest_invalid_size (test_pagination.PaginationTests) ... ok\r\ntest_last_partial_page (test_pagination.PaginationTests) ... ok\r\ntest_page_beyond_end (test_pagination.PaginationTests) ... ok\r\ntest_second_page (test_pagination.PaginationTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.001s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "13-codetrail-humanize_fractional-r2",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_01 (test_acceptance.RepairTests) ... ok\r\ntest_02 (test_acceptance.RepairTests) ... ok\r\ntest_03 (test_acceptance.RepairTests) ... ok\r\ntest_04 (test_acceptance.RepairTests) ... ok\r\ntest_05 (test_acceptance.RepairTests) ... ok\r\ntest_06 (test_acceptance.RepairTests) ... ok\r\ntest_07 (test_acceptance.RepairTests) ... ok\r\ntest_08 (test_acceptance.RepairTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.038s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "14-codetrail-boltons_isoparse-r2",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_01 (test_acceptance.RepairTests) ... ok\r\ntest_02 (test_acceptance.RepairTests) ... ok\r\ntest_03 (test_acceptance.RepairTests) ... ok\r\ntest_04 (test_acceptance.RepairTests) ... ok\r\ntest_05 (test_acceptance.RepairTests) ... ok\r\ntest_06 (test_acceptance.RepairTests) ... ok\r\ntest_07 (test_acceptance.RepairTests) ... ok\r\ntest_08 (test_acceptance.RepairTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.000s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "15-codetrail-humanize_fractional-r1",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_01 (test_acceptance.RepairTests) ... ok\r\ntest_02 (test_acceptance.RepairTests) ... ok\r\ntest_03 (test_acceptance.RepairTests) ... ok\r\ntest_04 (test_acceptance.RepairTests) ... ok\r\ntest_05 (test_acceptance.RepairTests) ... ok\r\ntest_06 (test_acceptance.RepairTests) ... ok\r\ntest_07 (test_acceptance.RepairTests) ... ok\r\ntest_08 (test_acceptance.RepairTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.038s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "16-codetrail-user_lookup_contract-r1",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_direct_repository_normalizes (test_user_lookup.LookupTests) ... ok\r\ntest_empty_id_is_unknown (test_user_lookup.LookupTests) ... ok\r\ntest_empty_mapping (test_user_lookup.LookupTests) ... ok\r\ntest_input_mapping_is_unchanged (test_user_lookup.LookupTests) ... ok\r\ntest_none_id_is_rejected (test_user_lookup.LookupTests) ... ok\r\ntest_service_normalizes (test_user_lookup.LookupTests) ... ok\r\ntest_service_uses_correct_argument_order (test_user_lookup.LookupTests) ... ok\r\ntest_unknown_returns_none (test_user_lookup.LookupTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.001s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      }
+    ]
+  },
+  "initial_invalid_batch_audit": {
+    "runs": 9,
+    "all_source_snapshots_match": true,
+    "all_results_reproduced": true,
+    "original_results_unchanged": true,
+    "revalidated_functional_passes": 3,
+    "checks": [
+      {
+        "run_key": "01-codetrail-pagination_boundaries-r1",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_empty (test_pagination.PaginationTests) ... ok\r\ntest_exact_boundary_no_next (test_pagination.PaginationTests) ... ok\r\ntest_first_page (test_pagination.PaginationTests) ... ok\r\ntest_invalid_page (test_pagination.PaginationTests) ... ok\r\ntest_invalid_size (test_pagination.PaginationTests) ... ok\r\ntest_last_partial_page (test_pagination.PaginationTests) ... ok\r\ntest_page_beyond_end (test_pagination.PaginationTests) ... ok\r\ntest_second_page (test_pagination.PaginationTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.001s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "02-apecode-humanize_fractional-r2",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": false,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": false,
+          "tests_run": 8,
+          "exit_code": 1,
+          "output": "test_01 (test_acceptance.RepairTests) ... FAIL\r\ntest_02 (test_acceptance.RepairTests) ... FAIL\r\ntest_03 (test_acceptance.RepairTests) ... ok\r\ntest_04 (test_acceptance.RepairTests) ... ok\r\ntest_05 (test_acceptance.RepairTests) ... ok\r\ntest_06 (test_acceptance.RepairTests) ... ok\r\ntest_07 (test_acceptance.RepairTests) ... ok\r\ntest_08 (test_acceptance.RepairTests) ... ok\r\n\r\n======================================================================\r\nFAIL: test_01 (test_acceptance.RepairTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.25b8f0afafbc449898bf4be74516e405\\AC\\workspace\\test_acceptance.py\", line 6, in test_01\r\n    self.assertEqual(fmt(-1.3),'-1 3/10')\r\nAssertionError: '-1 -3/10' != '-1 3/10'\r\n- -1 -3/10\r\n?    -\r\n+ -1 3/10\r\n\r\n\r\n======================================================================\r\nFAIL: test_02 (test_acceptance.RepairTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.25b8f0afafbc449898bf4be74516e405\\AC\\workspace\\test_acceptance.py\", line 8, in test_02\r\n    self.assertEqual(fmt(-2.5),'-2 1/2')\r\nAssertionError: '-2 -1/2' != '-2 1/2'\r\n- -2 -1/2\r\n?    -\r\n+ -2 1/2\r\n\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.039s\r\n\r\nFAILED (failures=2)\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "03-apecode-user_lookup_contract-r1",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": false,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": false,
+          "tests_run": 8,
+          "exit_code": 1,
+          "output": "test_direct_repository_normalizes (test_user_lookup.LookupTests) ... FAIL\r\ntest_empty_id_is_unknown (test_user_lookup.LookupTests) ... ERROR\r\ntest_empty_mapping (test_user_lookup.LookupTests) ... ERROR\r\ntest_input_mapping_is_unchanged (test_user_lookup.LookupTests) ... ERROR\r\ntest_none_id_is_rejected (test_user_lookup.LookupTests) ... ERROR\r\ntest_service_normalizes (test_user_lookup.LookupTests) ... ERROR\r\ntest_service_uses_correct_argument_order (test_user_lookup.LookupTests) ... ERROR\r\ntest_unknown_returns_none (test_user_lookup.LookupTests) ... ERROR\r\n\r\n======================================================================\r\nERROR: test_empty_id_is_unknown (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\test_user_lookup.py\", line 26, in test_empty_id_is_unknown\r\n    self.assertIsNone(display_name(self.users, '   '))\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'str' object has no attribute 'get'\r\n\r\n======================================================================\r\nERROR: test_empty_mapping (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\test_user_lookup.py\", line 18, in test_empty_mapping\r\n    self.assertIsNone(display_name({}, 'user-a'))\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'str' object has no attribute 'get'\r\n\r\n======================================================================\r\nERROR: test_input_mapping_is_unchanged (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\test_user_lookup.py\", line 23, in test_input_mapping_is_unchanged\r\n    display_name(self.users, ' USER-A ')\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'str' object has no attribute 'get'\r\n\r\n======================================================================\r\nERROR: test_none_id_is_rejected (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\test_user_lookup.py\", line 20, in test_none_id_is_rejected\r\n    with self.assertRaises(ValueError): display_name(self.users, None)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'NoneType' object has no attribute 'get'\r\n\r\n======================================================================\r\nERROR: test_service_normalizes (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\test_user_lookup.py\", line 14, in test_service_normalizes\r\n    self.assertEqual(display_name(self.users, ' User-A '), 'Ada')\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'str' object has no attribute 'get'\r\n\r\n======================================================================\r\nERROR: test_service_uses_correct_argument_order (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\test_user_lookup.py\", line 12, in test_service_uses_correct_argument_order\r\n    self.assertEqual(display_name(self.users, 'user-b'), 'Lin')\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'str' object has no attribute 'get'\r\n\r\n======================================================================\r\nERROR: test_unknown_returns_none (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\test_user_lookup.py\", line 16, in test_unknown_returns_none\r\n    self.assertIsNone(display_name(self.users, 'missing'))\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'str' object has no attribute 'get'\r\n\r\n======================================================================\r\nFAIL: test_direct_repository_normalizes (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.4aa73c1b3b8b443db0697cb9e6c34140\\AC\\workspace\\test_user_lookup.py\", line 10, in test_direct_repository_normalizes\r\n    self.assertEqual(get_user(self.users, ' USER-A '), {'name':'Ada'})\r\nAssertionError: None != {'name': 'Ada'}\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.009s\r\n\r\nFAILED (failures=1, errors=7)\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "04-codetrail-boltons_isoparse-r1",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_01 (test_acceptance.RepairTests) ... ok\r\ntest_02 (test_acceptance.RepairTests) ... ok\r\ntest_03 (test_acceptance.RepairTests) ... ok\r\ntest_04 (test_acceptance.RepairTests) ... ok\r\ntest_05 (test_acceptance.RepairTests) ... ok\r\ntest_06 (test_acceptance.RepairTests) ... ok\r\ntest_07 (test_acceptance.RepairTests) ... ok\r\ntest_08 (test_acceptance.RepairTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.001s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "05-apecode-humanize_fractional-r1",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": false,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": false,
+          "tests_run": 8,
+          "exit_code": 1,
+          "output": "test_01 (test_acceptance.RepairTests) ... FAIL\r\ntest_02 (test_acceptance.RepairTests) ... FAIL\r\ntest_03 (test_acceptance.RepairTests) ... ok\r\ntest_04 (test_acceptance.RepairTests) ... ok\r\ntest_05 (test_acceptance.RepairTests) ... ok\r\ntest_06 (test_acceptance.RepairTests) ... ok\r\ntest_07 (test_acceptance.RepairTests) ... ok\r\ntest_08 (test_acceptance.RepairTests) ... ok\r\n\r\n======================================================================\r\nFAIL: test_01 (test_acceptance.RepairTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.8ac4b38b4c43417a88b085472d62f721\\AC\\workspace\\test_acceptance.py\", line 6, in test_01\r\n    self.assertEqual(fmt(-1.3),'-1 3/10')\r\nAssertionError: '-1 -3/10' != '-1 3/10'\r\n- -1 -3/10\r\n?    -\r\n+ -1 3/10\r\n\r\n\r\n======================================================================\r\nFAIL: test_02 (test_acceptance.RepairTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.8ac4b38b4c43417a88b085472d62f721\\AC\\workspace\\test_acceptance.py\", line 8, in test_02\r\n    self.assertEqual(fmt(-2.5),'-2 1/2')\r\nAssertionError: '-2 -1/2' != '-2 1/2'\r\n- -2 -1/2\r\n?    -\r\n+ -2 1/2\r\n\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.039s\r\n\r\nFAILED (failures=2)\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "06-apecode-user_lookup_contract-r2",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": false,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": false,
+          "tests_run": 8,
+          "exit_code": 1,
+          "output": "test_direct_repository_normalizes (test_user_lookup.LookupTests) ... FAIL\r\ntest_empty_id_is_unknown (test_user_lookup.LookupTests) ... ERROR\r\ntest_empty_mapping (test_user_lookup.LookupTests) ... ERROR\r\ntest_input_mapping_is_unchanged (test_user_lookup.LookupTests) ... ERROR\r\ntest_none_id_is_rejected (test_user_lookup.LookupTests) ... ERROR\r\ntest_service_normalizes (test_user_lookup.LookupTests) ... ERROR\r\ntest_service_uses_correct_argument_order (test_user_lookup.LookupTests) ... ERROR\r\ntest_unknown_returns_none (test_user_lookup.LookupTests) ... ERROR\r\n\r\n======================================================================\r\nERROR: test_empty_id_is_unknown (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\test_user_lookup.py\", line 26, in test_empty_id_is_unknown\r\n    self.assertIsNone(display_name(self.users, '   '))\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'str' object has no attribute 'get'\r\n\r\n======================================================================\r\nERROR: test_empty_mapping (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\test_user_lookup.py\", line 18, in test_empty_mapping\r\n    self.assertIsNone(display_name({}, 'user-a'))\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'str' object has no attribute 'get'\r\n\r\n======================================================================\r\nERROR: test_input_mapping_is_unchanged (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\test_user_lookup.py\", line 23, in test_input_mapping_is_unchanged\r\n    display_name(self.users, ' USER-A ')\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'str' object has no attribute 'get'\r\n\r\n======================================================================\r\nERROR: test_none_id_is_rejected (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\test_user_lookup.py\", line 20, in test_none_id_is_rejected\r\n    with self.assertRaises(ValueError): display_name(self.users, None)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'NoneType' object has no attribute 'get'\r\n\r\n======================================================================\r\nERROR: test_service_normalizes (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\test_user_lookup.py\", line 14, in test_service_normalizes\r\n    self.assertEqual(display_name(self.users, ' User-A '), 'Ada')\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'str' object has no attribute 'get'\r\n\r\n======================================================================\r\nERROR: test_service_uses_correct_argument_order (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\test_user_lookup.py\", line 12, in test_service_uses_correct_argument_order\r\n    self.assertEqual(display_name(self.users, 'user-b'), 'Lin')\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'str' object has no attribute 'get'\r\n\r\n======================================================================\r\nERROR: test_unknown_returns_none (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\test_user_lookup.py\", line 16, in test_unknown_returns_none\r\n    self.assertIsNone(display_name(self.users, 'missing'))\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\service.py\", line 4, in display_name\r\n    user = get_user(user_id, users)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\repository.py\", line 4, in get_user\r\n    return users.get(user_id)\r\nAttributeError: 'str' object has no attribute 'get'\r\n\r\n======================================================================\r\nFAIL: test_direct_repository_normalizes (test_user_lookup.LookupTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5f377315bff5480d80f54ff903962153\\AC\\workspace\\test_user_lookup.py\", line 10, in test_direct_repository_normalizes\r\n    self.assertEqual(get_user(self.users, ' USER-A '), {'name':'Ada'})\r\nAssertionError: None != {'name': 'Ada'}\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.010s\r\n\r\nFAILED (failures=1, errors=7)\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "07-apecode-pagination_boundaries-r2",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": false,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": false,
+          "tests_run": 8,
+          "exit_code": 1,
+          "output": "test_empty (test_pagination.PaginationTests) ... ok\r\ntest_exact_boundary_no_next (test_pagination.PaginationTests) ... FAIL\r\ntest_first_page (test_pagination.PaginationTests) ... FAIL\r\ntest_invalid_page (test_pagination.PaginationTests) ... ok\r\ntest_invalid_size (test_pagination.PaginationTests) ... ok\r\ntest_last_partial_page (test_pagination.PaginationTests) ... FAIL\r\ntest_page_beyond_end (test_pagination.PaginationTests) ... ok\r\ntest_second_page (test_pagination.PaginationTests) ... FAIL\r\n\r\n======================================================================\r\nFAIL: test_exact_boundary_no_next (test_pagination.PaginationTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.0a172b43a6104fcbb28bbf29433a26c4\\AC\\workspace\\test_pagination.py\", line 12, in test_exact_boundary_no_next\r\n    self.assertEqual(paginate([1,2,3], 1, 3), {'items':[1,2,3], 'total_pages':1, 'has_next':False})\r\nAssertionError: {'items': [], 'total_pages': 1, 'has_next': True} != {'items': [1, 2, 3], 'total_pages': 1, 'has_next': False}\r\n- {'has_next': True, 'items': [], 'total_pages': 1}\r\n?              ^^^\r\n\r\n+ {'has_next': False, 'items': [1, 2, 3], 'total_pages': 1}\r\n?              ^^^^             +++++++\r\n\r\n\r\n======================================================================\r\nFAIL: test_first_page (test_pagination.PaginationTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.0a172b43a6104fcbb28bbf29433a26c4\\AC\\workspace\\test_pagination.py\", line 6, in test_first_page\r\n    self.assertEqual(paginate([1,2,3,4,5]), {'items':[1,2,3], 'total_pages':2, 'has_next':True})\r\nAssertionError: {'items': [4, 5], 'total_pages': 1, 'has_next': True} != {'items': [1, 2, 3], 'total_pages': 2, 'has_next': True}\r\n- {'has_next': True, 'items': [4, 5], 'total_pages': 1}\r\n?                              ^  ^                  ^\r\n\r\n+ {'has_next': True, 'items': [1, 2, 3], 'total_pages': 2}\r\n?                              ^  ^^^^                  ^\r\n\r\n\r\n======================================================================\r\nFAIL: test_last_partial_page (test_pagination.PaginationTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.0a172b43a6104fcbb28bbf29433a26c4\\AC\\workspace\\test_pagination.py\", line 10, in test_last_partial_page\r\n    self.assertEqual(paginate(list(range(7)), 3, 3), {'items':[6], 'total_pages':3, 'has_next':False})\r\nAssertionError: {'items': [], 'total_pages': 2, 'has_next': False} != {'items': [6], 'total_pages': 3, 'has_next': False}\r\n- {'has_next': False, 'items': [], 'total_pages': 2}\r\n?                                                 ^\r\n\r\n+ {'has_next': False, 'items': [6], 'total_pages': 3}\r\n?                               +                  ^\r\n\r\n\r\n======================================================================\r\nFAIL: test_second_page (test_pagination.PaginationTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.0a172b43a6104fcbb28bbf29433a26c4\\AC\\workspace\\test_pagination.py\", line 8, in test_second_page\r\n    self.assertEqual(paginate(list(range(7)), 2, 3)['items'], [3,4,5])\r\nAssertionError: Lists differ: [6] != [3, 4, 5]\r\n\r\nFirst differing element 0:\r\n6\r\n3\r\n\r\nSecond list contains 2 additional elements.\r\nFirst extra element 1:\r\n4\r\n\r\n- [6]\r\n+ [3, 4, 5]\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.003s\r\n\r\nFAILED (failures=4)\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "08-apecode-boltons_isoparse-r2",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": false,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": false,
+          "tests_run": 8,
+          "exit_code": 1,
+          "output": "test_01 (test_acceptance.RepairTests) ... FAIL\r\ntest_02 (test_acceptance.RepairTests) ... FAIL\r\ntest_03 (test_acceptance.RepairTests) ... FAIL\r\ntest_04 (test_acceptance.RepairTests) ... ok\r\ntest_05 (test_acceptance.RepairTests) ... ERROR\r\ntest_06 (test_acceptance.RepairTests) ... ok\r\ntest_07 (test_acceptance.RepairTests) ... ok\r\ntest_08 (test_acceptance.RepairTests) ... ok\r\n\r\n======================================================================\r\nERROR: test_05 (test_acceptance.RepairTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5a5abd05b8f44945aa2319e66bd88fce\\AC\\workspace\\test_acceptance.py\", line 14, in test_05\r\n    self.assertEqual(render('2020-01-02T03:04:05.123456789').microsecond,123456)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5a5abd05b8f44945aa2319e66bd88fce\\AC\\workspace\\public_api.py\", line 3, in render\r\n    return isoparse(value)\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5a5abd05b8f44945aa2319e66bd88fce\\AC\\workspace\\time_core.py\", line 30, in isoparse\r\n    return datetime(*dt_args)\r\nValueError: microsecond must be in 0..999999\r\n\r\n======================================================================\r\nFAIL: test_01 (test_acceptance.RepairTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5a5abd05b8f44945aa2319e66bd88fce\\AC\\workspace\\test_acceptance.py\", line 6, in test_01\r\n    self.assertEqual(render('2020-01-02T03:04:05.851').microsecond,851000)\r\nAssertionError: 851 != 851000\r\n\r\n======================================================================\r\nFAIL: test_02 (test_acceptance.RepairTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5a5abd05b8f44945aa2319e66bd88fce\\AC\\workspace\\test_acceptance.py\", line 8, in test_02\r\n    self.assertEqual(render('2020-01-02T03:04:05.051').microsecond,51000)\r\nAssertionError: 51 != 51000\r\n\r\n======================================================================\r\nFAIL: test_03 (test_acceptance.RepairTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.5a5abd05b8f44945aa2319e66bd88fce\\AC\\workspace\\test_acceptance.py\", line 10, in test_03\r\n    self.assertEqual(render('2020-01-02T03:04:05.1').microsecond,100000)\r\nAssertionError: 1 != 100000\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.007s\r\n\r\nFAILED (failures=3, errors=1)\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      },
+      {
+        "run_key": "09-codetrail-user_lookup_contract-r2",
+        "source_snapshot_matches": true,
+        "revalidated_functional_pass": true,
+        "agrees_with_original_result": true,
+        "external": {
+          "accepted": true,
+          "tests_run": 8,
+          "exit_code": 0,
+          "output": "test_direct_repository_normalizes (test_user_lookup.LookupTests) ... ok\r\ntest_empty_id_is_unknown (test_user_lookup.LookupTests) ... ok\r\ntest_empty_mapping (test_user_lookup.LookupTests) ... ok\r\ntest_input_mapping_is_unchanged (test_user_lookup.LookupTests) ... ok\r\ntest_none_id_is_rejected (test_user_lookup.LookupTests) ... ok\r\ntest_service_normalizes (test_user_lookup.LookupTests) ... ok\r\ntest_service_uses_correct_argument_order (test_user_lookup.LookupTests) ... ok\r\ntest_unknown_returns_none (test_user_lookup.LookupTests) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.001s\r\n\r\nOK\r\n",
+          "workspace_unchanged_during_test": true,
+          "backend": "windows_appcontainer",
+          "host_fallback": false
+        }
+      }
+    ]
+  }
+}
