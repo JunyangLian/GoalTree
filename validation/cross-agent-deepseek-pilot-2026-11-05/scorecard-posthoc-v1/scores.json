@@ -1,0 +1,34 @@
+{
+  "scores": {
+    "codetrail": {
+      "functional_score": 100.0,
+      "workflow_score": 100.0,
+      "latency_efficiency_score": 59.293686603114296,
+      "token_efficiency_score": 90.36153996482314,
+      "tool_efficiency_score": 100.0,
+      "overall_score": null
+    },
+    "apecode": {
+      "functional_score": 100.0,
+      "workflow_score": 100.0,
+      "latency_efficiency_score": 100.0,
+      "token_efficiency_score": 100.0,
+      "tool_efficiency_score": 96.49122807017544,
+      "overall_score": null
+    }
+  },
+  "raw_efficiency_values": {
+    "latency": {
+      "codetrail": 29.477,
+      "apecode": 17.478
+    },
+    "tokens": {
+      "codetrail": 230265,
+      "apecode": 208071
+    },
+    "tools": {
+      "codetrail": 6.875,
+      "apecode": 7.125
+    }
+  }
+}

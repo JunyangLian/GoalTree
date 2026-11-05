@@ -8,6 +8,8 @@
 
 首批9条记录（含6条模块接入错误）全部保留，未替换为新结果。51项相关回归通过；含预检与首批的已知用量估算约0.678元，账户余额2.71→2.03元。不是默认CLI排行榜或未见任务泛化结论。见[官方接口方法与复现](docs/deepseek-cross-agent-pilot.md)、[最终横评报告与全部记录](validation/cross-agent-deepseek-pilot-2026-11-05/report.md)；[原硅基流动冻结与阻塞证据](validation/cross-agent-pilot-2026-11-05/report.md)保持原样。
 
+另提供[事后分项得分](validation/cross-agent-deepseek-pilot-2026-11-05/scorecard-posthoc-v1/scorecard.md)：结果/流程按通过率转为百分制，耗时/Token/工具采用组内相对效率指数；不计算综合总分，未评估维度不补分，原始证据不变。
+
 ## 小规模完整工作台（2026-11-04）
 
 新增 `workbench` 配置，将分层项目规则、原生多工具批次、流式反馈、任务计划、源码符号与混合检索、候选记忆确认、证据查回、冲突安全编辑/撤销、取消与中断继续接入同一流程，并提供按需 Skill、stdio MCP 和策略钩子。主要研究场景是：**仓库持续变化时，跨会话记忆与执行验证如何保持有效。** 原 `classic` 配置和历史评测证据保留。

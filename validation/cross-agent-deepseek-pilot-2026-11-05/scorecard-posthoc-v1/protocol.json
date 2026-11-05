@@ -1,0 +1,32 @@
+{
+  "created_at": "2026-11-05T01:57:28.806640+00:00",
+  "status": "Post-hoc descriptive scorecard, not preregistered and not an overall benchmark ranking",
+  "cohort": "Corrected official DeepSeek pilot only, 4 known tasks x 2 repeats per agent, 16 runs",
+  "initial_failed_cohort": "All original 9 records, including 6 integration failures, remain in all-executions.json/CSV and original report",
+  "absolute_formulas": {
+    "functional_score": "100 * external functional passes / attempted runs",
+    "workflow_score": "100 * complete verified workflow passes / attempted runs"
+  },
+  "relative_formula": "100 * min(value over both agents) / current agent value",
+  "efficiency_values": {
+    "latency": "p50 agent execution seconds; does not measure tail reliability",
+    "tokens": "Total known input + output tokens over the same eight runs; not currency cost",
+    "tools": "Mean individual tool calls, including rejected calls, over the same eight runs"
+  },
+  "missing_policy": "If any comparison value is missing or nonpositive, relative score remains null; unknown is never zero",
+  "overall_score_policy": "Not computed: no weights frozen before the experiment; overlapping metrics could be double-counted",
+  "unassessed": [
+    "Common safety attack score",
+    "Long-term memory benefit",
+    "Retrieval Recall with common gold",
+    "Broad semantic faithfulness",
+    "Agent recovery under controlled injected faults",
+    "Generalization"
+  ],
+  "comparison_limits": "Adapted ApeCode, different prompts/tools/Python/streaming; known short tasks; best=100 is relative to this pair only",
+  "input_sha256": {
+    "process-metrics.json": "a677470c3e683d583fbb48f0a86bdcd55209e3c5be6261e93e8b5b7cb65b5724",
+    "summary.json": "5c115bcddf83a79dc65a6f46f0a8c9b1c70ee629243dc25cf43ce2164e08600d"
+  },
+  "scoring_script_sha256": "224cc193596e38f03f9a5b92427bd553ac7335a712824fa5193dade15428c1bd"
+}
