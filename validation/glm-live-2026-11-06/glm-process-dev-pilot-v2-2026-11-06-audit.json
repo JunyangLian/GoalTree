@@ -1,0 +1,266 @@
+[
+  {
+    "agent": "apecode",
+    "task_id": "dev_interval_end",
+    "repeat": 1,
+    "run_key": "01-apecode-dev_interval_end",
+    "cohort": "glm-process-dev-pilot-v2-2026-11-06",
+    "started": true,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "external_reverification_passed": true,
+    "snapshot_valid": true,
+    "independent_verifier": {
+      "accepted": true,
+      "tests_run": 3,
+      "exit_code": 0,
+      "output": "test_0 (test_acceptance.Acceptance) ... ok\r\ntest_1 (test_acceptance.Acceptance) ... ok\r\ntest_2 (test_acceptance.Acceptance) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 3 tests in 0.002s\r\n\r\nOK\r\n",
+      "workspace_unchanged": true,
+      "backend": "appcontainer",
+      "host_fallback": false
+    },
+    "failure_category": "success",
+    "error": null,
+    "tool_steps": 6,
+    "model_requests": 5,
+    "model_responses": 5,
+    "input_tokens": 14161,
+    "output_tokens": 627,
+    "elapsed_ms": 55233,
+    "zero_reasoning_responses": 2,
+    "responses_with_reasoning_text_field": 3,
+    "protocol_observations": [],
+    "policy_denials": 0,
+    "process_evidence": {
+      "recall_at_5": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0
+      },
+      "necessary_evidence_coverage": {
+        "numerator": 2,
+        "denominator": 2,
+        "value": 1.0
+      },
+      "immediate_context_loss": {
+        "numerator": 0,
+        "denominator": 2,
+        "value": 0.0
+      },
+      "repeated_reads": {
+        "numerator": 0,
+        "denominator": 2,
+        "value": 0.0
+      },
+      "retrieved_files": [
+        "interval.py",
+        "test_acceptance.py"
+      ],
+      "context_observations": 3,
+      "unobserved_pending_evidence": 0,
+      "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+    },
+    "source_result_sha256": "48d922ee72a7d2cef3f88d51c4d0ebca2564b76fc7a25de6b1a4897abe9415b5"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "dev_sku_contract",
+    "repeat": 1,
+    "run_key": "02-codetrail-dev_sku_contract",
+    "cohort": "glm-process-dev-pilot-v2-2026-11-06",
+    "started": true,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "external_reverification_passed": true,
+    "snapshot_valid": true,
+    "independent_verifier": {
+      "accepted": true,
+      "tests_run": 3,
+      "exit_code": 0,
+      "output": "test_0 (test_acceptance.Acceptance) ... ok\r\ntest_1 (test_acceptance.Acceptance) ... ok\r\ntest_2 (test_acceptance.Acceptance) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 3 tests in 0.003s\r\n\r\nOK\r\n",
+      "workspace_unchanged": true,
+      "backend": "appcontainer",
+      "host_fallback": false
+    },
+    "failure_category": "success",
+    "error": null,
+    "tool_steps": 8,
+    "model_requests": 8,
+    "model_responses": 8,
+    "input_tokens": 32933,
+    "output_tokens": 872,
+    "elapsed_ms": 77201,
+    "zero_reasoning_responses": 1,
+    "responses_with_reasoning_text_field": 5,
+    "protocol_observations": [
+      {
+        "event": "response_not_executable",
+        "reason": "missing_reasoning"
+      },
+      {
+        "event": "response_not_executable",
+        "reason": "missing_reasoning"
+      }
+    ],
+    "policy_denials": 0,
+    "process_evidence": {
+      "recall_at_5": {
+        "numerator": 2,
+        "denominator": 2,
+        "value": 1.0
+      },
+      "necessary_evidence_coverage": {
+        "numerator": 9,
+        "denominator": 9,
+        "value": 1.0
+      },
+      "immediate_context_loss": {
+        "numerator": 0,
+        "denominator": 9,
+        "value": 0.0
+      },
+      "repeated_reads": {
+        "numerator": 0,
+        "denominator": 3,
+        "value": 0.0
+      },
+      "retrieved_files": [
+        "basket.py",
+        "catalog.py",
+        "test_acceptance.py"
+      ],
+      "context_observations": 4,
+      "unobserved_pending_evidence": 0,
+      "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+    },
+    "source_result_sha256": "ea7bb1f6cbc8f1d14271f74dc3e4ebe4cda38e899d6e220523ba23ad17fa75af"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "dev_sku_contract",
+    "repeat": 1,
+    "run_key": "03-apecode-dev_sku_contract",
+    "cohort": "glm-process-dev-pilot-v2-2026-11-06",
+    "started": true,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "external_reverification_passed": true,
+    "snapshot_valid": true,
+    "independent_verifier": {
+      "accepted": true,
+      "tests_run": 3,
+      "exit_code": 0,
+      "output": "test_0 (test_acceptance.Acceptance) ... ok\r\ntest_1 (test_acceptance.Acceptance) ... ok\r\ntest_2 (test_acceptance.Acceptance) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 3 tests in 0.004s\r\n\r\nOK\r\n",
+      "workspace_unchanged": true,
+      "backend": "appcontainer",
+      "host_fallback": false
+    },
+    "failure_category": "success",
+    "error": null,
+    "tool_steps": 11,
+    "model_requests": 6,
+    "model_responses": 6,
+    "input_tokens": 21137,
+    "output_tokens": 1171,
+    "elapsed_ms": 67846,
+    "zero_reasoning_responses": 1,
+    "responses_with_reasoning_text_field": 5,
+    "protocol_observations": [],
+    "policy_denials": 2,
+    "process_evidence": {
+      "recall_at_5": {
+        "numerator": 2,
+        "denominator": 2,
+        "value": 1.0
+      },
+      "necessary_evidence_coverage": {
+        "numerator": 9,
+        "denominator": 9,
+        "value": 1.0
+      },
+      "immediate_context_loss": {
+        "numerator": 0,
+        "denominator": 9,
+        "value": 0.0
+      },
+      "repeated_reads": {
+        "numerator": 0,
+        "denominator": 4,
+        "value": 0.0
+      },
+      "retrieved_files": [
+        "basket.py",
+        "catalog.py",
+        "test_acceptance.py",
+        "README.md"
+      ],
+      "context_observations": 4,
+      "unobserved_pending_evidence": 0,
+      "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+    },
+    "source_result_sha256": "da09c02192a4d5f30b3fd3598c565b273826c0124cca59109f7b5f777226533b"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "dev_interval_end",
+    "repeat": 1,
+    "run_key": "04-codetrail-dev_interval_end",
+    "cohort": "glm-process-dev-pilot-v2-2026-11-06",
+    "started": true,
+    "functional_passed": true,
+    "workflow_passed": true,
+    "external_reverification_passed": true,
+    "snapshot_valid": true,
+    "independent_verifier": {
+      "accepted": true,
+      "tests_run": 3,
+      "exit_code": 0,
+      "output": "test_0 (test_acceptance.Acceptance) ... ok\r\ntest_1 (test_acceptance.Acceptance) ... ok\r\ntest_2 (test_acceptance.Acceptance) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 3 tests in 0.002s\r\n\r\nOK\r\n",
+      "workspace_unchanged": true,
+      "backend": "appcontainer",
+      "host_fallback": false
+    },
+    "failure_category": "success",
+    "error": null,
+    "tool_steps": 7,
+    "model_requests": 5,
+    "model_responses": 5,
+    "input_tokens": 17762,
+    "output_tokens": 1503,
+    "elapsed_ms": 99640,
+    "zero_reasoning_responses": 0,
+    "responses_with_reasoning_text_field": 5,
+    "protocol_observations": [],
+    "policy_denials": 1,
+    "process_evidence": {
+      "recall_at_5": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0
+      },
+      "necessary_evidence_coverage": {
+        "numerator": 2,
+        "denominator": 2,
+        "value": 1.0
+      },
+      "immediate_context_loss": {
+        "numerator": 0,
+        "denominator": 2,
+        "value": 0.0
+      },
+      "repeated_reads": {
+        "numerator": 0,
+        "denominator": 2,
+        "value": 0.0
+      },
+      "retrieved_files": [
+        "interval.py",
+        "test_acceptance.py"
+      ],
+      "context_observations": 3,
+      "unobserved_pending_evidence": 0,
+      "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+    },
+    "source_result_sha256": "e5d7659ae53f5ea6b6bcf42820251f836c33bebfc07ca6789d73ccac542972bf"
+  }
+]

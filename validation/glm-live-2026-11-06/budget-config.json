@@ -1,0 +1,13 @@
+{
+  "max_spend_cny": "1",
+  "rates": {
+    "input_per_million_cny": "0.8",
+    "output_per_million_cny": "2.8",
+    "cached_input_per_million_cny": "0.23",
+    "source": "https://docs.bigmodel.cn/cn/guide/start/pricing",
+    "checked_date": "2026-11-06",
+    "budget_policy": "All input treated as cache miss for upper estimate; actual account debit not available"
+  },
+  "unknown_request_usage": "Reservation retained, not zero",
+  "concurrency": 1
+}

@@ -1,0 +1,12 @@
+{
+  "http_status": null,
+  "model": null,
+  "usage": null,
+  "finish_reason": null,
+  "thinking_present": false,
+  "error": null,
+  "elapsed_ms": 359,
+  "scope": "real standard API non-task availability; no repair task started",
+  "model_requests": 1,
+  "formal_runs": 0
+}

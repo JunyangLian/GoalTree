@@ -1,0 +1,76 @@
+{
+  "at": "2026-11-06T09:27:56.865233+00:00",
+  "model": "glm-5.3-flash",
+  "base_url": "https://open.bigmodel.cn/api/paas/v4",
+  "mode": "real model, two synthetic development tasks; one run per task/agent/cohort",
+  "unique_tasks": 2,
+  "cohorts": [
+    {
+      "cohort": "glm-process-dev-pilot-2026-11-06",
+      "freeze_sha256": "490b45c0fbaad44873c221c9c0d2da49be284b4f56ec3e3c0c8bfd4e99d626b2",
+      "tasks": 2,
+      "started": 4,
+      "functional": 4,
+      "workflow": 2,
+      "external_reverified": 4,
+      "by_agent": {
+        "codetrail": {
+          "runs": 2,
+          "functional": 2,
+          "workflow": 2,
+          "tool_steps": 16,
+          "input_tokens": 52876,
+          "output_tokens": 3736
+        },
+        "apecode": {
+          "runs": 2,
+          "functional": 2,
+          "workflow": 0,
+          "tool_steps": 14,
+          "input_tokens": 23833,
+          "output_tokens": 1054
+        }
+      }
+    },
+    {
+      "cohort": "glm-process-dev-pilot-v2-2026-11-06",
+      "freeze_sha256": "502be75bf34603973d2c40463294994d019abe6d20433489abb0cd286d84ce02",
+      "tasks": 2,
+      "started": 4,
+      "functional": 4,
+      "workflow": 4,
+      "external_reverified": 4,
+      "by_agent": {
+        "codetrail": {
+          "runs": 2,
+          "functional": 2,
+          "workflow": 2,
+          "tool_steps": 15,
+          "input_tokens": 50695,
+          "output_tokens": 2375
+        },
+        "apecode": {
+          "runs": 2,
+          "functional": 2,
+          "workflow": 2,
+          "tool_steps": 17,
+          "input_tokens": 35298,
+          "output_tokens": 1798
+        }
+      }
+    }
+  ],
+  "total_started_runs": 8,
+  "tariff_upper_estimate_cny": "0.1564940",
+  "unknown_usage_reserved_cny": "0.0074832",
+  "max_window_cny": "1",
+  "actual_account_debit_cny": null,
+  "successful_api_responses_including_preflight": 49,
+  "limitations": [
+    "Known dev tasks, not holdout, SWE-bench or whole repositories",
+    "No statistical or single-factor superiority claim",
+    "Mutable provider model alias; exact weights unverified",
+    "Functional test passing is not complete-workflow success",
+    "All initial failures and cohorts retained"
+  ]
+}

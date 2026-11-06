@@ -1,0 +1,21 @@
+{
+  "analysis.json": "7b069c000ce2c19c3bd7b7be44423d3301806f07d81f95496a9b725b359bab10",
+  "budget-config.json": "04438d4ab22072160895dbdf74e73dde3bb79b11220b36c1a396ad3fbe2a4655",
+  "budget-ledger.json": "ed663d9c27570e3e8b62fd09c92482a47be15176abe6093794afedddb568f0d1",
+  "delivery-check.json": "6ec418a45cf67fac4f433abf4954e8620fbb26da4d603b98ae536d1941bdd7ac",
+  "glm-live-full-v2-2026-11-06.xml": "35eeed4af2b7affbbf78079ce8e2858f5246aab1c56be7871a5763a5c8b4ac6d",
+  "glm-live-pilot-2026-11-06-status.json": "2d9be77915646ea97cbae7c5a4941ac15fd5ac436d37cef1c0dc16ecb6497ab0",
+  "glm-native-protocol-2026-11-06-status.json": "61e6bb36437fde36fe02edca51b334ef684e346a3a17dba03b0334646aa21d26",
+  "glm-process-dev-pilot-2026-11-06-audit.json": "cd56dd2a7558e453f432f7f6a59553f8522e573b816a53a78d604d849aa89890",
+  "glm-process-dev-pilot-v2-2026-11-06-audit.json": "38a1c361c71d90d85a68e414e3108c2305aad28eaca1ec5492ae42be46622ae9",
+  "glm-standard-availability-2026-11-06-status.json": "17667cb7aaa9dcbbef163bec32dc2f0cb69d0471c9b26b17dcbc8b190d8759a3",
+  "glm-zero-fix-targeted-v2-2026-11-06.xml": "003c9c54382b91edfb6bb64f8f9ddf43275e44f793fbb067b5dd55b1bb88bf60",
+  "historical-evidence-check.json": "8edaf23159f6704aa8e62c93315f20c38be20e1fdb156a18077726cf7044876d",
+  "independent-audit-evidence.json": "9c726194d7859f22fa32ae827d9680750ffee1ddf95dab6cda186374ea965e80",
+  "raw-evidence.json": "c1723308880d25c39efa7aafff73c92536b9ec9f00c7fa6da7a5092928896f5a",
+  "report.md": "c743c0c03c68b90f8c65f48dc37cf9cd7021825335b4c9feb32ae2976043822f",
+  "runs.csv": "b5a53c9d6d57ea601c539e888a55df1aeefcab2e3bed8d05e4ec19e32cf6bf88",
+  "runs.json": "9d662c9386c3a6d0f0f0343718d10aeab55aa9f8b46d50960a99a4e0ad5ab6b7",
+  "summary.json": "72c11f79d57ca18065dab73bddcfba4882eda7788b30323268ccd222e4d0abc3",
+  "test-history.json": "4d5d8f6742becf461761dd37ba74cdaed01c5d7cd30e8e9e2c94b3496c1577c9"
+}

@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from pico.providers.clients import OpenAICompatibleModelClient
 from pico.evaluation.repair_suite import append_json, utcnow
+from pico.providers.glm_protocol import measured_zero_reasoning
 
 MODEL = 'glm-5.3-flash'
 BASE_URL = 'https://open.bigmodel.cn/api/paas/v4'
@@ -37,11 +38,12 @@ class BigModelChatModel:
     No model call is made by construction. Formal execution requires a separately
     frozen controller/permission/budget plan, not just importing this class.
     """
-    def __init__(self, directory, on_wire_event=None):
+    def __init__(self, directory, on_wire_event=None, opener=None):
         self.directory = Path(directory)
         self.key = os.environ['BIGMODEL_API_KEY']
         self.requests = []
         self.on_wire_event = on_wire_event
+        self.opener = opener
 
     def emit(self, event):
         if self.on_wire_event:
@@ -65,7 +67,7 @@ class BigModelChatModel:
             data=json.dumps(payload).encode(), headers={'Authorization': 'Bearer '+self.key,
                                                        'Content-Type': 'application/json'})
         try:
-            with urllib.request.urlopen(request, timeout=CONFIG['timeout_seconds']) as response:
+            with (self.opener or urllib.request.urlopen)(request, timeout=CONFIG['timeout_seconds']) as response:
                 body = response.read().decode()
         except urllib.error.HTTPError as exc:
             # Never persist arbitrary provider error text that may contain credentials.
@@ -85,6 +87,6 @@ class BigModelChatModel:
         if choice.get('finish_reason') == 'length':
             raise RuntimeError('Truncated response; no incomplete tool call executed')
         message = choice['message']
-        if not isinstance(message.get('reasoning_content'), str):
+        if not isinstance(message.get('reasoning_content'), str) and not measured_zero_reasoning(message, data.get('usage') or {}):
             raise RuntimeError('Thinking response missing reasoning_content; protocol not verified')
         return message

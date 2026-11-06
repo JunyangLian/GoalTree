@@ -1,0 +1,1381 @@
+[
+  {
+    "id": "import-glm-standard-availability-2026-11-06",
+    "event": "reserved",
+    "at": "2026-11-06T08:36:37.144529+00:00",
+    "reserved_cny": "0.0074832",
+    "owner": "glm-standard-availability-2026-11-06",
+    "note": "Imported after availability stage; its original max_tokens=256 bound was fixed before request"
+  },
+  {
+    "id": "import-glm-live-pilot-2026-11-06",
+    "event": "reserved",
+    "at": "2026-11-06T08:36:37.148878+00:00",
+    "reserved_cny": "0.0074832",
+    "owner": "glm-live-pilot-2026-11-06",
+    "note": "Imported after availability stage; its original max_tokens=256 bound was fixed before request"
+  },
+  {
+    "id": "import-glm-live-pilot-2026-11-06",
+    "event": "settled",
+    "at": "2026-11-06T08:36:37.152607+00:00",
+    "tariff_upper_estimate_cny": "0.0006236",
+    "usage": {
+      "completion_tokens": 217,
+      "completion_tokens_details": {
+        "reasoning_tokens": 214
+      },
+      "prompt_tokens": 20,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 237
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "77084afb901b4626b19081bfd5d11fa8",
+    "event": "reserved",
+    "at": "2026-11-06T08:36:37.159032+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-native-protocol-2026-11-06",
+    "reserved_cny": "0.018548",
+    "known_tariff_upper_cny": "0.0006236",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "77084afb901b4626b19081bfd5d11fa8",
+    "event": "settled",
+    "at": "2026-11-06T08:36:43.533484+00:00",
+    "tariff_upper_estimate_cny": "0.0003184",
+    "usage": {
+      "completion_tokens": 58,
+      "completion_tokens_details": {
+        "reasoning_tokens": 39
+      },
+      "prompt_tokens": 195,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 253
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "23cc1e65ac0942a791487e4f3c8c9085",
+    "event": "reserved",
+    "at": "2026-11-06T08:36:43.543046+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-native-protocol-2026-11-06",
+    "reserved_cny": "0.018952",
+    "known_tariff_upper_cny": "0.0009420",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "23cc1e65ac0942a791487e4f3c8c9085",
+    "event": "settled",
+    "at": "2026-11-06T08:36:51.873927+00:00",
+    "tariff_upper_estimate_cny": "0.000294",
+    "usage": {
+      "completion_tokens": 29,
+      "completion_tokens_details": {
+        "reasoning_tokens": 18
+      },
+      "prompt_tokens": 266,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 295
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "bfc634e0b58f4d558d097ec33eb6b186",
+    "event": "reserved",
+    "at": "2026-11-06T08:40:33.625657+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\01-apecode-dev_interval_end\\session-b",
+    "reserved_cny": "0.0259512",
+    "known_tariff_upper_cny": "0.0012360",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "bfc634e0b58f4d558d097ec33eb6b186",
+    "event": "settled",
+    "at": "2026-11-06T08:40:42.245146+00:00",
+    "tariff_upper_estimate_cny": "0.0019336",
+    "usage": {
+      "completion_tokens": 58,
+      "completion_tokens_details": {
+        "reasoning_tokens": 15
+      },
+      "prompt_tokens": 2214,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2272
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "4b9f3b0f408f4b10a1e29e3b4bf0eb4d",
+    "event": "reserved",
+    "at": "2026-11-06T08:40:45.540415+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\01-apecode-dev_interval_end\\session-b",
+    "reserved_cny": "0.0277576",
+    "known_tariff_upper_cny": "0.0031696",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "4b9f3b0f408f4b10a1e29e3b4bf0eb4d",
+    "event": "settled",
+    "at": "2026-11-06T08:40:55.689845+00:00",
+    "tariff_upper_estimate_cny": "0.0025652",
+    "usage": {
+      "completion_tokens": 151,
+      "completion_tokens_details": {
+        "reasoning_tokens": 82
+      },
+      "prompt_tokens": 2678,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2829
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "71d683cdbfc6410b8fbd32364f5381fd",
+    "event": "reserved",
+    "at": "2026-11-06T08:40:55.750288+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\01-apecode-dev_interval_end\\session-b",
+    "reserved_cny": "0.0291912",
+    "known_tariff_upper_cny": "0.0057348",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "71d683cdbfc6410b8fbd32364f5381fd",
+    "event": "settled",
+    "at": "2026-11-06T08:41:08.659421+00:00",
+    "tariff_upper_estimate_cny": "0.0030488",
+    "usage": {
+      "completion_tokens": 228,
+      "completion_tokens_details": {
+        "reasoning_tokens": 141
+      },
+      "prompt_tokens": 3013,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 3241
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "b3b274dfde2140388796de7d4522fe0b",
+    "event": "reserved",
+    "at": "2026-11-06T08:41:08.681927+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\01-apecode-dev_interval_end\\session-b",
+    "reserved_cny": "0.0300304",
+    "known_tariff_upper_cny": "0.0087836",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "b3b274dfde2140388796de7d4522fe0b",
+    "event": "settled",
+    "at": "2026-11-06T08:41:11.457993+00:00",
+    "tariff_upper_estimate_cny": "0.0026932",
+    "usage": {
+      "completion_tokens": 33,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 3251,
+      "prompt_tokens_details": {
+        "cached_tokens": 3008
+      },
+      "total_tokens": 3284
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "5a47f0e9bbd34aef8cb1014abd950537",
+    "event": "reserved",
+    "at": "2026-11-06T08:41:16.816236+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.025192",
+    "known_tariff_upper_cny": "0.0114768",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "5a47f0e9bbd34aef8cb1014abd950537",
+    "event": "settled",
+    "at": "2026-11-06T08:41:23.201310+00:00",
+    "tariff_upper_estimate_cny": "0.0017348",
+    "usage": {
+      "completion_tokens": 51,
+      "completion_tokens_details": {
+        "reasoning_tokens": 15
+      },
+      "prompt_tokens": 1990,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2041
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "eff82e4f33744d5fa9a071407a274e82",
+    "event": "reserved",
+    "at": "2026-11-06T08:41:26.549111+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0290128",
+    "known_tariff_upper_cny": "0.0132116",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "eff82e4f33744d5fa9a071407a274e82",
+    "event": "settled",
+    "at": "2026-11-06T08:41:35.860474+00:00",
+    "tariff_upper_estimate_cny": "0.002986",
+    "usage": {
+      "completion_tokens": 159,
+      "completion_tokens_details": {
+        "reasoning_tokens": 111
+      },
+      "prompt_tokens": 3176,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 3335
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "e304906d1b034f958e43a48bab62566b",
+    "event": "reserved",
+    "at": "2026-11-06T08:41:36.803067+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.031376",
+    "known_tariff_upper_cny": "0.0161976",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "e304906d1b034f958e43a48bab62566b",
+    "event": "settled",
+    "at": "2026-11-06T08:41:47.641500+00:00",
+    "tariff_upper_estimate_cny": "0.0033964",
+    "usage": {
+      "completion_tokens": 63,
+      "completion_tokens_details": {
+        "reasoning_tokens": 13
+      },
+      "prompt_tokens": 4025,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 4088
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "c918765fe9ec43db9c092ded716e3131",
+    "event": "reserved",
+    "at": "2026-11-06T08:41:48.691894+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0330568",
+    "known_tariff_upper_cny": "0.0195940",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "c918765fe9ec43db9c092ded716e3131",
+    "event": "settled",
+    "at": "2026-11-06T08:42:19.499603+00:00",
+    "tariff_upper_estimate_cny": "0.0065388",
+    "usage": {
+      "completion_tokens": 1005,
+      "completion_tokens_details": {
+        "reasoning_tokens": 784
+      },
+      "prompt_tokens": 4656,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 5661
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "0a8ad171ae924de0a6bb4df205678896",
+    "event": "reserved",
+    "at": "2026-11-06T08:42:20.868174+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.03654",
+    "known_tariff_upper_cny": "0.0261328",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "0a8ad171ae924de0a6bb4df205678896",
+    "event": "settled",
+    "at": "2026-11-06T08:42:27.148425+00:00",
+    "tariff_upper_estimate_cny": "0.0047148",
+    "usage": {
+      "completion_tokens": 49,
+      "completion_tokens_details": {
+        "reasoning_tokens": 10
+      },
+      "prompt_tokens": 5722,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 5771
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "45015f4ef70e44fd913002dcf3d6aa70",
+    "event": "reserved",
+    "at": "2026-11-06T08:42:31.011929+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0374392",
+    "known_tariff_upper_cny": "0.0308476",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "45015f4ef70e44fd913002dcf3d6aa70",
+    "event": "settled",
+    "at": "2026-11-06T08:42:53.641310+00:00",
+    "tariff_upper_estimate_cny": "0.005742",
+    "usage": {
+      "completion_tokens": 333,
+      "completion_tokens_details": {
+        "reasoning_tokens": 184
+      },
+      "prompt_tokens": 6012,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 6345
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "abf16d300561497184d6af2537011cea",
+    "event": "reserved",
+    "at": "2026-11-06T08:42:54.616253+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0388944",
+    "known_tariff_upper_cny": "0.0365896",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "abf16d300561497184d6af2537011cea",
+    "event": "settled",
+    "at": "2026-11-06T08:43:08.172910+00:00",
+    "tariff_upper_estimate_cny": "0.0062564",
+    "usage": {
+      "completion_tokens": 407,
+      "completion_tokens_details": {
+        "reasoning_tokens": 54
+      },
+      "prompt_tokens": 6396,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 6803
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "b1b22d7f64ec40b281af60d8971ced40",
+    "event": "reserved",
+    "at": "2026-11-06T08:43:13.008459+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\03-apecode-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0259704",
+    "known_tariff_upper_cny": "0.0428460",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "b1b22d7f64ec40b281af60d8971ced40",
+    "event": "settled",
+    "at": "2026-11-06T08:43:19.534932+00:00",
+    "tariff_upper_estimate_cny": "0.0019268",
+    "usage": {
+      "completion_tokens": 55,
+      "completion_tokens_details": {
+        "reasoning_tokens": 18
+      },
+      "prompt_tokens": 2216,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2271
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "a5a1b6e5710b4e1c83ac50fae73faf4c",
+    "event": "reserved",
+    "at": "2026-11-06T08:43:22.720881+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\03-apecode-dev_sku_contract\\session-b",
+    "reserved_cny": "0.028968",
+    "known_tariff_upper_cny": "0.0447728",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "a5a1b6e5710b4e1c83ac50fae73faf4c",
+    "event": "settled",
+    "at": "2026-11-06T08:43:28.972078+00:00",
+    "tariff_upper_estimate_cny": "0.0026912",
+    "usage": {
+      "completion_tokens": 74,
+      "completion_tokens_details": {
+        "reasoning_tokens": 12
+      },
+      "prompt_tokens": 3105,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 3179
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "1bdfb5d82a6a4cae96f1c7d9291983eb",
+    "event": "reserved",
+    "at": "2026-11-06T08:43:29.080239+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\03-apecode-dev_sku_contract\\session-b",
+    "reserved_cny": "0.03062",
+    "known_tariff_upper_cny": "0.0474640",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "1bdfb5d82a6a4cae96f1c7d9291983eb",
+    "event": "settled",
+    "at": "2026-11-06T08:43:39.240215+00:00",
+    "tariff_upper_estimate_cny": "0.003948",
+    "usage": {
+      "completion_tokens": 422,
+      "completion_tokens_details": {
+        "reasoning_tokens": 211
+      },
+      "prompt_tokens": 3458,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 3880
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "5daf58023d6d4f8b80bd761d6d0af1e3",
+    "event": "reserved",
+    "at": "2026-11-06T08:43:39.306695+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\03-apecode-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0323056",
+    "known_tariff_upper_cny": "0.0514120",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "5daf58023d6d4f8b80bd761d6d0af1e3",
+    "event": "settled",
+    "at": "2026-11-06T08:43:44.538412+00:00",
+    "tariff_upper_estimate_cny": "0.0032108",
+    "usage": {
+      "completion_tokens": 33,
+      "completion_tokens_details": {
+        "reasoning_tokens": 32
+      },
+      "prompt_tokens": 3898,
+      "prompt_tokens_details": {
+        "cached_tokens": 3456
+      },
+      "total_tokens": 3931
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "4e469b8c414c4d7cb92e8f4443a833c5",
+    "event": "reserved",
+    "at": "2026-11-06T08:43:50.632985+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\04-codetrail-dev_interval_end\\session-b",
+    "reserved_cny": "0.0251344",
+    "known_tariff_upper_cny": "0.0546228",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "4e469b8c414c4d7cb92e8f4443a833c5",
+    "event": "settled",
+    "at": "2026-11-06T08:43:58.166769+00:00",
+    "tariff_upper_estimate_cny": "0.001748",
+    "usage": {
+      "completion_tokens": 58,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 1982,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2040
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "1a15a7abafcf4dd0bf1af976cc602765",
+    "event": "reserved",
+    "at": "2026-11-06T08:43:59.011374+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\04-codetrail-dev_interval_end\\session-b",
+    "reserved_cny": "0.0252336",
+    "known_tariff_upper_cny": "0.0563708",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "1a15a7abafcf4dd0bf1af976cc602765",
+    "event": "settled",
+    "at": "2026-11-06T08:44:07.372168+00:00",
+    "tariff_upper_estimate_cny": "0.0017432",
+    "usage": {
+      "completion_tokens": 52,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 1997,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2049
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "a257dab512f34d77a2974cbd234532eb",
+    "event": "reserved",
+    "at": "2026-11-06T08:44:08.276040+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\04-codetrail-dev_interval_end\\session-b",
+    "reserved_cny": "0.0253328",
+    "known_tariff_upper_cny": "0.0581140",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "a257dab512f34d77a2974cbd234532eb",
+    "event": "settled",
+    "at": "2026-11-06T08:44:16.120545+00:00",
+    "tariff_upper_estimate_cny": "0.001842",
+    "usage": {
+      "completion_tokens": 83,
+      "completion_tokens_details": {
+        "reasoning_tokens": 31
+      },
+      "prompt_tokens": 2012,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2095
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "fa298562ed1549cdaa00509b37634311",
+    "event": "reserved",
+    "at": "2026-11-06T08:44:20.602183+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\04-codetrail-dev_interval_end\\session-b",
+    "reserved_cny": "0.027832",
+    "known_tariff_upper_cny": "0.0599560",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "fa298562ed1549cdaa00509b37634311",
+    "event": "settled",
+    "at": "2026-11-06T08:44:29.664502+00:00",
+    "tariff_upper_estimate_cny": "0.0026376",
+    "usage": {
+      "completion_tokens": 162,
+      "completion_tokens_details": {
+        "reasoning_tokens": 116
+      },
+      "prompt_tokens": 2730,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2892
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "0548ab59a05f4a3687d5fc10ff16b747",
+    "event": "reserved",
+    "at": "2026-11-06T08:44:30.715113+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\04-codetrail-dev_interval_end\\session-b",
+    "reserved_cny": "0.0306656",
+    "known_tariff_upper_cny": "0.0625936",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "0548ab59a05f4a3687d5fc10ff16b747",
+    "event": "settled",
+    "at": "2026-11-06T08:44:45.615508+00:00",
+    "tariff_upper_estimate_cny": "0.0039848",
+    "usage": {
+      "completion_tokens": 358,
+      "completion_tokens_details": {
+        "reasoning_tokens": 254
+      },
+      "prompt_tokens": 3728,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 4086
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "72a63301caa74abeb462f95432b634c0",
+    "event": "reserved",
+    "at": "2026-11-06T08:44:46.545365+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\04-codetrail-dev_interval_end\\session-b",
+    "reserved_cny": "0.0317704",
+    "known_tariff_upper_cny": "0.0665784",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "72a63301caa74abeb462f95432b634c0",
+    "event": "settled",
+    "at": "2026-11-06T08:44:54.569000+00:00",
+    "tariff_upper_estimate_cny": "0.0034492",
+    "usage": {
+      "completion_tokens": 69,
+      "completion_tokens_details": {
+        "reasoning_tokens": 29
+      },
+      "prompt_tokens": 4070,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 4139
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "dfd1286a3f5b437da20827713ba83458",
+    "event": "reserved",
+    "at": "2026-11-06T08:45:00.196847+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-2026-11-06\\runs\\04-codetrail-dev_interval_end\\session-b",
+    "reserved_cny": "0.0327352",
+    "known_tariff_upper_cny": "0.0700276",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "dfd1286a3f5b437da20827713ba83458",
+    "event": "settled",
+    "at": "2026-11-06T08:45:27.184621+00:00",
+    "tariff_upper_estimate_cny": "0.0059876",
+    "usage": {
+      "completion_tokens": 887,
+      "completion_tokens_details": {
+        "reasoning_tokens": 456
+      },
+      "prompt_tokens": 4380,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 5267
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "1a5d5f7982df4cc8bfc20cc4f0e794a4",
+    "event": "reserved",
+    "at": "2026-11-06T08:50:41.559858+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\01-apecode-dev_interval_end\\session-b",
+    "reserved_cny": "0.0259536",
+    "known_tariff_upper_cny": "0.0760152",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "1a5d5f7982df4cc8bfc20cc4f0e794a4",
+    "event": "settled",
+    "at": "2026-11-06T08:50:52.465567+00:00",
+    "tariff_upper_estimate_cny": "0.0019344",
+    "usage": {
+      "completion_tokens": 58,
+      "completion_tokens_details": {
+        "reasoning_tokens": 21
+      },
+      "prompt_tokens": 2215,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2273
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "b67b2146f0cf4c5aa6e5a5594b3ad666",
+    "event": "reserved",
+    "at": "2026-11-06T08:50:55.895605+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\01-apecode-dev_interval_end\\session-b",
+    "reserved_cny": "0.0277704",
+    "known_tariff_upper_cny": "0.0779496",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "b67b2146f0cf4c5aa6e5a5594b3ad666",
+    "event": "settled",
+    "at": "2026-11-06T08:51:06.244738+00:00",
+    "tariff_upper_estimate_cny": "0.0024808",
+    "usage": {
+      "completion_tokens": 124,
+      "completion_tokens_details": {
+        "reasoning_tokens": 57
+      },
+      "prompt_tokens": 2667,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2791
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "e2df66b205d84bd29a7cc123cf1e39b3",
+    "event": "reserved",
+    "at": "2026-11-06T08:51:06.285627+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\01-apecode-dev_interval_end\\session-b",
+    "reserved_cny": "0.0288888",
+    "known_tariff_upper_cny": "0.0804304",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "e2df66b205d84bd29a7cc123cf1e39b3",
+    "event": "settled",
+    "at": "2026-11-06T08:51:15.048026+00:00",
+    "tariff_upper_estimate_cny": "0.0027284",
+    "usage": {
+      "completion_tokens": 133,
+      "completion_tokens_details": {
+        "reasoning_tokens": 35
+      },
+      "prompt_tokens": 2945,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 3078
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "bbe770c6e6964e48ae05c0aef85b79c9",
+    "event": "reserved",
+    "at": "2026-11-06T08:51:15.089912+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\01-apecode-dev_interval_end\\session-b",
+    "reserved_cny": "0.0295344",
+    "known_tariff_upper_cny": "0.0831588",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "bbe770c6e6964e48ae05c0aef85b79c9",
+    "event": "settled",
+    "at": "2026-11-06T08:51:19.574457+00:00",
+    "tariff_upper_estimate_cny": "0.0025628",
+    "usage": {
+      "completion_tokens": 33,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 3088,
+      "prompt_tokens_details": {
+        "cached_tokens": 2944
+      },
+      "total_tokens": 3121
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "19882f275414438fb701c5c20d8183a5",
+    "event": "reserved",
+    "at": "2026-11-06T08:51:22.805934+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\01-apecode-dev_interval_end\\session-b",
+    "reserved_cny": "0.0301664",
+    "known_tariff_upper_cny": "0.0857216",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "19882f275414438fb701c5c20d8183a5",
+    "event": "settled",
+    "at": "2026-11-06T08:51:32.969343+00:00",
+    "tariff_upper_estimate_cny": "0.003378",
+    "usage": {
+      "completion_tokens": 279,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 3246,
+      "prompt_tokens_details": {
+        "cached_tokens": 3072
+      },
+      "total_tokens": 3525
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "22261315c92844c196687fa3b1221b52",
+    "event": "reserved",
+    "at": "2026-11-06T08:51:38.690918+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0251968",
+    "known_tariff_upper_cny": "0.0890996",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "22261315c92844c196687fa3b1221b52",
+    "event": "settled",
+    "at": "2026-11-06T08:51:46.245673+00:00",
+    "tariff_upper_estimate_cny": "0.001696",
+    "usage": {
+      "completion_tokens": 36,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 1994,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2030
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "8446a5f53ce04f9aa1f103fd9ee9115b",
+    "event": "reserved",
+    "at": "2026-11-06T08:51:51.111413+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0289336",
+    "known_tariff_upper_cny": "0.0907956",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "8446a5f53ce04f9aa1f103fd9ee9115b",
+    "event": "settled",
+    "at": "2026-11-06T08:51:56.801534+00:00",
+    "tariff_upper_estimate_cny": "0.0026756",
+    "usage": {
+      "completion_tokens": 55,
+      "completion_tokens_details": {
+        "reasoning_tokens": 7
+      },
+      "prompt_tokens": 3152,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 3207
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "bd8f6ba2a13d476ab0284bdd1e114679",
+    "event": "reserved",
+    "at": "2026-11-06T08:51:58.325246+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0309672",
+    "known_tariff_upper_cny": "0.0934712",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "bd8f6ba2a13d476ab0284bdd1e114679",
+    "event": "settled",
+    "at": "2026-11-06T08:52:06.855872+00:00",
+    "tariff_upper_estimate_cny": "0.003628",
+    "usage": {
+      "completion_tokens": 182,
+      "completion_tokens_details": {
+        "reasoning_tokens": 155
+      },
+      "prompt_tokens": 3898,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 4080
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "bd2e17bedd2d491aadba616846c88df3",
+    "event": "reserved",
+    "at": "2026-11-06T08:52:08.313803+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0325752",
+    "known_tariff_upper_cny": "0.0970992",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "bd2e17bedd2d491aadba616846c88df3",
+    "event": "settled",
+    "at": "2026-11-06T08:52:16.157753+00:00",
+    "tariff_upper_estimate_cny": "0.0041172",
+    "usage": {
+      "completion_tokens": 189,
+      "completion_tokens_details": {
+        "reasoning_tokens": 70
+      },
+      "prompt_tokens": 4485,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 4674
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "e7bf931b5e2d467cbb31d46feb4c84f3",
+    "event": "reserved",
+    "at": "2026-11-06T08:52:17.406154+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0336552",
+    "known_tariff_upper_cny": "0.1012164",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "e7bf931b5e2d467cbb31d46feb4c84f3",
+    "event": "settled",
+    "at": "2026-11-06T08:52:22.339340+00:00",
+    "tariff_upper_estimate_cny": "0.0038824",
+    "usage": {
+      "completion_tokens": 26,
+      "completion_tokens_details": {
+        "reasoning_tokens": 25
+      },
+      "prompt_tokens": 4762,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 4788
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "fd4bcd930a5641e0bcdf16d3b069b180",
+    "event": "reserved",
+    "at": "2026-11-06T08:52:23.180075+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0337544",
+    "known_tariff_upper_cny": "0.1050988",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "fd4bcd930a5641e0bcdf16d3b069b180",
+    "event": "settled",
+    "at": "2026-11-06T08:52:27.721985+00:00",
+    "tariff_upper_estimate_cny": "0.0038944",
+    "usage": {
+      "completion_tokens": 26,
+      "completion_tokens_details": {
+        "reasoning_tokens": 25
+      },
+      "prompt_tokens": 4777,
+      "prompt_tokens_details": {
+        "cached_tokens": 4736
+      },
+      "total_tokens": 4803
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "d0be9755dead48b48c6cbbb13621b0e4",
+    "event": "reserved",
+    "at": "2026-11-06T08:52:28.662093+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0338536",
+    "known_tariff_upper_cny": "0.1089932",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "d0be9755dead48b48c6cbbb13621b0e4",
+    "event": "settled",
+    "at": "2026-11-06T08:52:33.760088+00:00",
+    "tariff_upper_estimate_cny": "0.003954",
+    "usage": {
+      "completion_tokens": 43,
+      "completion_tokens_details": {
+        "reasoning_tokens": 17
+      },
+      "prompt_tokens": 4792,
+      "prompt_tokens_details": {
+        "cached_tokens": 4736
+      },
+      "total_tokens": 4835
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "cd46f214966b42fa8ffff7ff09f99ce0",
+    "event": "reserved",
+    "at": "2026-11-06T08:52:37.891608+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\02-codetrail-dev_sku_contract\\session-b",
+    "reserved_cny": "0.034728",
+    "known_tariff_upper_cny": "0.1129472",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "cd46f214966b42fa8ffff7ff09f99ce0",
+    "event": "settled",
+    "at": "2026-11-06T08:52:51.718198+00:00",
+    "tariff_upper_estimate_cny": "0.0049404",
+    "usage": {
+      "completion_tokens": 315,
+      "completion_tokens_details": {
+        "reasoning_tokens": 14
+      },
+      "prompt_tokens": 5073,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 5388
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "e00e9916be884f7da24f99041b631975",
+    "event": "reserved",
+    "at": "2026-11-06T08:52:57.250698+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\03-apecode-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0259728",
+    "known_tariff_upper_cny": "0.1178876",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "e00e9916be884f7da24f99041b631975",
+    "event": "settled",
+    "at": "2026-11-06T08:53:04.313732+00:00",
+    "tariff_upper_estimate_cny": "0.0021068",
+    "usage": {
+      "completion_tokens": 119,
+      "completion_tokens_details": {
+        "reasoning_tokens": 14
+      },
+      "prompt_tokens": 2217,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2336
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "88091638faf740639c55a6fcc93c5434",
+    "event": "reserved",
+    "at": "2026-11-06T08:53:08.254127+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\03-apecode-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0291488",
+    "known_tariff_upper_cny": "0.1199944",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "88091638faf740639c55a6fcc93c5434",
+    "event": "settled",
+    "at": "2026-11-06T08:53:22.349393+00:00",
+    "tariff_upper_estimate_cny": "0.0027888",
+    "usage": {
+      "completion_tokens": 94,
+      "completion_tokens_details": {
+        "reasoning_tokens": 21
+      },
+      "prompt_tokens": 3157,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 3251
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "5c91f4d6a40f4847bc7f12e97f8ec996",
+    "event": "reserved",
+    "at": "2026-11-06T08:53:22.454326+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\03-apecode-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0307736",
+    "known_tariff_upper_cny": "0.1227832",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "5c91f4d6a40f4847bc7f12e97f8ec996",
+    "event": "settled",
+    "at": "2026-11-06T08:53:38.063012+00:00",
+    "tariff_upper_estimate_cny": "0.003832",
+    "usage": {
+      "completion_tokens": 364,
+      "completion_tokens_details": {
+        "reasoning_tokens": 240
+      },
+      "prompt_tokens": 3516,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 3880
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "5055836307dd445d9370704be7d05450",
+    "event": "reserved",
+    "at": "2026-11-06T08:53:38.099064+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\03-apecode-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0321104",
+    "known_tariff_upper_cny": "0.1266152",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "5055836307dd445d9370704be7d05450",
+    "event": "settled",
+    "at": "2026-11-06T08:53:42.471722+00:00",
+    "tariff_upper_estimate_cny": "0.0034448",
+    "usage": {
+      "completion_tokens": 112,
+      "completion_tokens_details": {
+        "reasoning_tokens": 15
+      },
+      "prompt_tokens": 3914,
+      "prompt_tokens_details": {
+        "cached_tokens": 3456
+      },
+      "total_tokens": 4026
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "c9e68e81eb31427a80ef9cf0951caebd",
+    "event": "reserved",
+    "at": "2026-11-06T08:53:42.518496+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\03-apecode-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0328688",
+    "known_tariff_upper_cny": "0.1300600",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "c9e68e81eb31427a80ef9cf0951caebd",
+    "event": "settled",
+    "at": "2026-11-06T08:53:47.668591+00:00",
+    "tariff_upper_estimate_cny": "0.0035292",
+    "usage": {
+      "completion_tokens": 105,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 4044,
+      "prompt_tokens_details": {
+        "cached_tokens": 3904
+      },
+      "total_tokens": 4149
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "3f9b5d3c3748427eba4653c5d00e2006",
+    "event": "reserved",
+    "at": "2026-11-06T08:53:51.174521+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\03-apecode-dev_sku_contract\\session-b",
+    "reserved_cny": "0.0339184",
+    "known_tariff_upper_cny": "0.1335892",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "3f9b5d3c3748427eba4653c5d00e2006",
+    "event": "settled",
+    "at": "2026-11-06T08:54:01.076168+00:00",
+    "tariff_upper_estimate_cny": "0.0044868",
+    "usage": {
+      "completion_tokens": 377,
+      "completion_tokens_details": {
+        "reasoning_tokens": 45
+      },
+      "prompt_tokens": 4289,
+      "prompt_tokens_details": {
+        "cached_tokens": 4032
+      },
+      "total_tokens": 4666
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "2c9299b6952b4fd3bcf23b3a36be7a48",
+    "event": "reserved",
+    "at": "2026-11-06T08:54:06.794561+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\04-codetrail-dev_interval_end\\session-b",
+    "reserved_cny": "0.0251392",
+    "known_tariff_upper_cny": "0.1380760",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "2c9299b6952b4fd3bcf23b3a36be7a48",
+    "event": "settled",
+    "at": "2026-11-06T08:54:21.253299+00:00",
+    "tariff_upper_estimate_cny": "0.0017736",
+    "usage": {
+      "completion_tokens": 66,
+      "completion_tokens_details": {
+        "reasoning_tokens": 13
+      },
+      "prompt_tokens": 1986,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2052
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "66db17f3a1e943b8b11de7c5ab4b485a",
+    "event": "reserved",
+    "at": "2026-11-06T08:54:27.059370+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\04-codetrail-dev_interval_end\\session-b",
+    "reserved_cny": "0.0275744",
+    "known_tariff_upper_cny": "0.1398496",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "66db17f3a1e943b8b11de7c5ab4b485a",
+    "event": "settled",
+    "at": "2026-11-06T08:54:36.913563+00:00",
+    "tariff_upper_estimate_cny": "0.0026684",
+    "usage": {
+      "completion_tokens": 187,
+      "completion_tokens_details": {
+        "reasoning_tokens": 94
+      },
+      "prompt_tokens": 2681,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 2868
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "99b8bc73ce4b4ad5af796f69a18ee8d1",
+    "event": "reserved",
+    "at": "2026-11-06T08:54:38.130917+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\04-codetrail-dev_interval_end\\session-b",
+    "reserved_cny": "0.0304432",
+    "known_tariff_upper_cny": "0.1425180",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "99b8bc73ce4b4ad5af796f69a18ee8d1",
+    "event": "settled",
+    "at": "2026-11-06T08:55:07.916808+00:00",
+    "tariff_upper_estimate_cny": "0.0049192",
+    "usage": {
+      "completion_tokens": 698,
+      "completion_tokens_details": {
+        "reasoning_tokens": 404
+      },
+      "prompt_tokens": 3706,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 4404
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "8ce75ce7990b4cd28d1eec24c4b5c0c2",
+    "event": "reserved",
+    "at": "2026-11-06T08:55:09.247237+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\04-codetrail-dev_interval_end\\session-b",
+    "reserved_cny": "0.0332816",
+    "known_tariff_upper_cny": "0.1474372",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "8ce75ce7990b4cd28d1eec24c4b5c0c2",
+    "event": "settled",
+    "at": "2026-11-06T08:55:17.125226+00:00",
+    "tariff_upper_estimate_cny": "0.0040604",
+    "usage": {
+      "completion_tokens": 167,
+      "completion_tokens_details": {
+        "reasoning_tokens": 76
+      },
+      "prompt_tokens": 4491,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 4658
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  },
+  {
+    "id": "2428ccd327e74e1fbfb9277c0ae7f65a",
+    "event": "reserved",
+    "at": "2026-11-06T08:55:25.218553+00:00",
+    "owner": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-process-dev-pilot-v2-2026-11-06\\runs\\04-codetrail-dev_interval_end\\session-b",
+    "reserved_cny": "0.0344392",
+    "known_tariff_upper_cny": "0.1514976",
+    "unknown_reserved_cny": "0.0074832"
+  },
+  {
+    "id": "2428ccd327e74e1fbfb9277c0ae7f65a",
+    "event": "settled",
+    "at": "2026-11-06T08:55:41.800836+00:00",
+    "tariff_upper_estimate_cny": "0.0049964",
+    "usage": {
+      "completion_tokens": 385,
+      "completion_tokens_details": {
+        "reasoning_tokens": 77
+      },
+      "prompt_tokens": 4898,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 5283
+    },
+    "model": "glm-5.3-flash",
+    "system_fingerprint": null
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "checks": {
+    "glm-process-dev-pilot-2026-11-06": {
+      "frozen_and_original_files_unchanged": true,
+      "apecode_archive_hashes_valid": true,
+      "files_checked": 125
+    },
+    "glm-process-dev-pilot-v2-2026-11-06": {
+      "frozen_and_original_files_unchanged": true,
+      "apecode_archive_hashes_valid": true,
+      "files_checked": 127
+    },
+    "prior_offline_evidence_unchanged": true
+  },
+  "credential_pattern_scan": {
+    "files_and_archive_entries": 515,
+    "matches": 0,
+    "scope": "New public delivery, live source files, local glm top-level artifacts and recursively nested evidence archives; pattern scan not a universal secret detector"
+  },
+  "parent_process_api_key_absent": true,
+  "functional_passes": 8,
+  "workflow_passes": 6,
+  "runs": 8,
+  "unique_tasks": 2
+}

@@ -1,0 +1,284 @@
+{
+  "cohorts": {
+    "glm-process-dev-pilot-2026-11-06": {
+      "tariff_upper_estimate_cny": "0.0747792",
+      "agents": {
+        "apecode": {
+          "runs": 2,
+          "tool_steps": 14,
+          "model_requests": 8,
+          "input_tokens": 23833,
+          "output_tokens": 1054,
+          "elapsed_ms": [
+            41233,
+            35773
+          ],
+          "policy_denials": 0,
+          "protocol_rejections": 2,
+          "process_evidence": {
+            "recall_at_5": {
+              "numerator": 3,
+              "denominator": 3
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 11,
+              "denominator": 11
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 11
+            },
+            "repeated_reads": {
+              "numerator": 0,
+              "denominator": 7
+            }
+          }
+        },
+        "codetrail": {
+          "runs": 2,
+          "tool_steps": 16,
+          "model_requests": 14,
+          "input_tokens": 52876,
+          "output_tokens": 3736,
+          "elapsed_ms": [
+            115408,
+            100900
+          ],
+          "policy_denials": 1,
+          "protocol_rejections": 2,
+          "process_evidence": {
+            "recall_at_5": {
+              "numerator": 3,
+              "denominator": 3
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 11,
+              "denominator": 11
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 11
+            },
+            "repeated_reads": {
+              "numerator": 0,
+              "denominator": 6
+            }
+          }
+        }
+      }
+    },
+    "glm-process-dev-pilot-v2-2026-11-06": {
+      "tariff_upper_estimate_cny": "0.0804788",
+      "agents": {
+        "apecode": {
+          "runs": 2,
+          "tool_steps": 17,
+          "model_requests": 11,
+          "input_tokens": 35298,
+          "output_tokens": 1798,
+          "elapsed_ms": [
+            55233,
+            67846
+          ],
+          "policy_denials": 2,
+          "protocol_rejections": 0,
+          "process_evidence": {
+            "recall_at_5": {
+              "numerator": 3,
+              "denominator": 3
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 11,
+              "denominator": 11
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 11
+            },
+            "repeated_reads": {
+              "numerator": 0,
+              "denominator": 6
+            }
+          }
+        },
+        "codetrail": {
+          "runs": 2,
+          "tool_steps": 15,
+          "model_requests": 13,
+          "input_tokens": 50695,
+          "output_tokens": 2375,
+          "elapsed_ms": [
+            77201,
+            99640
+          ],
+          "policy_denials": 1,
+          "protocol_rejections": 2,
+          "process_evidence": {
+            "recall_at_5": {
+              "numerator": 3,
+              "denominator": 3
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 11,
+              "denominator": 11
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 11
+            },
+            "repeated_reads": {
+              "numerator": 0,
+              "denominator": 5
+            }
+          }
+        }
+      }
+    }
+  },
+  "controlled_checks": {
+    "same_tasks_sha256": true,
+    "same_plan_sha256": true,
+    "same_model_configuration": true,
+    "same_external_agent_and_worker": true
+  },
+  "run_diagnostics": [
+    {
+      "cohort": "glm-process-dev-pilot-2026-11-06",
+      "run_key": "01-apecode-dev_interval_end",
+      "failure_category": "harness_rejected_measured_zero_reasoning_turn",
+      "missing_reasoning_responses": [
+        {
+          "response_number": 4,
+          "reasoning_tokens": 0,
+          "classification": "measured_zero",
+          "native_tool_calls": 1
+        }
+      ],
+      "replayed_reasoning_tool_turns": 3,
+      "reasoning_replay_errors": [],
+      "scope": "Exact replay of returned reasoning on native tool turns observed in subsequent requests; no inference about unreturned text"
+    },
+    {
+      "cohort": "glm-process-dev-pilot-2026-11-06",
+      "run_key": "02-codetrail-dev_sku_contract",
+      "failure_category": "success",
+      "missing_reasoning_responses": [],
+      "replayed_reasoning_tool_turns": 6,
+      "reasoning_replay_errors": [],
+      "scope": "Exact replay of returned reasoning on native tool turns observed in subsequent requests; no inference about unreturned text"
+    },
+    {
+      "cohort": "glm-process-dev-pilot-2026-11-06",
+      "run_key": "03-apecode-dev_sku_contract",
+      "failure_category": "provider_reasoning_usage_without_text_rejected",
+      "missing_reasoning_responses": [
+        {
+          "response_number": 4,
+          "reasoning_tokens": 32,
+          "classification": "positive_usage_missing_text",
+          "native_tool_calls": 1
+        }
+      ],
+      "replayed_reasoning_tool_turns": 3,
+      "reasoning_replay_errors": [],
+      "scope": "Exact replay of returned reasoning on native tool turns observed in subsequent requests; no inference about unreturned text"
+    },
+    {
+      "cohort": "glm-process-dev-pilot-2026-11-06",
+      "run_key": "04-codetrail-dev_interval_end",
+      "failure_category": "success",
+      "missing_reasoning_responses": [
+        {
+          "response_number": 1,
+          "reasoning_tokens": 0,
+          "classification": "measured_zero",
+          "native_tool_calls": 2
+        },
+        {
+          "response_number": 2,
+          "reasoning_tokens": 0,
+          "classification": "measured_zero",
+          "native_tool_calls": 2
+        }
+      ],
+      "replayed_reasoning_tool_turns": 4,
+      "reasoning_replay_errors": [],
+      "scope": "Exact replay of returned reasoning on native tool turns observed in subsequent requests; no inference about unreturned text"
+    },
+    {
+      "cohort": "glm-process-dev-pilot-v2-2026-11-06",
+      "run_key": "01-apecode-dev_interval_end",
+      "failure_category": "success",
+      "missing_reasoning_responses": [
+        {
+          "response_number": 4,
+          "reasoning_tokens": 0,
+          "classification": "measured_zero",
+          "native_tool_calls": 1
+        },
+        {
+          "response_number": 5,
+          "reasoning_tokens": 0,
+          "classification": "measured_zero",
+          "native_tool_calls": 0
+        }
+      ],
+      "replayed_reasoning_tool_turns": 3,
+      "reasoning_replay_errors": [],
+      "scope": "Exact replay of returned reasoning on native tool turns observed in subsequent requests; no inference about unreturned text"
+    },
+    {
+      "cohort": "glm-process-dev-pilot-v2-2026-11-06",
+      "run_key": "02-codetrail-dev_sku_contract",
+      "failure_category": "success",
+      "missing_reasoning_responses": [
+        {
+          "response_number": 1,
+          "reasoning_tokens": 0,
+          "classification": "measured_zero",
+          "native_tool_calls": 2
+        },
+        {
+          "response_number": 5,
+          "reasoning_tokens": 25,
+          "classification": "positive_usage_missing_text",
+          "native_tool_calls": 1
+        },
+        {
+          "response_number": 6,
+          "reasoning_tokens": 25,
+          "classification": "positive_usage_missing_text",
+          "native_tool_calls": 1
+        }
+      ],
+      "replayed_reasoning_tool_turns": 4,
+      "reasoning_replay_errors": [],
+      "scope": "Exact replay of returned reasoning on native tool turns observed in subsequent requests; no inference about unreturned text"
+    },
+    {
+      "cohort": "glm-process-dev-pilot-v2-2026-11-06",
+      "run_key": "03-apecode-dev_sku_contract",
+      "failure_category": "success",
+      "missing_reasoning_responses": [
+        {
+          "response_number": 5,
+          "reasoning_tokens": 0,
+          "classification": "measured_zero",
+          "native_tool_calls": 2
+        }
+      ],
+      "replayed_reasoning_tool_turns": 4,
+      "reasoning_replay_errors": [],
+      "scope": "Exact replay of returned reasoning on native tool turns observed in subsequent requests; no inference about unreturned text"
+    },
+    {
+      "cohort": "glm-process-dev-pilot-v2-2026-11-06",
+      "run_key": "04-codetrail-dev_interval_end",
+      "failure_category": "success",
+      "missing_reasoning_responses": [],
+      "replayed_reasoning_tool_turns": 4,
+      "reasoning_replay_errors": [],
+      "scope": "Exact replay of returned reasoning on native tool turns observed in subsequent requests; no inference about unreturned text"
+    }
+  ]
+}

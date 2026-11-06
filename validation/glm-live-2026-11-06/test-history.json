@@ -1,0 +1,84 @@
+{
+  "records": [
+    {
+      "path": "artifacts/glm-full-test-interruption-2026-11-06.json",
+      "sha256": "184254879a20d802dfe16a7ebc47beb6b62ed58cfde6c576f375a33d4f3efa48"
+    },
+    {
+      "path": "artifacts/glm-live-controller-tests-2026-11-06.log",
+      "sha256": "69c6792d795201dc192dad1c823859a6bf5ea0e86d369912c0d3dbf24c41e674"
+    },
+    {
+      "path": "artifacts/glm-live-controller-tests-2026-11-06.xml",
+      "sha256": "35213c005ea92b938d47e57c8c528714c4a5cf13a9fcab406f5dfff4ab1e988a",
+      "tests": 65,
+      "failures": 1,
+      "errors": 0
+    },
+    {
+      "path": "artifacts/glm-live-controller-tests-v2-2026-11-06.log",
+      "sha256": "3175680db314587d8165e126d79dcbbf4a8d716d3efb91814c5b234c2fd30f3a"
+    },
+    {
+      "path": "artifacts/glm-live-controller-tests-v2-2026-11-06.xml",
+      "sha256": "85b2b512c74a91fa88910873ee90330992673a26741ca5b3352d69c0ffa2a0ed",
+      "tests": 65,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "path": "artifacts/glm-live-full-2026-11-06.log",
+      "sha256": "7b2699cdf0ee192d05b29fa587a0482505bf880f92e1e04f1982b59ba5dc45dd"
+    },
+    {
+      "path": "artifacts/glm-live-full-v2-2026-11-06.log",
+      "sha256": "b240b4e7a0e2c147e890c4a3d838660d572ee8e7195e0509a8f374ca1bc552ca"
+    },
+    {
+      "path": "artifacts/glm-live-full-v2-2026-11-06.xml",
+      "sha256": "35eeed4af2b7affbbf78079ce8e2858f5246aab1c56be7871a5763a5c8b4ac6d",
+      "tests": 454,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "path": "artifacts/glm-live-targeted-2026-11-06.xml",
+      "sha256": "c5bb1916095545c7523a36b687ef03d96d34c6d4f8938541f1c72ed9feedeb1a",
+      "tests": 27,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "path": "artifacts/glm-zero-fix-targeted-2026-11-06.log",
+      "sha256": "c02d8dae2496986089daa7f1bd6b111705b508f1e6a04e7e9e8fd7b2cdd9f66e"
+    },
+    {
+      "path": "artifacts/glm-zero-fix-targeted-2026-11-06.xml",
+      "sha256": "b9f99383db2b13faaad39c0f9625842489c885d32f9549a67e396922eb308085",
+      "tests": 79,
+      "failures": 1,
+      "errors": 0
+    },
+    {
+      "path": "artifacts/glm-zero-fix-targeted-v2-2026-11-06.log",
+      "sha256": "ef695855292437d1cb5d1af0931f5dac5b36fa80e4df28456080861b6754374a"
+    },
+    {
+      "path": "artifacts/glm-zero-fix-targeted-v2-2026-11-06.xml",
+      "sha256": "003c9c54382b91edfb6bb64f8f9ddf43275e44f793fbb067b5dd55b1bb88bf60",
+      "tests": 79,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "path": "artifacts/glm-zero-reasoning-contract-2026-11-06.xml",
+      "sha256": "647c423f6efff687f44cb2b2f2c9d18e8275f0917c9b7bbcbd68b5ccd7063e33",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0
+    }
+  ],
+  "local_archive": "artifacts/glm-test-history-2026-11-06.zip",
+  "sha256": "2f0d9115f4fcbabf1b89f025d05ef7a96ff83b81d9e3483a5bab458740509e99",
+  "note": "Includes initial failures and interrupted full-run log. Do not sum overlapping tests."
+}

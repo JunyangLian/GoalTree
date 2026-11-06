@@ -1,0 +1,9 @@
+cohort,run_key,agent,task_id,started,functional_passed,workflow_passed,external_reverification_passed,tool_steps,model_requests,input_tokens,output_tokens,elapsed_ms,zero_reasoning_responses,policy_denials,failure_category
+glm-process-dev-pilot-2026-11-06,01-apecode-dev_interval_end,apecode,dev_interval_end,True,True,False,True,6,4,11156,470,41233,1,0,harness_rejected_measured_zero_reasoning_turn
+glm-process-dev-pilot-2026-11-06,02-codetrail-dev_sku_contract,codetrail,dev_sku_contract,True,True,True,True,10,7,31977,2067,115408,0,1,success
+glm-process-dev-pilot-2026-11-06,03-apecode-dev_sku_contract,apecode,dev_sku_contract,True,True,False,True,8,4,12677,584,35773,0,0,model_or_controller_error
+glm-process-dev-pilot-2026-11-06,04-codetrail-dev_interval_end,codetrail,dev_interval_end,True,True,True,True,6,7,20899,1669,100900,2,0,success
+glm-process-dev-pilot-v2-2026-11-06,01-apecode-dev_interval_end,apecode,dev_interval_end,True,True,True,True,6,5,14161,627,55233,2,0,success
+glm-process-dev-pilot-v2-2026-11-06,02-codetrail-dev_sku_contract,codetrail,dev_sku_contract,True,True,True,True,8,8,32933,872,77201,1,0,success
+glm-process-dev-pilot-v2-2026-11-06,03-apecode-dev_sku_contract,apecode,dev_sku_contract,True,True,True,True,11,6,21137,1171,67846,1,2,success
+glm-process-dev-pilot-v2-2026-11-06,04-codetrail-dev_interval_end,codetrail,dev_interval_end,True,True,True,True,7,5,17762,1503,99640,0,1,success

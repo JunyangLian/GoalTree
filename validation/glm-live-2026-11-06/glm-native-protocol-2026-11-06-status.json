@@ -1,0 +1,11 @@
+{
+  "at": "2026-11-06T08:36:51.881014+00:00",
+  "ok": true,
+  "error": null,
+  "real_model_requests": 2,
+  "model": "glm-5.3-flash",
+  "route": "direct",
+  "thinking_replayed": true,
+  "tool_result_roundtrip": true,
+  "formal_runs": 0
+}

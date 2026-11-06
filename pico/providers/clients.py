@@ -505,6 +505,18 @@ class OpenAICompatibleModelClient:
                 reasoning_tokens=(data.get('usage',{}).get('completion_tokens_details') or {}).get('reasoning_tokens'),
                 provider_usage=data.get('usage'))
         if self.native_conversation is not None:
+            if self.bigmodel_glm:
+                from .glm_protocol import measured_zero_reasoning
+                message = (data.get('choices') or [{}])[0].get('message') or {}
+                zero = measured_zero_reasoning(message, data.get('usage') or {})
+                self.last_completion_metadata['glm_measured_zero_reasoning_turn'] = zero
+                if zero:
+                    required = self.native_conversation.require_reasoning
+                    self.native_conversation.require_reasoning = False
+                    try:
+                        return self.native_conversation.accept(data, self.last_completion_metadata)
+                    finally:
+                        self.native_conversation.require_reasoning = required
             return self.native_conversation.accept(data, self.last_completion_metadata)
         return _normalize_provider_text(self, _extract_openai_text(data))
 

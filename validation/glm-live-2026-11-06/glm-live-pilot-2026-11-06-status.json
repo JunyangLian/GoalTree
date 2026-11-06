@@ -1,0 +1,26 @@
+{
+  "at": "2026-11-06T08:31:41.558864+00:00",
+  "route": "direct",
+  "http_status": 200,
+  "model": "glm-5.3-flash",
+  "usage": {
+    "completion_tokens": 217,
+    "completion_tokens_details": {
+      "reasoning_tokens": 214
+    },
+    "prompt_tokens": 20,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 237
+  },
+  "thinking_present": true,
+  "finish_reason": "stop",
+  "error": null,
+  "transport_error": null,
+  "elapsed_ms": 8390,
+  "model_matches": true,
+  "model_requests": 1,
+  "formal_runs": 0,
+  "scope": "real standard API availability only; no repair task started"
+}

@@ -11,6 +11,7 @@ from .process_observer import ProcessObserver
 from .repair_suite import append_json, write_json, utcnow
 from ..tool_executor import ToolExecutionResult
 from ..windows_sandbox import VERIFY
+from ..providers.glm_protocol import measured_zero_reasoning
 
 
 def apecode_result_status(name, content):
@@ -56,7 +57,8 @@ class SessionAudit:
             choice = body['choices'][0]
             message = choice['message']
             calls = message.get('tool_calls') or []
-            if choice.get('finish_reason') == 'length' or not isinstance(message.get('reasoning_content'), str):
+            zero = body.get('model') == 'glm-5.3-flash' and measured_zero_reasoning(message, usage)
+            if choice.get('finish_reason') == 'length' or (not isinstance(message.get('reasoning_content'), str) and not zero):
                 append_json(self.directory/'protocol.jsonl', {'event': 'response_not_executable',
                     'reason': 'truncated' if choice.get('finish_reason') == 'length' else 'missing_reasoning'})
                 calls = []
