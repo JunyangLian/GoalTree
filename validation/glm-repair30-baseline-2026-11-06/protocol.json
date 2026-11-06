@@ -1,0 +1,72 @@
+{
+  "at": "2026-11-06T10:05:23.342882+00:00",
+  "mode": "CTRepair30-v1-known-regression-real-glm",
+  "model": {
+    "provider": "bigmodel_standard_api",
+    "model": "glm-5.3-flash",
+    "base_url": "https://open.bigmodel.cn/api/paas/v4",
+    "api_format": "chat_completions",
+    "temperature": 1,
+    "top_p": 0.95,
+    "max_tokens": 4096,
+    "timeout_seconds": 180,
+    "transport_attempts": 1,
+    "max_model_requests": 30,
+    "stream": false,
+    "thinking": {
+      "type": "enabled",
+      "clear_thinking": false
+    },
+    "reasoning_effort": "max",
+    "verification_status": "official documentation + offline contract tests; not live verified",
+    "credential_env": "BIGMODEL_API_KEY",
+    "coding_plan_allowed": false
+  },
+  "score_version": "verified-repair-score-v1",
+  "score_formula": "100 * mean_category(mean_task(verified_success))",
+  "categories": [
+    "single_file",
+    "cross_file",
+    "unknown_location",
+    "regression_compatibility"
+  ],
+  "repetitions": 1,
+  "planned_runs": 60,
+  "concurrency": 1,
+  "max_tools": 20,
+  "max_model_requests": 30,
+  "worker_deadline_seconds": 645,
+  "network_route": "direct",
+  "backend": "appcontainer",
+  "budget_window": "D:\\1_yanjiusheng\\实习项目\\agent\\CodeTrail\\artifacts\\glm-repair30-v2-2026-11-06\\budget",
+  "max_spend_cny": "5",
+  "max_total_tokens": 2000000,
+  "core_task_ids": [
+    "money_minor_units",
+    "inventory_reservation",
+    "holdout_dotenv_override",
+    "pagination_boundaries",
+    "ttl_expiry",
+    "boltons_splitlines",
+    "retry_schedule",
+    "humanize_fractional",
+    "boltons_xfrange",
+    "boltons_isoparse",
+    "humanize_list",
+    "humanize_metric"
+  ],
+  "nested_plan": "First 12 tasks, 3 per category, are a separately reported frozen core. All 30 remain the full plan; report both, regardless of score.",
+  "task_source_sha256": "dc7399a51e4f62e6ad1a1f669779487326be5f48f5ea7cdd898d1664f61a182c",
+  "original_tasks": "benchmarks\\final_agent_v1\\tasks.json",
+  "safety_score": "unassessed; no new adversarial suite",
+  "context_score": "unassessed; no validated equivalent-evidence gold for this batch",
+  "stability_score": "unassessed; one repetition only",
+  "policy": "No changed gold, no replaced failure, no host shell fallback, no model substitution",
+  "stop_policy": "Stop on money/token guard, auth/balance/rate failure or unresolved execution cleanup. Unstarted slots stay unknown.",
+  "test_runtime": {
+    "python": "E:\\Python\\python.exe",
+    "python_sha256": "8eaa62b6ca393ac1b8651b39f51de8e8bf8d22aca2627222d078e1c98ed875ad",
+    "version": "Python 3.10.1",
+    "boundary": "Trusted fixed-command launcher, actual tests inside original AppContainer backend; no ACL changes"
+  }
+}

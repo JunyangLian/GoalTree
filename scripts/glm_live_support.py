@@ -48,16 +48,39 @@ class Budget:
         charged = sum((Decimal(e['tariff_upper_estimate_cny']) for e in events if e['event'] == 'settled'), Decimal(0))
         return charged, pending, events
 
+    def token_state(self):
+        """Count cumulative provider usage; failed unknown requests retain reservations."""
+        _, _, events = self.state()
+        settlements = {e['id']: e for e in events if e['event'] == 'settled'}
+        known, pending = 0, 0
+        for event in events:
+            if event['event'] != 'reserved':
+                continue
+            if event['id'] in settlements:
+                usage = settlements[event['id']]['usage']
+                known += usage['prompt_tokens'] + usage['completion_tokens']
+            else:
+                if type(event.get('reserved_tokens')) is not int:
+                    raise ValueError('Token budget cannot infer a missing historical reservation')
+                pending += event['reserved_tokens']
+        return known, pending
+
     def before(self, payload, owner):
         charged, pending, _ = self.state()
         upper = reserve_cost(payload)
+        reserved_tokens = len(json.dumps(payload, ensure_ascii=False).encode('utf-8'))+8192+payload['max_tokens']
         identifier = uuid.uuid4().hex
         allowed = charged+pending+upper <= Decimal(self.config['max_spend_cny'])
+        token_limit = self.config.get('max_total_tokens')
+        if token_limit is not None:
+            used_tokens, pending_tokens = self.token_state()
+            allowed = allowed and used_tokens+pending_tokens+reserved_tokens <= token_limit
         append_json(self.output/'ledger.jsonl', {'id': identifier, 'event': 'reserved' if allowed else 'denied',
             'at': utcnow(), 'owner': owner, 'reserved_cny': str(upper),
+            'reserved_tokens': reserved_tokens,
             'known_tariff_upper_cny': str(charged), 'unknown_reserved_cny': str(pending)})
         if not allowed:
-            raise BudgetExceeded('1 CNY budget guard stopped before transmission; no replacement run')
+            raise BudgetExceeded('Frozen money/token budget stopped before transmission; no replacement run')
         return identifier
 
     def after(self, identifier, body):

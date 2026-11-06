@@ -1,0 +1,10 @@
+{
+  "at": "2026-11-06T11:17:15.798139+00:00",
+  "primary_score_unchanged": true,
+  "raw_runs_unchanged": true,
+  "reason": "Include interrupted run partial response usage; distinguish terminated wall clock from normal Agent+first-verifier time",
+  "codetrail_known_tokens": 546959,
+  "apecode_known_tokens": 465487,
+  "terminated_dispatch_wall_ms": 645642,
+  "raw_archive_sha256": "1e531f1dd0fe1b855ad4c7c14c4303278f2aa601560f0303e4cea2f96199c0cf"
+}

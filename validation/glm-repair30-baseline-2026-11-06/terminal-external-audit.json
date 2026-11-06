@@ -1,0 +1,15 @@
+{
+  "run_key": "024-codetrail-humanize_metric",
+  "source_unchanged": true,
+  "scope_valid": true,
+  "independent_test": {
+    "accepted": false,
+    "tests_run": 8,
+    "exit_code": 1,
+    "output": "test_01 (test_acceptance.RepairTests) ... FAIL\r\ntest_02 (test_acceptance.RepairTests) ... FAIL\r\ntest_03 (test_acceptance.RepairTests) ... FAIL\r\ntest_04 (test_acceptance.RepairTests) ... ok\r\ntest_05 (test_acceptance.RepairTests) ... FAIL\r\ntest_06 (test_acceptance.RepairTests) ... ok\r\ntest_07 (test_acceptance.RepairTests) ... ok\r\ntest_08 (test_acceptance.RepairTests) ... ok\r\n\r\n======================================================================\r\nFAIL: test_01 (test_acceptance.RepairTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.ffc361e53f6f434aa4b9e20a61f50a2c\\AC\\workspace\\test_acceptance.py\", line 6, in test_01\r\n    self.assertEqual(fmt(999.9,'V'),'1.00 kV')\r\nAssertionError: '1000 V' != '1.00 kV'\r\n- 1000 V\r\n+ 1.00 kV\r\n\r\n\r\n======================================================================\r\nFAIL: test_02 (test_acceptance.RepairTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.ffc361e53f6f434aa4b9e20a61f50a2c\\AC\\workspace\\test_acceptance.py\", line 8, in test_02\r\n    self.assertEqual(fmt(999999,'V'),'1.00 MV')\r\nAssertionError: '1000 kV' != '1.00 MV'\r\n- 1000 kV\r\n+ 1.00 MV\r\n\r\n\r\n======================================================================\r\nFAIL: test_03 (test_acceptance.RepairTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.ffc361e53f6f434aa4b9e20a61f50a2c\\AC\\workspace\\test_acceptance.py\", line 10, in test_03\r\n    self.assertEqual(fmt(.0009999,'V'),'1.00 mV')\r\nAssertionError: '1000 μV' != '1.00 mV'\r\n- 1000 μV\r\n+ 1.00 mV\r\n\r\n\r\n======================================================================\r\nFAIL: test_05 (test_acceptance.RepairTests)\r\n----------------------------------------------------------------------\r\nTraceback (most recent call last):\r\n  File \"C:\\Users\\羊叽叽\\AppData\\Local\\Packages\\codetrail.run.ffc361e53f6f434aa4b9e20a61f50a2c\\AC\\workspace\\test_acceptance.py\", line 14, in test_05\r\n    self.assertEqual(fmt(-999.9,'V'),'-1.00 kV')\r\nAssertionError: '-1000 V' != '-1.00 kV'\r\n- -1000 V\r\n+ -1.00 kV\r\n\r\n\r\n----------------------------------------------------------------------\r\nRan 8 tests in 0.002s\r\n\r\nFAILED (failures=4)\r\n",
+    "workspace_unchanged": true,
+    "backend": "appcontainer",
+    "host_fallback": false
+  },
+  "note": "Post-terminal external audit only, no model rerun or changed benchmark score"
+}

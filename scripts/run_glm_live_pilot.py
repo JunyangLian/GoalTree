@@ -112,7 +112,7 @@ def check(output):
     if digest(external['python']) != external['python_sha256']: raise ValueError('Worker Python changed')
 
 
-def worker(output, key):
+def worker(output, key, executor_factory=IsolatedExecutor):
     check(output)
     slot = next(p for p in load_json(output/'plan.json') if p['run_key'] == key)
     task = next(t for t in load_json(output/'tasks.json') if t['id'] == slot['task_id'])
@@ -122,7 +122,7 @@ def worker(output, key):
     workspace = Path(os.environ['LOCALAPPDATA'])/'CodeTrail/glm-live'/output.name/key/'workspace'
     write_json(workspace/'.pico/policy.json', {'read_only_paths': [n for n in task['files'] if n not in task['editable_files']]})
     protocol, external = load_json(output/'protocol.json'), load_json(output/'external.json')
-    executor, budget = IsolatedExecutor('appcontainer', directory/'execution'), Budget(Path(protocol['budget_window']))
+    executor, budget = executor_factory('appcontainer', directory/'execution'), Budget(Path(protocol['budget_window']))
     at = time.monotonic()
     error = None
     result = {}

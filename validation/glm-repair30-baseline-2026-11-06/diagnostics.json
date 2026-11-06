@@ -1,0 +1,149 @@
+{
+  "codetrail": {
+    "started_runs": 12,
+    "functional_passes": 10,
+    "verified_passes": 10,
+    "protocol_rejections": 17,
+    "policy_denials": 4,
+    "failure_categories": {
+      "success": 10,
+      "verification_budget_boundary_with_undelivered_native_calls": 1,
+      "worker_incomplete": 1
+    },
+    "efficiency": {
+      "runs": 12,
+      "successes": 10,
+      "tokens_observed": 546959,
+      "token_observed_runs": 11,
+      "token_complete": false,
+      "tokens_per_success": null,
+      "elapsed_observed_runs": 11,
+      "p50_ms": 94599.0,
+      "p95_ms": 249633.5,
+      "currency_cost": null,
+      "currency_cost_status": "not_observed",
+      "overall_score": null,
+      "requests_without_observed_usage": 1,
+      "terminated_dispatch_wall_ms": [
+        645642
+      ],
+      "elapsed_complete": false,
+      "timing_note": "Normal-record percentiles exclude missing timing; terminated dispatch wall times retained separately. Matched-success latency is separate, all failure tokens retained."
+    },
+    "origins": {
+      "author_created": {
+        "runs": 5,
+        "functional": 5,
+        "workflow": 5
+      },
+      "real_upstream_bug": {
+        "runs": 1,
+        "functional": 0,
+        "workflow": 0
+      },
+      "upstream_minimal_reproduction": {
+        "runs": 6,
+        "functional": 5,
+        "workflow": 5
+      }
+    },
+    "matched_verified_tasks": [
+      "boltons_isoparse",
+      "boltons_splitlines",
+      "humanize_fractional",
+      "humanize_list",
+      "inventory_reservation",
+      "money_minor_units",
+      "pagination_boundaries",
+      "retry_schedule",
+      "ttl_expiry"
+    ],
+    "matched_verified_efficiency": {
+      "runs": 9,
+      "successes": 9,
+      "tokens_observed": 275873,
+      "token_observed_runs": 9,
+      "token_complete": true,
+      "tokens_per_success": 30652.555555555555,
+      "elapsed_observed_runs": 9,
+      "p50_ms": 71515.0,
+      "p95_ms": 166601.39999999997,
+      "currency_cost": null,
+      "currency_cost_status": "not_observed",
+      "overall_score": null
+    },
+    "tokens_per_verified_success": null
+  },
+  "apecode": {
+    "started_runs": 12,
+    "functional_passes": 10,
+    "verified_passes": 10,
+    "protocol_rejections": 2,
+    "policy_denials": 15,
+    "failure_categories": {
+      "success": 10,
+      "model_output_budget_truncation": 2
+    },
+    "efficiency": {
+      "runs": 12,
+      "successes": 10,
+      "tokens_observed": 465487,
+      "token_observed_runs": 12,
+      "token_complete": true,
+      "tokens_per_success": 46548.7,
+      "elapsed_observed_runs": 12,
+      "p50_ms": 65960.0,
+      "p95_ms": 162553.09999999992,
+      "currency_cost": null,
+      "currency_cost_status": "not_observed",
+      "overall_score": null,
+      "requests_without_observed_usage": 0,
+      "terminated_dispatch_wall_ms": [],
+      "elapsed_complete": true,
+      "timing_note": "Normal-record percentiles exclude missing timing; terminated dispatch wall times retained separately. Matched-success latency is separate, all failure tokens retained."
+    },
+    "origins": {
+      "author_created": {
+        "runs": 5,
+        "functional": 5,
+        "workflow": 5
+      },
+      "real_upstream_bug": {
+        "runs": 1,
+        "functional": 1,
+        "workflow": 1
+      },
+      "upstream_minimal_reproduction": {
+        "runs": 6,
+        "functional": 4,
+        "workflow": 4
+      }
+    },
+    "matched_verified_tasks": [
+      "boltons_isoparse",
+      "boltons_splitlines",
+      "humanize_fractional",
+      "humanize_list",
+      "inventory_reservation",
+      "money_minor_units",
+      "pagination_boundaries",
+      "retry_schedule",
+      "ttl_expiry"
+    ],
+    "matched_verified_efficiency": {
+      "runs": 9,
+      "successes": 9,
+      "tokens_observed": 255033,
+      "token_observed_runs": 9,
+      "token_complete": true,
+      "tokens_per_success": 28337.0,
+      "elapsed_observed_runs": 9,
+      "p50_ms": 58766.0,
+      "p95_ms": 113799.59999999999,
+      "currency_cost": null,
+      "currency_cost_status": "not_observed",
+      "overall_score": null
+    },
+    "tokens_per_verified_success": 46548.7
+  }
+}

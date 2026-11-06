@@ -1,0 +1,422 @@
+[
+  {
+    "agent": "codetrail",
+    "task_id": "money_minor_units",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "001-codetrail-money_minor_units"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "money_minor_units",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "002-apecode-money_minor_units"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "inventory_reservation",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "003-apecode-inventory_reservation"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "inventory_reservation",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "004-codetrail-inventory_reservation"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "holdout_dotenv_override",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "005-codetrail-holdout_dotenv_override"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "holdout_dotenv_override",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "006-apecode-holdout_dotenv_override"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "pagination_boundaries",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "007-apecode-pagination_boundaries"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "pagination_boundaries",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "008-codetrail-pagination_boundaries"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "ttl_expiry",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "009-codetrail-ttl_expiry"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "ttl_expiry",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "010-apecode-ttl_expiry"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "boltons_splitlines",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "011-apecode-boltons_splitlines"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "boltons_splitlines",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "012-codetrail-boltons_splitlines"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "retry_schedule",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "013-codetrail-retry_schedule"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "retry_schedule",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "014-apecode-retry_schedule"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "humanize_fractional",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "015-apecode-humanize_fractional"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "humanize_fractional",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "016-codetrail-humanize_fractional"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "boltons_xfrange",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "017-codetrail-boltons_xfrange"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "boltons_xfrange",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "018-apecode-boltons_xfrange"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "boltons_isoparse",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "019-apecode-boltons_isoparse"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "boltons_isoparse",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "020-codetrail-boltons_isoparse"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "humanize_list",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "021-codetrail-humanize_list"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "humanize_list",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "022-apecode-humanize_list"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "humanize_metric",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "023-apecode-humanize_metric"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "humanize_metric",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "024-codetrail-humanize_metric"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "error_response_contract",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "025-codetrail-error_response_contract"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "error_response_contract",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "026-apecode-error_response_contract"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "boltons_multireplace",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "027-apecode-boltons_multireplace"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "boltons_multireplace",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "028-codetrail-boltons_multireplace"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "user_lookup_contract",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "029-codetrail-user_lookup_contract"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "user_lookup_contract",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "030-apecode-user_lookup_contract"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "holdout_interleave_empty",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "031-apecode-holdout_interleave_empty"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "holdout_interleave_empty",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "032-codetrail-holdout_interleave_empty"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "config_precedence",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "033-codetrail-config_precedence"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "config_precedence",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "034-apecode-config_precedence"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "holdout_numeric_reverse",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "035-apecode-holdout_numeric_reverse"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "holdout_numeric_reverse",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "036-codetrail-holdout_numeric_reverse"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "dependency_order",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "037-codetrail-dependency_order"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "dependency_order",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "038-apecode-dependency_order"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "holdout_dotenv_backslash",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "039-apecode-holdout_dotenv_backslash"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "holdout_dotenv_backslash",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "040-codetrail-holdout_dotenv_backslash"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "humanize_size",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "041-codetrail-humanize_size"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "humanize_size",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "042-apecode-humanize_size"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "holdout_constrained_items",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "043-apecode-holdout_constrained_items"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "holdout_constrained_items",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "044-codetrail-holdout_constrained_items"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "holdout_bucket_falsey",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "045-codetrail-holdout_bucket_falsey"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "holdout_bucket_falsey",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "046-apecode-holdout_bucket_falsey"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "holdout_dotenv_bom",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "047-apecode-holdout_dotenv_bom"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "holdout_dotenv_bom",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "048-codetrail-holdout_dotenv_bom"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "holdout_seekable_zero",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "049-codetrail-holdout_seekable_zero"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "holdout_seekable_zero",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "050-apecode-holdout_seekable_zero"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "cursor_roundtrip",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "051-apecode-cursor_roundtrip"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "cursor_roundtrip",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "052-codetrail-cursor_roundtrip"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "holdout_dotenv_spaces",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "053-codetrail-holdout_dotenv_spaces"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "holdout_dotenv_spaces",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "054-apecode-holdout_dotenv_spaces"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "utc_storage_contract",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "055-apecode-utc_storage_contract"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "utc_storage_contract",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "056-codetrail-utc_storage_contract"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "interval_union",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "057-codetrail-interval_union"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "interval_union",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "058-apecode-interval_union"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "holdout_dotenv_inline_empty",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "059-apecode-holdout_dotenv_inline_empty"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "holdout_dotenv_inline_empty",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "060-codetrail-holdout_dotenv_inline_empty"
+  }
+]
