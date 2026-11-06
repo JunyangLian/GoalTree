@@ -1,0 +1,49 @@
+{
+  "status": "draft_not_formal_freeze",
+  "agents": [
+    "codetrail",
+    "apecode"
+  ],
+  "test_scenarios": 6,
+  "repetitions": 2,
+  "scenario_runs": 24,
+  "model_sessions": 32,
+  "concurrency": 1,
+  "model": {
+    "provider": "bigmodel_standard_api",
+    "model": "glm-5.3-flash",
+    "base_url": "https://open.bigmodel.cn/api/paas/v4",
+    "api_format": "chat_completions",
+    "temperature": 1,
+    "top_p": 0.95,
+    "max_tokens": 4096,
+    "timeout_seconds": 180,
+    "transport_attempts": 1,
+    "max_model_requests": 30,
+    "stream": false,
+    "thinking": {
+      "type": "enabled",
+      "clear_thinking": false
+    },
+    "reasoning_effort": "max",
+    "verification_status": "official documentation + offline contract tests; not live verified",
+    "credential_env": "BIGMODEL_API_KEY",
+    "coding_plan_allowed": false
+  },
+  "max_tool_calls_per_session": 20,
+  "session_deadline_seconds": 300,
+  "verification_command": "python -B -m unittest discover -v",
+  "shell_backend": "windows_appcontainer",
+  "host_fallback": false,
+  "reference_repairs_in_agent_workspace": false,
+  "test_files_read_only": true,
+  "test_set_model_runs": 0,
+  "process_metrics": "exact attributed versioned read_file spans; search/paraphrase/adoption unassessed",
+  "memory_comparison": "native capability track; unsupported memory disclosed, not silently emulated",
+  "still_required_before_model_execution": [
+    "independent evidence review",
+    "end-to-end multi-session model controller integration and freeze",
+    "standard API credential + explicit cost ceiling + live protocol preflight"
+  ],
+  "not_started": "No task/model calls in this export"
+}

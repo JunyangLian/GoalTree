@@ -1,0 +1,40 @@
+{
+  "dataset": "princeton-nlp/SWE-bench_Lite",
+  "revision": "6ec7bb89b9342f664a54a6e0a6ea6501d3437cc2",
+  "source_sha256": "7a21f37b8bc179c7db5beeb14e88ac538ba283455c776e6b2535bbfb6e3551b4",
+  "harness_commit": "02e7a74ffd0b707aab73d203fe87bdc7c76afc8e",
+  "selection_seed": 20261106,
+  "status": "candidate_selection_locked; environment and gold qualification pending",
+  "population": 300,
+  "assets": {
+    "agent-inputs.json": "25c9babc1c6b1b48191ed4877e0cc8fbecc23da73934e756128435504fb89710",
+    "verifier-only.json": "4520ddcc11cf73a7658a67df250fb2a64df64a23686ae058eea86a948d8246c0"
+  },
+  "selected": [
+    {
+      "instance_id": "psf__requests-863",
+      "repo": "psf/requests",
+      "base_commit": "a0df2cbb10419037d11d04352b3175405ab52941"
+    },
+    {
+      "instance_id": "pydata__xarray-3364",
+      "repo": "pydata/xarray",
+      "base_commit": "863e49066ca4d61c9adfe62aca3bf21b90e1af8c"
+    },
+    {
+      "instance_id": "scikit-learn__scikit-learn-14087",
+      "repo": "scikit-learn/scikit-learn",
+      "base_commit": "a5743ed36fbd3fbc8e351bdab16561fbfca7dfa1"
+    },
+    {
+      "instance_id": "pylint-dev__pylint-7993",
+      "repo": "pylint-dev/pylint",
+      "base_commit": "e90702074e68e20dc8e5df5013ee3ecf22139c3e"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-7168",
+      "repo": "pytest-dev/pytest",
+      "base_commit": "4787fd64a4ca0dba5528b5651bddd254102fe9f3"
+    }
+  ]
+}

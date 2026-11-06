@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "status": "unpublished_draft",
+  "files": {
+    "annotations/evidence.json": "72d9683fb0bc732ef892b80b712e6c65fe6adfb9b7d26dea5de66dd159fe46e6",
+    "data/dev.jsonl": "58cd21db719901cbfcbfa77e3d2b17d5a952ffb4b1db5b2353aefa0d57227051",
+    "data/test.jsonl": "0245a13488089f1c97468ccaa28b3ef2a4ce886564dd2c366354abdda8a06a18",
+    "LICENSE": "40bcef93676f0bbeca72d6398cb06785b884089db259df2fc9e0d88e158d6974",
+    "protocol-draft.json": "4c9c4da7903500b8935d6161f4dc7675ed650c6414e81f02b3e1f5f077bcad63",
+    "qualification.json": "0b9fa52b716ea4a371848b92f6155955940455dbe7a673a2c7a44dd7e6aaf61c",
+    "README.md": "0725218d772b55a7d930b9cacf254606c73edd115eb7dc4d778b65abb35457b1"
+  },
+  "model_runs": 0,
+  "publication_ready": false,
+  "missing": [
+    "independent human evidence-gold review",
+    "frozen two-Agent model evaluation"
+  ]
+}

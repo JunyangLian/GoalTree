@@ -1,0 +1,194 @@
+{
+  "at": "2026-11-06T04:47:26.595101+00:00",
+  "asset_lock_sha256": "0d98d216ed34b16bdedd68e0200406304d76483597de2377d89c0886580f4601",
+  "scenarios": 12,
+  "qualified": 12,
+  "tests_per_version": 36,
+  "external_verifications": 24,
+  "agent_runs": 0,
+  "scope": "offline synthetic fixture red/green qualification, not memory/Agent performance",
+  "rows": [
+    {
+      "task_id": "dev_interval_end",
+      "split": "dev",
+      "category": "single_file",
+      "faulty_rejected": true,
+      "reference_accepted": true,
+      "tests_each": 3,
+      "qualified": true,
+      "phase_a_materialized": false,
+      "reference_sha256": {
+        "interval.py": "b4d078a9fa42b5325f7098ef3cccc047fe3e1cb2f0503044da13d925d1f72018"
+      },
+      "agent_runs": 0,
+      "backend": "windows_appcontainer"
+    },
+    {
+      "task_id": "dev_sku_contract",
+      "split": "dev",
+      "category": "cross_file",
+      "faulty_rejected": true,
+      "reference_accepted": true,
+      "tests_each": 3,
+      "qualified": true,
+      "phase_a_materialized": false,
+      "reference_sha256": {
+        "catalog.py": "a48d1d616d18ebd841f761455d2881d6747589f46d91aaf46ad13c7966f11d95",
+        "basket.py": "c70716311763de6c96efde0f71764e200e7701428f867e9e20d3fcf13ee458fa"
+      },
+      "agent_runs": 0,
+      "backend": "windows_appcontainer"
+    },
+    {
+      "task_id": "dev_slug_locator",
+      "split": "dev",
+      "category": "unknown_location",
+      "faulty_rejected": true,
+      "reference_accepted": true,
+      "tests_each": 3,
+      "qualified": true,
+      "phase_a_materialized": false,
+      "reference_sha256": {
+        "formatters.py": "85daa142b20f26a6fcd128e3134e4776197a8133849a3784af63862160a23d3b"
+      },
+      "agent_runs": 0,
+      "backend": "windows_appcontainer"
+    },
+    {
+      "task_id": "dev_zero_timeout",
+      "split": "dev",
+      "category": "regression_compatibility",
+      "faulty_rejected": true,
+      "reference_accepted": true,
+      "tests_each": 3,
+      "qualified": true,
+      "phase_a_materialized": false,
+      "reference_sha256": {
+        "options.py": "5daabcd8a8d9bd9077b695f12848bc87cb6f590b649b78e7f330256d0a2ad525"
+      },
+      "agent_runs": 0,
+      "backend": "windows_appcontainer"
+    },
+    {
+      "task_id": "dev_shipping_memory",
+      "split": "dev",
+      "category": "memory_reuse",
+      "faulty_rejected": true,
+      "reference_accepted": true,
+      "tests_each": 3,
+      "qualified": true,
+      "phase_a_materialized": true,
+      "reference_sha256": {
+        "shipping.py": "3c5be44025b16d760d7e41b29bf0d37dc78f67c3b3c12fec229859bea5dc96d9"
+      },
+      "agent_runs": 0,
+      "backend": "windows_appcontainer"
+    },
+    {
+      "task_id": "dev_retry_policy_change",
+      "split": "dev",
+      "category": "stale_memory",
+      "faulty_rejected": true,
+      "reference_accepted": true,
+      "tests_each": 3,
+      "qualified": true,
+      "phase_a_materialized": true,
+      "reference_sha256": {
+        "retry.py": "d4ece8f753619a4a185b0c424535996d6df23bc7636dbc7f80f724233b9c49b2"
+      },
+      "agent_runs": 0,
+      "backend": "windows_appcontainer"
+    },
+    {
+      "task_id": "test_stable_ranking",
+      "split": "test",
+      "category": "single_file",
+      "faulty_rejected": true,
+      "reference_accepted": true,
+      "tests_each": 3,
+      "qualified": true,
+      "phase_a_materialized": false,
+      "reference_sha256": {
+        "ranking.py": "3cc917125e74c4ab51d36ae6b149e4c0a4d0248155fac160ef3bf15111ac52ef"
+      },
+      "agent_runs": 0,
+      "backend": "windows_appcontainer"
+    },
+    {
+      "task_id": "test_millisecond_contract",
+      "split": "test",
+      "category": "cross_file",
+      "faulty_rejected": true,
+      "reference_accepted": true,
+      "tests_each": 3,
+      "qualified": true,
+      "phase_a_materialized": false,
+      "reference_sha256": {
+        "config.py": "5761f1221066aaa690131919abcfd7b09c2be6c386f23e082c0af35c86036a1d",
+        "transport.py": "5e6aedcaca3ac072325197ed55c3f1dc462b0be1c3199a06367cb2d7daa532de"
+      },
+      "agent_runs": 0,
+      "backend": "windows_appcontainer"
+    },
+    {
+      "task_id": "test_specific_route_locator",
+      "split": "test",
+      "category": "unknown_location",
+      "faulty_rejected": true,
+      "reference_accepted": true,
+      "tests_each": 3,
+      "qualified": true,
+      "phase_a_materialized": false,
+      "reference_sha256": {
+        "matcher.py": "38f8b5c0e6d83fb382d1992a6f2c0ed9fc260b0feb900b764823877e4dc4e4c9"
+      },
+      "agent_runs": 0,
+      "backend": "windows_appcontainer"
+    },
+    {
+      "task_id": "test_legacy_boolean",
+      "split": "test",
+      "category": "regression_compatibility",
+      "faulty_rejected": true,
+      "reference_accepted": true,
+      "tests_each": 3,
+      "qualified": true,
+      "phase_a_materialized": false,
+      "reference_sha256": {
+        "flags.py": "c7d7bc12b2b774eea0e0116f8d8d5e9cfa4e4a753919f8dab6ed36b531bb22c0"
+      },
+      "agent_runs": 0,
+      "backend": "windows_appcontainer"
+    },
+    {
+      "task_id": "test_rounding_memory",
+      "split": "test",
+      "category": "memory_reuse",
+      "faulty_rejected": true,
+      "reference_accepted": true,
+      "tests_each": 3,
+      "qualified": true,
+      "phase_a_materialized": true,
+      "reference_sha256": {
+        "invoice.py": "4b325233019353dbd6cdcf1fae75fd762994cc0d64335b47c4832daaec1bf876"
+      },
+      "agent_runs": 0,
+      "backend": "windows_appcontainer"
+    },
+    {
+      "task_id": "test_quota_policy_change",
+      "split": "test",
+      "category": "stale_memory",
+      "faulty_rejected": true,
+      "reference_accepted": true,
+      "tests_each": 3,
+      "qualified": true,
+      "phase_a_materialized": true,
+      "reference_sha256": {
+        "batch.py": "4f70667a698df7dc4bd5ce7db9e50d344025a0a467a08429aabac2cf40309d7e"
+      },
+      "agent_runs": 0,
+      "backend": "windows_appcontainer"
+    }
+  ]
+}

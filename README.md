@@ -10,6 +10,12 @@
 
 另提供[事后分项得分](validation/cross-agent-deepseek-pilot-2026-11-05/scorecard-posthoc-v1/scorecard.md)：结果/流程按通过率转为百分制，耗时/Token/工具采用组内相对效率指数；不计算综合总分，未评估维度不补分，原始证据不变。
 
+下一阶段的[公开基准与过程基准设计](docs/benchmark-program-v0.1.md)将 SWE-bench Lite 固定子集与自建跨会话过程评测分开，明确同模型 Agent 对照、上下文/记忆证据、费用及 Hugging Face 发布条件。目前为设计稿，尚未新增正式评测或发布数据集。
+
+2026-11-06 已推进[离线基准接入](docs/benchmark-program-offline.md)：固定 SWE-bench Lite 来源并锁定 5 个候选实例，完成官方验收交接入口；新增 12 个合成过程场景，24 次 AppContainer 故障/参考资产自检全部符合预期。另补齐跨会话状态迁移、两 Agent 共用的实际请求证据观察器、GLM-5.3-Flash 标准 API 离线协议适配及 Hugging Face 本地草案导出。本轮未调用模型 API，未新增 Agent 分数或上传数据集；公开基准容器资格、过程金标独立审查及完整模型控制器集成仍待完成。
+
+见[离线实施报告与数据包](validation/benchmark-program-offline-2026-11-06-v2/report.md)：完整套件 420 项通过，末次协议修正后相关回归 55 项通过，去重覆盖当前收集的全部 424 项；不将重叠执行相加计数。
+
 ## 小规模完整工作台（2026-11-04）
 
 新增 `workbench` 配置，将分层项目规则、原生多工具批次、流式反馈、任务计划、源码符号与混合检索、候选记忆确认、证据查回、冲突安全编辑/撤销、取消与中断继续接入同一流程，并提供按需 Skill、stdio MCP 和策略钩子。主要研究场景是：**仓库持续变化时，跨会话记忆与执行验证如何保持有效。** 原 `classic` 配置和历史评测证据保留。

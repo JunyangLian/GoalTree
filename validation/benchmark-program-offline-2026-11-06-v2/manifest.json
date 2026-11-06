@@ -1,0 +1,26 @@
+{
+  "files": {
+    "benchmark-program-final-regression-v2-2026-11-06.xml": "67f054550a1059474097146ce0832747a864bfae52cca9308909452b8e10cc5b",
+    "benchmark-program-full-2026-11-06.xml": "0bee35349d688cb92e6b0523f7bb195de10389eb6a400113c98a0d4de1cdfc3a",
+    "hf-draft/annotations/evidence.json": "72d9683fb0bc732ef892b80b712e6c65fe6adfb9b7d26dea5de66dd159fe46e6",
+    "hf-draft/data/dev.jsonl": "58cd21db719901cbfcbfa77e3d2b17d5a952ffb4b1db5b2353aefa0d57227051",
+    "hf-draft/data/test.jsonl": "0245a13488089f1c97468ccaa28b3ef2a4ce886564dd2c366354abdda8a06a18",
+    "hf-draft/LICENSE": "40bcef93676f0bbeca72d6398cb06785b884089db259df2fc9e0d88e158d6974",
+    "hf-draft/manifest.json": "100cd9edd784e624ec50ce393d0f587ba559c198763336caecca9f89269fda32",
+    "hf-draft/protocol-draft.json": "4c9c4da7903500b8935d6161f4dc7675ed650c6414e81f02b3e1f5f077bcad63",
+    "hf-draft/qualification.json": "0b9fa52b716ea4a371848b92f6155955940455dbe7a673a2c7a44dd7e6aaf61c",
+    "hf-draft/README.md": "0725218d772b55a7d930b9cacf254606c73edd115eb7dc4d778b65abb35457b1",
+    "hf-draft.zip": "e1b15d1ac94df53506aef0eeba0e4ed43fbb16c14e9f1fab92a24ecbe028c787",
+    "historical-evidence-check.json": "8edaf23159f6704aa8e62c93315f20c38be20e1fdb156a18077726cf7044876d",
+    "observer-probe.json": "3b61fb5fd6a18dbc00ff1bc342dbffdf0ac5f4cfd671c8bab719ceb2ddeb6544",
+    "public-selection.json": "858b4d688ddd8042f3d300be4772f7237380af824a54f9949fb3ad3ead95c529",
+    "qualification.json": "0b9fa52b716ea4a371848b92f6155955940455dbe7a673a2c7a44dd7e6aaf61c",
+    "scenario-probe.json": "6589f1c23b9964125c1907bb423ae3463a502d73cea164f3ac3a899423e248e3",
+    "source-hashes.json": "1f65c5aa6b2aefe1bdf4052a77f556337b89edf00fc143cc701d528faf617e8c",
+    "summary.json": "5ec446ff370b849705772c44c196b22313883cd7bf44fbe09e116200bb11dec0",
+    "report.md": "a9faf763ba750b21c29404fdc3acf3289aecc7fd325d1d1bbe1b1066830ff84e"
+  },
+  "reference_repairs_exported": false,
+  "upstream_gold_patches_exported": false,
+  "credential_shape_scan": "passed"
+}

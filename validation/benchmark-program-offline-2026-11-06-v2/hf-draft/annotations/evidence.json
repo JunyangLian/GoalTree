@@ -1,0 +1,448 @@
+{
+  "dev_interval_end": {
+    "required_files": [
+      "interval.py"
+    ],
+    "lines": [
+      {
+        "path": "interval.py",
+        "line": 1,
+        "text": "def contains(start, end, value):",
+        "source_sha256": "26c965295bd59647a760a09809f7938cde528b5fc27fe41c04c4484f0a57610b"
+      },
+      {
+        "path": "interval.py",
+        "line": 2,
+        "text": "    return start <= value <= end",
+        "source_sha256": "26c965295bd59647a760a09809f7938cde528b5fc27fe41c04c4484f0a57610b"
+      }
+    ],
+    "status": "controller-authored proxy; independent human evidence review pending"
+  },
+  "dev_sku_contract": {
+    "required_files": [
+      "basket.py",
+      "catalog.py"
+    ],
+    "lines": [
+      {
+        "path": "catalog.py",
+        "line": 1,
+        "text": "def key(sku):",
+        "source_sha256": "138e9c693ebfae92877c87148ca8c47fff173333e5dead9b97b5171ae67be11b"
+      },
+      {
+        "path": "catalog.py",
+        "line": 2,
+        "text": "    return sku.strip().casefold()",
+        "source_sha256": "138e9c693ebfae92877c87148ca8c47fff173333e5dead9b97b5171ae67be11b"
+      },
+      {
+        "path": "catalog.py",
+        "line": 3,
+        "text": "",
+        "source_sha256": "138e9c693ebfae92877c87148ca8c47fff173333e5dead9b97b5171ae67be11b"
+      },
+      {
+        "path": "catalog.py",
+        "line": 4,
+        "text": "def lookup(items, sku):",
+        "source_sha256": "138e9c693ebfae92877c87148ca8c47fff173333e5dead9b97b5171ae67be11b"
+      },
+      {
+        "path": "catalog.py",
+        "line": 5,
+        "text": "    return items.get(sku)",
+        "source_sha256": "138e9c693ebfae92877c87148ca8c47fff173333e5dead9b97b5171ae67be11b"
+      },
+      {
+        "path": "basket.py",
+        "line": 1,
+        "text": "from catalog import lookup",
+        "source_sha256": "8f787ae9279e7b19435a03aebc3f2a1a40584d78ba975f61571b23f4e446ee27"
+      },
+      {
+        "path": "basket.py",
+        "line": 2,
+        "text": "",
+        "source_sha256": "8f787ae9279e7b19435a03aebc3f2a1a40584d78ba975f61571b23f4e446ee27"
+      },
+      {
+        "path": "basket.py",
+        "line": 3,
+        "text": "def cost(items, sku, count):",
+        "source_sha256": "8f787ae9279e7b19435a03aebc3f2a1a40584d78ba975f61571b23f4e446ee27"
+      },
+      {
+        "path": "basket.py",
+        "line": 4,
+        "text": "    return lookup(sku, items) * count",
+        "source_sha256": "8f787ae9279e7b19435a03aebc3f2a1a40584d78ba975f61571b23f4e446ee27"
+      }
+    ],
+    "status": "controller-authored proxy; independent human evidence review pending"
+  },
+  "dev_slug_locator": {
+    "required_files": [
+      "api.py",
+      "formatters.py"
+    ],
+    "lines": [
+      {
+        "path": "api.py",
+        "line": 1,
+        "text": "from formatters import make_slug",
+        "source_sha256": "8e9e1744b131c61d3fcd5e7be3ceb5dc87057620358810a646a82bcb10d80770"
+      },
+      {
+        "path": "api.py",
+        "line": 2,
+        "text": "",
+        "source_sha256": "8e9e1744b131c61d3fcd5e7be3ceb5dc87057620358810a646a82bcb10d80770"
+      },
+      {
+        "path": "api.py",
+        "line": 3,
+        "text": "def route(title):",
+        "source_sha256": "8e9e1744b131c61d3fcd5e7be3ceb5dc87057620358810a646a82bcb10d80770"
+      },
+      {
+        "path": "api.py",
+        "line": 4,
+        "text": "    return \"/post/\" + make_slug(title)",
+        "source_sha256": "8e9e1744b131c61d3fcd5e7be3ceb5dc87057620358810a646a82bcb10d80770"
+      },
+      {
+        "path": "formatters.py",
+        "line": 1,
+        "text": "import re",
+        "source_sha256": "21131d8bf4a30bb44868cd1e58054cde354367dabe3e28473068baa8544eccd3"
+      },
+      {
+        "path": "formatters.py",
+        "line": 2,
+        "text": "",
+        "source_sha256": "21131d8bf4a30bb44868cd1e58054cde354367dabe3e28473068baa8544eccd3"
+      },
+      {
+        "path": "formatters.py",
+        "line": 3,
+        "text": "def make_slug(title):",
+        "source_sha256": "21131d8bf4a30bb44868cd1e58054cde354367dabe3e28473068baa8544eccd3"
+      },
+      {
+        "path": "formatters.py",
+        "line": 4,
+        "text": "    return re.sub(r\"[^a-z0-9]+\", \"-\", title.lower()).strip()",
+        "source_sha256": "21131d8bf4a30bb44868cd1e58054cde354367dabe3e28473068baa8544eccd3"
+      }
+    ],
+    "status": "controller-authored proxy; independent human evidence review pending"
+  },
+  "dev_zero_timeout": {
+    "required_files": [
+      "options.py"
+    ],
+    "lines": [
+      {
+        "path": "options.py",
+        "line": 1,
+        "text": "def timeout(value=None):",
+        "source_sha256": "2954db8e17e42757aa77e857f6acffa22d13da09e2c20386b450011459f4a551"
+      },
+      {
+        "path": "options.py",
+        "line": 2,
+        "text": "    return value or 30",
+        "source_sha256": "2954db8e17e42757aa77e857f6acffa22d13da09e2c20386b450011459f4a551"
+      }
+    ],
+    "status": "controller-authored proxy; independent human evidence review pending"
+  },
+  "dev_shipping_memory": {
+    "required_files": [
+      "rules.md",
+      "shipping.py"
+    ],
+    "lines": [
+      {
+        "path": "rules.md",
+        "line": 2,
+        "text": "Amounts use integer cents. Free shipping starts at 5000 cents inclusive.",
+        "source_sha256": "f71fb45406c24152d0acbb5a7b0988ffb37cd779b97f5d590237d8fe02c6e528"
+      },
+      {
+        "path": "shipping.py",
+        "line": 1,
+        "text": "def charge(subtotal):",
+        "source_sha256": "df8a020eba5a6b59852e29e3b5178beeb9d59e1084f18e23506060dbe1214f50"
+      },
+      {
+        "path": "shipping.py",
+        "line": 2,
+        "text": "    return 600 if subtotal <= 5000 else 0",
+        "source_sha256": "df8a020eba5a6b59852e29e3b5178beeb9d59e1084f18e23506060dbe1214f50"
+      }
+    ],
+    "status": "controller-authored proxy; independent human evidence review pending"
+  },
+  "dev_retry_policy_change": {
+    "required_files": [
+      "policy.py",
+      "retry.py"
+    ],
+    "lines": [
+      {
+        "path": "policy.py",
+        "line": 1,
+        "text": "MAX_TRIES = 4",
+        "source_sha256": "505e3f65204d901f7baca2a7c1a8777f9679f67e117a13000f7ccabc9663fe5e"
+      },
+      {
+        "path": "retry.py",
+        "line": 1,
+        "text": "from policy import MAX_TRIES",
+        "source_sha256": "86def2c1aad88b34bab6243fdaaab2ae33ebf377f1cfd1ac4f98c75fdbbf54f8"
+      },
+      {
+        "path": "retry.py",
+        "line": 2,
+        "text": "",
+        "source_sha256": "86def2c1aad88b34bab6243fdaaab2ae33ebf377f1cfd1ac4f98c75fdbbf54f8"
+      },
+      {
+        "path": "retry.py",
+        "line": 3,
+        "text": "def allowed(attempt):",
+        "source_sha256": "86def2c1aad88b34bab6243fdaaab2ae33ebf377f1cfd1ac4f98c75fdbbf54f8"
+      },
+      {
+        "path": "retry.py",
+        "line": 4,
+        "text": "    return attempt < 2",
+        "source_sha256": "86def2c1aad88b34bab6243fdaaab2ae33ebf377f1cfd1ac4f98c75fdbbf54f8"
+      }
+    ],
+    "status": "controller-authored proxy; independent human evidence review pending"
+  },
+  "test_stable_ranking": {
+    "required_files": [
+      "ranking.py"
+    ],
+    "lines": [
+      {
+        "path": "ranking.py",
+        "line": 1,
+        "text": "def best(rows, k):",
+        "source_sha256": "9559fa7b3d1686bc7da00fc70b592881134d4835b9c0a73e50fbfa8194c5cc09"
+      },
+      {
+        "path": "ranking.py",
+        "line": 2,
+        "text": "    return sorted(rows, key=lambda row: (row[1], row[0]), reverse=True)[:k]",
+        "source_sha256": "9559fa7b3d1686bc7da00fc70b592881134d4835b9c0a73e50fbfa8194c5cc09"
+      }
+    ],
+    "status": "controller-authored proxy; independent human evidence review pending"
+  },
+  "test_millisecond_contract": {
+    "required_files": [
+      "config.py",
+      "transport.py"
+    ],
+    "lines": [
+      {
+        "path": "config.py",
+        "line": 1,
+        "text": "def seconds(options):",
+        "source_sha256": "ba0e4c11357d79ecb33367523e57e3e2ea4723ac1957200fe09477bd52fb2bf4"
+      },
+      {
+        "path": "config.py",
+        "line": 2,
+        "text": "    return options.get(\"timeout_ms\", 1000)",
+        "source_sha256": "ba0e4c11357d79ecb33367523e57e3e2ea4723ac1957200fe09477bd52fb2bf4"
+      },
+      {
+        "path": "transport.py",
+        "line": 1,
+        "text": "from config import seconds",
+        "source_sha256": "cde1fcefa42dedde7f237e06906e6e06b76a1ac3a6398b6bd15841e360e4ab9b"
+      },
+      {
+        "path": "transport.py",
+        "line": 2,
+        "text": "",
+        "source_sha256": "cde1fcefa42dedde7f237e06906e6e06b76a1ac3a6398b6bd15841e360e4ab9b"
+      },
+      {
+        "path": "transport.py",
+        "line": 3,
+        "text": "def options_for_client(options):",
+        "source_sha256": "cde1fcefa42dedde7f237e06906e6e06b76a1ac3a6398b6bd15841e360e4ab9b"
+      },
+      {
+        "path": "transport.py",
+        "line": 4,
+        "text": "    return {\"timeout_seconds\": seconds(options) * 1000}",
+        "source_sha256": "cde1fcefa42dedde7f237e06906e6e06b76a1ac3a6398b6bd15841e360e4ab9b"
+      }
+    ],
+    "status": "controller-authored proxy; independent human evidence review pending"
+  },
+  "test_specific_route_locator": {
+    "required_files": [
+      "gateway.py",
+      "matcher.py"
+    ],
+    "lines": [
+      {
+        "path": "gateway.py",
+        "line": 1,
+        "text": "from matcher import choose",
+        "source_sha256": "2f9d1eca273afadcaab8d9de1fcd2b2443dab94130e3ef7e7537aca42661acc1"
+      },
+      {
+        "path": "gateway.py",
+        "line": 2,
+        "text": "",
+        "source_sha256": "2f9d1eca273afadcaab8d9de1fcd2b2443dab94130e3ef7e7537aca42661acc1"
+      },
+      {
+        "path": "gateway.py",
+        "line": 3,
+        "text": "def dispatch(path, routes):",
+        "source_sha256": "2f9d1eca273afadcaab8d9de1fcd2b2443dab94130e3ef7e7537aca42661acc1"
+      },
+      {
+        "path": "gateway.py",
+        "line": 4,
+        "text": "    return choose(path, routes)",
+        "source_sha256": "2f9d1eca273afadcaab8d9de1fcd2b2443dab94130e3ef7e7537aca42661acc1"
+      },
+      {
+        "path": "matcher.py",
+        "line": 1,
+        "text": "def choose(path, routes):",
+        "source_sha256": "85fb82e18847a6ad82c80fc10b6bce86794ccd04bb9f5bc86d96c6e8af9dc9d1"
+      },
+      {
+        "path": "matcher.py",
+        "line": 2,
+        "text": "    return routes.get(\"*\", routes.get(path))",
+        "source_sha256": "85fb82e18847a6ad82c80fc10b6bce86794ccd04bb9f5bc86d96c6e8af9dc9d1"
+      }
+    ],
+    "status": "controller-authored proxy; independent human evidence review pending"
+  },
+  "test_legacy_boolean": {
+    "required_files": [
+      "flags.py"
+    ],
+    "lines": [
+      {
+        "path": "flags.py",
+        "line": 1,
+        "text": "def enabled(value):",
+        "source_sha256": "958e2467d504d7eb3fe4c6c674f24d2ed140b50677707e553b71c13a467c30d5"
+      },
+      {
+        "path": "flags.py",
+        "line": 2,
+        "text": "    if isinstance(value, bool):",
+        "source_sha256": "958e2467d504d7eb3fe4c6c674f24d2ed140b50677707e553b71c13a467c30d5"
+      },
+      {
+        "path": "flags.py",
+        "line": 3,
+        "text": "        return value",
+        "source_sha256": "958e2467d504d7eb3fe4c6c674f24d2ed140b50677707e553b71c13a467c30d5"
+      },
+      {
+        "path": "flags.py",
+        "line": 4,
+        "text": "    return value.lower() == \"true\"",
+        "source_sha256": "958e2467d504d7eb3fe4c6c674f24d2ed140b50677707e553b71c13a467c30d5"
+      }
+    ],
+    "status": "controller-authored proxy; independent human evidence review pending"
+  },
+  "test_rounding_memory": {
+    "required_files": [
+      "invoice.py",
+      "policy.md"
+    ],
+    "lines": [
+      {
+        "path": "policy.md",
+        "line": 2,
+        "text": "Round decimal halves away from zero, using Decimal and ROUND_HALF_UP.",
+        "source_sha256": "4bd77f33ba18d808e2ce62eb1dab6720ae3ffe063a0da353d398534ad2a6047a"
+      },
+      {
+        "path": "invoice.py",
+        "line": 1,
+        "text": "from decimal import Decimal, ROUND_HALF_EVEN",
+        "source_sha256": "b1d5151a01ef2416756974257f76b270d5db4482cb9579e6933847327739e181"
+      },
+      {
+        "path": "invoice.py",
+        "line": 2,
+        "text": "",
+        "source_sha256": "b1d5151a01ef2416756974257f76b270d5db4482cb9579e6933847327739e181"
+      },
+      {
+        "path": "invoice.py",
+        "line": 3,
+        "text": "def cents(text):",
+        "source_sha256": "b1d5151a01ef2416756974257f76b270d5db4482cb9579e6933847327739e181"
+      },
+      {
+        "path": "invoice.py",
+        "line": 4,
+        "text": "    return int((Decimal(text) * 100).quantize(Decimal(\"1\"), rounding=ROUND_HALF_EVEN))",
+        "source_sha256": "b1d5151a01ef2416756974257f76b270d5db4482cb9579e6933847327739e181"
+      }
+    ],
+    "status": "controller-authored proxy; independent human evidence review pending"
+  },
+  "test_quota_policy_change": {
+    "required_files": [
+      "batch.py",
+      "limits.py"
+    ],
+    "lines": [
+      {
+        "path": "limits.py",
+        "line": 1,
+        "text": "BATCH_LIMIT = 8",
+        "source_sha256": "66c328f6eb3593d8550d8d59f0f5e3eb14de8e5bedc1fcc4a24757b1f3aa5655"
+      },
+      {
+        "path": "batch.py",
+        "line": 1,
+        "text": "from limits import BATCH_LIMIT",
+        "source_sha256": "3c7f0c4625282dbb04688ba5226c603d708a39d7613e1302fdf66718e058e967"
+      },
+      {
+        "path": "batch.py",
+        "line": 2,
+        "text": "",
+        "source_sha256": "3c7f0c4625282dbb04688ba5226c603d708a39d7613e1302fdf66718e058e967"
+      },
+      {
+        "path": "batch.py",
+        "line": 3,
+        "text": "def batches(items):",
+        "source_sha256": "3c7f0c4625282dbb04688ba5226c603d708a39d7613e1302fdf66718e058e967"
+      },
+      {
+        "path": "batch.py",
+        "line": 4,
+        "text": "    return [items[i:i+3] for i in range(0, len(items), 3)]",
+        "source_sha256": "3c7f0c4625282dbb04688ba5226c603d708a39d7613e1302fdf66718e058e967"
+      }
+    ],
+    "status": "controller-authored proxy; independent human evidence review pending"
+  }
+}

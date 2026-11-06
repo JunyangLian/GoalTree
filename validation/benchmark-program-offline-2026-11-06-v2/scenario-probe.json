@@ -1,0 +1,44 @@
+{
+  "passed": 4,
+  "total": 4,
+  "rows": [
+    {
+      "task_id": "dev_shipping_memory",
+      "passed": true,
+      "new_session_same_workspace": true,
+      "prose_not_auto_confirmed": true,
+      "mechanical_stale_rejected": false,
+      "api_calls": 0,
+      "agent_task_runs": 0
+    },
+    {
+      "task_id": "dev_retry_policy_change",
+      "passed": true,
+      "new_session_same_workspace": true,
+      "prose_not_auto_confirmed": true,
+      "mechanical_stale_rejected": true,
+      "api_calls": 0,
+      "agent_task_runs": 0
+    },
+    {
+      "task_id": "test_rounding_memory",
+      "passed": true,
+      "new_session_same_workspace": true,
+      "prose_not_auto_confirmed": true,
+      "mechanical_stale_rejected": false,
+      "api_calls": 0,
+      "agent_task_runs": 0
+    },
+    {
+      "task_id": "test_quota_policy_change",
+      "passed": true,
+      "new_session_same_workspace": true,
+      "prose_not_auto_confirmed": true,
+      "mechanical_stale_rejected": true,
+      "api_calls": 0,
+      "agent_task_runs": 0
+    }
+  ],
+  "scope": "scripted transition/knowledge integration; not Agent memory recall or repair performance",
+  "api_calls": 0
+}

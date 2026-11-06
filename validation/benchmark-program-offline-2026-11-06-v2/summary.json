@@ -1,0 +1,45 @@
+{
+  "at": "2026-11-06T04:59:23.709017+00:00",
+  "status": "offline_foundation_complete; formal_model_control_and_environment_pending",
+  "paid_api_calls": 0,
+  "new_agent_benchmark_runs": 0,
+  "new_agent_scores": null,
+  "scenarios": 12,
+  "dev": 6,
+  "test": 6,
+  "all_synthetic": true,
+  "red_green_verifications": 24,
+  "test_methods_per_version": 36,
+  "full_tests_and_postfix_regression": [
+    {
+      "file": "benchmark-program-full-2026-11-06.xml",
+      "passed": 420,
+      "sha256": "0bee35349d688cb92e6b0523f7bb195de10389eb6a400113c98a0d4de1cdfc3a"
+    },
+    {
+      "file": "benchmark-program-final-regression-v2-2026-11-06.xml",
+      "passed": 55,
+      "sha256": "67f054550a1059474097146ce0832747a864bfae52cca9308909452b8e10cc5b"
+    }
+  ],
+  "distinct_passing_tests": 424,
+  "final_collected_tests": 424,
+  "all_current_tests_have_passing_execution": true,
+  "swebench": "5 candidate IDs locked; official Docker qualification not started",
+  "hf": "local draft only; unpublished",
+  "retained_failures": [
+    "initial observer probe missing required ask_approval argument",
+    "initial regression command referenced nonexistent test_streaming.py; 0 tests ran"
+  ],
+  "fixed_defects": [
+    "required upstream ToolContext approval callback",
+    "BigModel v4 endpoint incorrectly received a v1 suffix"
+  ],
+  "pending": [
+    "Linux Docker + image/empty/gold patch qualification",
+    "independent evidence-label review",
+    "complete multi-session two-Agent model controller integration",
+    "standard API + spending ceiling + live preflight + formal freeze + model runs",
+    "HF publication quality review and upload"
+  ]
+}

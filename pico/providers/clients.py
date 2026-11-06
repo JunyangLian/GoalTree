@@ -99,6 +99,9 @@ class OllamaModelClient:
 
 def _normalize_versioned_base_url(base_url):
     base = str(base_url).rstrip("/")
+    parsed = urlparse(base)
+    if parsed.hostname == 'open.bigmodel.cn' and parsed.path in {'/api/paas/v4', '/api/coding/paas/v4'}:
+        return base
     if not base.endswith("/v1"):
         base += "/v1"
     return base
@@ -260,8 +263,12 @@ class OpenAICompatibleModelClient:
         self.on_wire_event = None
         host = urlparse(self.base_url).hostname
         self.siliconflow_deepseek = host == 'api.siliconflow.cn' and model == 'deepseek-ai/DeepSeek-V4.1-Flash'
-        self.supports_native_tools = api_format == 'chat_completions' and (host == 'api.deepseek.com' or self.siliconflow_deepseek)
+        self.bigmodel_glm = host == 'open.bigmodel.cn' and model == 'glm-5.3-flash'
+        self.supports_native_tools = api_format == 'chat_completions' and (host == 'api.deepseek.com' or self.siliconflow_deepseek or self.bigmodel_glm)
         self.native_wire_options = {'enable_thinking': True, 'thinking_budget': 4096} if self.siliconflow_deepseek else None
+        if self.bigmodel_glm:
+            self.native_wire_options = {'thinking': {'type': 'enabled', 'clear_thinking': False},
+                                        'reasoning_effort': 'max'}
         self.top_p = None
         self.native_conversation = None
         self.stream = False
@@ -490,7 +497,9 @@ class OpenAICompatibleModelClient:
             "prompt_cache_retention": prompt_cache_retention,
             **_extract_usage_cache_details(data),
         }
-        if urlparse(self.base_url).hostname in {'api.deepseek.com','api.siliconflow.cn'}:
+        if self.bigmodel_glm and data.get('model') != self.model:
+            raise RuntimeError('BigModel returned model mismatch; no silent substitution')
+        if urlparse(self.base_url).hostname in {'api.deepseek.com','api.siliconflow.cn','open.bigmodel.cn'}:
             self.last_completion_metadata['provider_finish_reason']=(data.get('choices') or [{}])[0].get('finish_reason')
             self.last_completion_metadata.update(provider_model=data.get('model'),system_fingerprint=data.get('system_fingerprint'),
                 reasoning_tokens=(data.get('usage',{}).get('completion_tokens_details') or {}).get('reasoning_tokens'),
