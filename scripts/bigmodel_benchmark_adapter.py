@@ -37,10 +37,17 @@ class BigModelChatModel:
     No model call is made by construction. Formal execution requires a separately
     frozen controller/permission/budget plan, not just importing this class.
     """
-    def __init__(self, directory):
+    def __init__(self, directory, on_wire_event=None):
         self.directory = Path(directory)
         self.key = os.environ['BIGMODEL_API_KEY']
         self.requests = []
+        self.on_wire_event = on_wire_event
+
+    def emit(self, event):
+        if self.on_wire_event:
+            self.on_wire_event(event)
+        else:
+            append_json(self.directory/'wire.jsonl', event)
 
     def complete(self, *, messages, tools):
         if len(self.requests) >= CONFIG['max_model_requests']:
@@ -53,7 +60,7 @@ class BigModelChatModel:
         self.directory.mkdir(parents=True, exist_ok=True)
         record = {'input_tokens': None, 'output_tokens': None, 'complete': False}
         self.requests.append(record)
-        append_json(self.directory/'wire.jsonl', {'event': 'request', 'at': utcnow(), 'payload': payload})
+        self.emit({'event': 'request', 'at': utcnow(), 'payload': payload})
         request = urllib.request.Request(BASE_URL+'/chat/completions',
             data=json.dumps(payload).encode(), headers={'Authorization': 'Bearer '+self.key,
                                                        'Content-Type': 'application/json'})
@@ -68,7 +75,7 @@ class BigModelChatModel:
         if self.key in body:
             raise RuntimeError('Credential in provider response; refuse export')
         data = json.loads(body)
-        append_json(self.directory/'wire.jsonl', {'event': 'response', 'at': utcnow(), 'body': data})
+        self.emit({'event': 'response', 'at': utcnow(), 'body': data})
         usage = data.get('usage') or {}
         record.update(input_tokens=usage.get('prompt_tokens'), output_tokens=usage.get('completion_tokens'),
             complete=type(usage.get('prompt_tokens')) is int and type(usage.get('completion_tokens')) is int)

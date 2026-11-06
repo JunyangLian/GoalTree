@@ -1,0 +1,80 @@
+{
+  "codetrail": {
+    "scenario_runs": 4,
+    "sessions": 6,
+    "mechanism_functional_passes": 4,
+    "mechanism_workflow_passes": 4,
+    "external_reverification_passes": 4,
+    "tool_steps": 36,
+    "scripted_model_requests": 42,
+    "policy_denials": 8,
+    "injected_patch_failures": 4,
+    "scripted_patch_recoveries": 4,
+    "repair_phase_evidence": {
+      "recall_at_5": {
+        "numerator": 6,
+        "denominator": 6,
+        "value": 1.0
+      },
+      "necessary_evidence_coverage": {
+        "numerator": 14,
+        "denominator": 14,
+        "value": 1.0
+      },
+      "immediate_context_loss": {
+        "numerator": 0,
+        "denominator": 26,
+        "value": 0.0
+      },
+      "repeated_reads": {
+        "numerator": 4,
+        "denominator": 10,
+        "value": 0.4
+      }
+    },
+    "tokens": null,
+    "cost_cny": null,
+    "memory_adoption_effectiveness": null,
+    "native_persistent_memory_supported": true,
+    "overall_score": null
+  },
+  "apecode": {
+    "scenario_runs": 4,
+    "sessions": 6,
+    "mechanism_functional_passes": 4,
+    "mechanism_workflow_passes": 4,
+    "external_reverification_passes": 4,
+    "tool_steps": 36,
+    "scripted_model_requests": 42,
+    "policy_denials": 8,
+    "injected_patch_failures": 4,
+    "scripted_patch_recoveries": 4,
+    "repair_phase_evidence": {
+      "recall_at_5": {
+        "numerator": 6,
+        "denominator": 6,
+        "value": 1.0
+      },
+      "necessary_evidence_coverage": {
+        "numerator": 14,
+        "denominator": 14,
+        "value": 1.0
+      },
+      "immediate_context_loss": {
+        "numerator": 0,
+        "denominator": 26,
+        "value": 0.0
+      },
+      "repeated_reads": {
+        "numerator": 4,
+        "denominator": 10,
+        "value": 0.4
+      }
+    },
+    "tokens": null,
+    "cost_cny": null,
+    "memory_adoption_effectiveness": null,
+    "native_persistent_memory_supported": false,
+    "overall_score": null
+  }
+}

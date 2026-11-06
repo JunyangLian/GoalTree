@@ -1,0 +1,49 @@
+{
+  "at": "2026-11-06T06:24:56.213533+00:00",
+  "scope": "offline scripted dual-Agent controller integration, not model benchmark",
+  "final_batch": {
+    "batch": "process-controller-v3-2026-11-06",
+    "freeze_sha256": "0055d0554501e4822bb6d93aa04907fe57c3c1ec04d4781129fa68ca4aff7272",
+    "runs": 8,
+    "summary_sha256": "cf3e16f61db3ff9645efe899fb7b132a8757e316d2399c00342cdc2c69095942",
+    "note": "final adapter includes read-only prompt fix and safe external overlay",
+    "model_benchmark_runs": 0
+  },
+  "scenario_runs": 8,
+  "sessions": 12,
+  "independent_external_passes": 8,
+  "tests": [
+    {
+      "file": "process-controller-full-2026-11-06.xml",
+      "passed": 437,
+      "sha256": "5f9dc335cf0c0064fdf7b34fd60b0396478601800403d65c7ccc41ba52dae093"
+    },
+    {
+      "file": "process-controller-final-targeted-2026-11-06.xml",
+      "passed": 59,
+      "sha256": "d399f6a11804dd691aa41f55b1bdba66f7cbecf98d2fdb02465d9299d1f82b7d"
+    }
+  ],
+  "distinct_passing_tests": 439,
+  "final_collected_tests": 439,
+  "all_current_tests_covered": true,
+  "docker": {
+    "ready": false,
+    "reason": "docker_cli_missing",
+    "host_fallback": false
+  },
+  "docker_actual_executions": 0,
+  "api_calls": 0,
+  "new_benchmark_tasks": 0,
+  "new_model_benchmark_runs": 0,
+  "raw_evidence_local": "artifacts/process-controller-raw-evidence-2026-11-06.zip",
+  "raw_evidence_sha256": "92621f829f890a45d2ea061ce5e14dc1cfaad827f9738f9148097f4678fb53f3",
+  "old_batches_preserved": true,
+  "overall_score": null,
+  "pending": [
+    "actual Docker kernel/SWE-bench image qualification",
+    "standard API live preflight and monetary-budget guarded dataset scheduling",
+    "independent process evidence-gold review",
+    "public benchmark model runs and HF release"
+  ]
+}

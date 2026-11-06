@@ -1,0 +1,9 @@
+run_key,agent,task_id,repeat,session_count,functional_passed,workflow_passed,failure_category,tool_steps,total_tokens,elapsed_ms
+01-apecode-controller_add-r2,apecode,controller_add,2,1,True,True,success,8,,8930
+02-codetrail-controller_changed_limit-r1,codetrail,controller_changed_limit,1,2,True,True,success,10,,23125
+03-apecode-controller_add-r1,apecode,controller_add,1,1,True,True,success,8,,10250
+04-apecode-controller_changed_limit-r1,apecode,controller_changed_limit,1,2,True,True,success,10,,10854
+05-codetrail-controller_changed_limit-r2,codetrail,controller_changed_limit,2,2,True,True,success,10,,20581
+06-codetrail-controller_add-r2,codetrail,controller_add,2,1,True,True,success,8,,16837
+07-apecode-controller_changed_limit-r2,apecode,controller_changed_limit,2,2,True,True,success,10,,12651
+08-codetrail-controller_add-r1,codetrail,controller_add,1,1,True,True,success,8,,17817

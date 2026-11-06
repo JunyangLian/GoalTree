@@ -1,0 +1,26 @@
+[
+  {
+    "batch": "process-controller-2026-11-06",
+    "freeze_sha256": "860899608c58d145031f161b8e774686df57cd3c04d21e400dbe605c28da4e5f",
+    "runs": 8,
+    "summary_sha256": "898dd8aa6e3939efa155bce83827fbad37d10a2a38351d3fa9cf211c9e11b7f6",
+    "note": "pre-normalization metadata; hard deadline field was misnamed",
+    "model_benchmark_runs": 0
+  },
+  {
+    "batch": "process-controller-v2-2026-11-06",
+    "freeze_sha256": "f9358f7cd7f489ac717ebc1e204f7ae81163be42fa8c0e64b8bce3e5d3a2f7d7",
+    "runs": 8,
+    "summary_sha256": "8a80d981be07f3d5657f9c652c1752056df8be6442c70f747c7b832d38a3a0be",
+    "note": "normalized patch status; read-only phase still had repair verification instruction",
+    "model_benchmark_runs": 0
+  },
+  {
+    "batch": "process-controller-v3-2026-11-06",
+    "freeze_sha256": "0055d0554501e4822bb6d93aa04907fe57c3c1ec04d4781129fa68ca4aff7272",
+    "runs": 8,
+    "summary_sha256": "cf3e16f61db3ff9645efe899fb7b132a8757e316d2399c00342cdc2c69095942",
+    "note": "final adapter includes read-only prompt fix and safe external overlay",
+    "model_benchmark_runs": 0
+  }
+]

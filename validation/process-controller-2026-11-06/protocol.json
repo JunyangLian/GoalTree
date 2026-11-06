@@ -1,0 +1,38 @@
+{
+  "at": "2026-11-06T06:15:40.069673+00:00",
+  "mode": "offline_scripted_integration_not_benchmark",
+  "model_api_calls": 0,
+  "fixture_count": 2,
+  "scenario_slots": 8,
+  "session_slots": 12,
+  "backend": "appcontainer",
+  "image": null,
+  "concurrency": 1,
+  "max_tools_per_session": 20,
+  "max_model_requests_per_session": 30,
+  "worker_deadline_seconds": 645,
+  "sampling_contract": {
+    "provider": "bigmodel_standard_api",
+    "model": "glm-5.3-flash",
+    "base_url": "https://open.bigmodel.cn/api/paas/v4",
+    "api_format": "chat_completions",
+    "temperature": 1,
+    "top_p": 0.95,
+    "max_tokens": 4096,
+    "timeout_seconds": 180,
+    "transport_attempts": 1,
+    "max_model_requests": 30,
+    "stream": false,
+    "thinking": {
+      "type": "enabled",
+      "clear_thinking": false
+    },
+    "reasoning_effort": "max",
+    "verification_status": "official documentation + offline contract tests; not live verified",
+    "credential_env": "BIGMODEL_API_KEY",
+    "coding_plan_allowed": false
+  },
+  "started_slot_replacement": false,
+  "memory": "same scenario workspace; fresh clients and session IDs; no prose auto-confirmation",
+  "limits": "scripted decisions; no Agent ranking, cost or model repair success claim"
+}

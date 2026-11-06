@@ -1,0 +1,833 @@
+{
+  "at": "2026-11-06T06:19:19.178464+00:00",
+  "mode": "offline_scripted_integration_not_benchmark",
+  "original_records_unchanged": true,
+  "auditor_sha256": "4dff01b8211b1cdfdada1e4f3c6efa541f735b38147e789a5c2404c02f54c6f1",
+  "verifier_python": "3.10.1 (tags/v3.10.1:2cd268a, Dec  6 2021, 19:10:37) [MSC v.1929 64 bit (AMD64)]",
+  "scenarios": 8,
+  "sessions": 12,
+  "independently_verified": 8,
+  "os_reverification_enabled": true,
+  "tool_steps": 72,
+  "policy_denials": 16,
+  "dispatch_rejections": 20,
+  "injected_patch_failures": 8,
+  "scripted_patch_recoveries": 8,
+  "observed_model_requests_are_scripted": 84,
+  "unpaired_returned_tool_ids": 0,
+  "source_freeze_sha256": "0055d0554501e4822bb6d93aa04907fe57c3c1ec04d4781129fa68ca4aff7272",
+  "api_calls": 0,
+  "new_benchmark_runs": 0,
+  "rows": [
+    {
+      "agent": "apecode",
+      "task_id": "controller_add",
+      "repeat": 2,
+      "run_key": "01-apecode-controller_add-r2",
+      "status": "completed",
+      "final_snapshot_valid": true,
+      "source_result_sha256": "2c069328c8d5233a8ca5b55e54f5b84c6353e7d5d65418ffb85ef9e28cfd9c8b",
+      "phases": [
+        {
+          "phase": "b",
+          "session_id": "2aef5b623df14a13a834e3bb2e7be198",
+          "model_requests": 9,
+          "model_responses": 9,
+          "tool_steps": 8,
+          "dispatch_rejections": 2,
+          "policy_denials": 2,
+          "returned_tool_ids": 8,
+          "returned_ids_paired": 8,
+          "duplicate_returned_ids": 0,
+          "not_dispatched": 0,
+          "patch_failures": [
+            {
+              "call_id": "fixture-4",
+              "later_same_file_corrected": true
+            }
+          ],
+          "evidence": {
+            "recall_at_5": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1.0
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1.0
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 4,
+              "value": 0.0
+            },
+            "repeated_reads": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            },
+            "retrieved_files": [
+              "compute.py"
+            ],
+            "context_observations": 7,
+            "unobserved_pending_evidence": 0,
+            "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+          },
+          "baseline_observed": true,
+          "final_test_observed": true
+        }
+      ],
+      "functional_passed": true,
+      "workflow_passed": true,
+      "second_external_verification": {
+        "accepted": true,
+        "tests_run": 1,
+        "exit_code": 0,
+        "output": "test_add (test_acceptance.T) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 1 test in 0.000s\r\n\r\nOK\r\n",
+        "workspace_unchanged": true,
+        "backend": "appcontainer",
+        "host_fallback": false
+      },
+      "verified": true,
+      "observed_native_memory_events": null,
+      "memory_adoption_effectiveness": null,
+      "api_calls": 0,
+      "note": "all decisions/faults/recovery scripted; mechanism evidence only"
+    },
+    {
+      "agent": "codetrail",
+      "task_id": "controller_changed_limit",
+      "repeat": 1,
+      "run_key": "02-codetrail-controller_changed_limit-r1",
+      "status": "completed",
+      "final_snapshot_valid": true,
+      "source_result_sha256": "3a281094bdd7861072a55d19d10fd8fda84fa251e72af767e6951a513283b975",
+      "phases": [
+        {
+          "phase": "a",
+          "session_id": "9a5e937a42f44e6aafb796e33f82d6cb",
+          "model_requests": 2,
+          "model_responses": 2,
+          "tool_steps": 1,
+          "dispatch_rejections": 0,
+          "policy_denials": 0,
+          "returned_tool_ids": 1,
+          "returned_ids_paired": 1,
+          "duplicate_returned_ids": 0,
+          "not_dispatched": 0,
+          "patch_failures": [],
+          "evidence": {
+            "recall_at_5": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1.0
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1.0
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0.0
+            },
+            "repeated_reads": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0.0
+            },
+            "retrieved_files": [
+              "limits.py"
+            ],
+            "context_observations": 2,
+            "unobserved_pending_evidence": 0,
+            "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+          },
+          "baseline_observed": false,
+          "final_test_observed": false
+        },
+        {
+          "phase": "b",
+          "session_id": "36b723a7ab2a40169a51fe93aeaf4d27",
+          "model_requests": 10,
+          "model_responses": 10,
+          "tool_steps": 9,
+          "dispatch_rejections": 3,
+          "policy_denials": 2,
+          "returned_tool_ids": 9,
+          "returned_ids_paired": 9,
+          "duplicate_returned_ids": 0,
+          "not_dispatched": 0,
+          "patch_failures": [
+            {
+              "call_id": "fixture-5",
+              "later_same_file_corrected": true
+            }
+          ],
+          "evidence": {
+            "recall_at_5": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1.0
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 5,
+              "denominator": 5,
+              "value": 1.0
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 9,
+              "value": 0.0
+            },
+            "repeated_reads": {
+              "numerator": 1,
+              "denominator": 3,
+              "value": 0.3333333333333333
+            },
+            "retrieved_files": [
+              "compute.py",
+              "limits.py"
+            ],
+            "context_observations": 8,
+            "unobserved_pending_evidence": 0,
+            "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+          },
+          "baseline_observed": true,
+          "final_test_observed": true
+        }
+      ],
+      "functional_passed": true,
+      "workflow_passed": true,
+      "second_external_verification": {
+        "accepted": true,
+        "tests_run": 1,
+        "exit_code": 0,
+        "output": "test_limit (test_acceptance.T) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 1 test in 0.000s\r\n\r\nOK\r\n",
+        "workspace_unchanged": true,
+        "backend": "appcontainer",
+        "host_fallback": false
+      },
+      "verified": true,
+      "observed_native_memory_events": {
+        "activated": 4,
+        "proposed": 4,
+        "stale": 2
+      },
+      "memory_adoption_effectiveness": null,
+      "api_calls": 0,
+      "note": "all decisions/faults/recovery scripted; mechanism evidence only"
+    },
+    {
+      "agent": "apecode",
+      "task_id": "controller_add",
+      "repeat": 1,
+      "run_key": "03-apecode-controller_add-r1",
+      "status": "completed",
+      "final_snapshot_valid": true,
+      "source_result_sha256": "ab0198a3b3b0d47d21a94d53c72d9da8e938c1b73e18eb4d9b0088d4ad26ea13",
+      "phases": [
+        {
+          "phase": "b",
+          "session_id": "83c8278d9c59472081d657a15f686b44",
+          "model_requests": 9,
+          "model_responses": 9,
+          "tool_steps": 8,
+          "dispatch_rejections": 2,
+          "policy_denials": 2,
+          "returned_tool_ids": 8,
+          "returned_ids_paired": 8,
+          "duplicate_returned_ids": 0,
+          "not_dispatched": 0,
+          "patch_failures": [
+            {
+              "call_id": "fixture-4",
+              "later_same_file_corrected": true
+            }
+          ],
+          "evidence": {
+            "recall_at_5": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1.0
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1.0
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 4,
+              "value": 0.0
+            },
+            "repeated_reads": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            },
+            "retrieved_files": [
+              "compute.py"
+            ],
+            "context_observations": 7,
+            "unobserved_pending_evidence": 0,
+            "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+          },
+          "baseline_observed": true,
+          "final_test_observed": true
+        }
+      ],
+      "functional_passed": true,
+      "workflow_passed": true,
+      "second_external_verification": {
+        "accepted": true,
+        "tests_run": 1,
+        "exit_code": 0,
+        "output": "test_add (test_acceptance.T) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 1 test in 0.000s\r\n\r\nOK\r\n",
+        "workspace_unchanged": true,
+        "backend": "appcontainer",
+        "host_fallback": false
+      },
+      "verified": true,
+      "observed_native_memory_events": null,
+      "memory_adoption_effectiveness": null,
+      "api_calls": 0,
+      "note": "all decisions/faults/recovery scripted; mechanism evidence only"
+    },
+    {
+      "agent": "apecode",
+      "task_id": "controller_changed_limit",
+      "repeat": 1,
+      "run_key": "04-apecode-controller_changed_limit-r1",
+      "status": "completed",
+      "final_snapshot_valid": true,
+      "source_result_sha256": "d2da17548e54e601e0d23033ee4448ed1d2fead85bdf05a2a5d94a96d8f7ca9e",
+      "phases": [
+        {
+          "phase": "a",
+          "session_id": "792472570e89457a8c4979aa69d15bc7",
+          "model_requests": 2,
+          "model_responses": 2,
+          "tool_steps": 1,
+          "dispatch_rejections": 0,
+          "policy_denials": 0,
+          "returned_tool_ids": 1,
+          "returned_ids_paired": 1,
+          "duplicate_returned_ids": 0,
+          "not_dispatched": 0,
+          "patch_failures": [],
+          "evidence": {
+            "recall_at_5": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1.0
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1.0
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0.0
+            },
+            "repeated_reads": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0.0
+            },
+            "retrieved_files": [
+              "limits.py"
+            ],
+            "context_observations": 2,
+            "unobserved_pending_evidence": 0,
+            "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+          },
+          "baseline_observed": false,
+          "final_test_observed": false
+        },
+        {
+          "phase": "b",
+          "session_id": "e42cbc40ae414b0ea45750f27811bd0a",
+          "model_requests": 10,
+          "model_responses": 10,
+          "tool_steps": 9,
+          "dispatch_rejections": 2,
+          "policy_denials": 2,
+          "returned_tool_ids": 9,
+          "returned_ids_paired": 9,
+          "duplicate_returned_ids": 0,
+          "not_dispatched": 0,
+          "patch_failures": [
+            {
+              "call_id": "fixture-5",
+              "later_same_file_corrected": true
+            }
+          ],
+          "evidence": {
+            "recall_at_5": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1.0
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 5,
+              "denominator": 5,
+              "value": 1.0
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 9,
+              "value": 0.0
+            },
+            "repeated_reads": {
+              "numerator": 1,
+              "denominator": 3,
+              "value": 0.3333333333333333
+            },
+            "retrieved_files": [
+              "compute.py",
+              "limits.py"
+            ],
+            "context_observations": 8,
+            "unobserved_pending_evidence": 0,
+            "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+          },
+          "baseline_observed": true,
+          "final_test_observed": true
+        }
+      ],
+      "functional_passed": true,
+      "workflow_passed": true,
+      "second_external_verification": {
+        "accepted": true,
+        "tests_run": 1,
+        "exit_code": 0,
+        "output": "test_limit (test_acceptance.T) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 1 test in 0.000s\r\n\r\nOK\r\n",
+        "workspace_unchanged": true,
+        "backend": "appcontainer",
+        "host_fallback": false
+      },
+      "verified": true,
+      "observed_native_memory_events": null,
+      "memory_adoption_effectiveness": null,
+      "api_calls": 0,
+      "note": "all decisions/faults/recovery scripted; mechanism evidence only"
+    },
+    {
+      "agent": "codetrail",
+      "task_id": "controller_changed_limit",
+      "repeat": 2,
+      "run_key": "05-codetrail-controller_changed_limit-r2",
+      "status": "completed",
+      "final_snapshot_valid": true,
+      "source_result_sha256": "0527b3b3b4718e6c3e8f49b64d1951eaca27f8023d488a5556a33bc2b23c49bd",
+      "phases": [
+        {
+          "phase": "a",
+          "session_id": "f4865f2595df4582818a350c5141708c",
+          "model_requests": 2,
+          "model_responses": 2,
+          "tool_steps": 1,
+          "dispatch_rejections": 0,
+          "policy_denials": 0,
+          "returned_tool_ids": 1,
+          "returned_ids_paired": 1,
+          "duplicate_returned_ids": 0,
+          "not_dispatched": 0,
+          "patch_failures": [],
+          "evidence": {
+            "recall_at_5": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1.0
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1.0
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0.0
+            },
+            "repeated_reads": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0.0
+            },
+            "retrieved_files": [
+              "limits.py"
+            ],
+            "context_observations": 2,
+            "unobserved_pending_evidence": 0,
+            "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+          },
+          "baseline_observed": false,
+          "final_test_observed": false
+        },
+        {
+          "phase": "b",
+          "session_id": "df4bcb816d9343179170b8703b6d0316",
+          "model_requests": 10,
+          "model_responses": 10,
+          "tool_steps": 9,
+          "dispatch_rejections": 3,
+          "policy_denials": 2,
+          "returned_tool_ids": 9,
+          "returned_ids_paired": 9,
+          "duplicate_returned_ids": 0,
+          "not_dispatched": 0,
+          "patch_failures": [
+            {
+              "call_id": "fixture-5",
+              "later_same_file_corrected": true
+            }
+          ],
+          "evidence": {
+            "recall_at_5": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1.0
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 5,
+              "denominator": 5,
+              "value": 1.0
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 9,
+              "value": 0.0
+            },
+            "repeated_reads": {
+              "numerator": 1,
+              "denominator": 3,
+              "value": 0.3333333333333333
+            },
+            "retrieved_files": [
+              "compute.py",
+              "limits.py"
+            ],
+            "context_observations": 8,
+            "unobserved_pending_evidence": 0,
+            "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+          },
+          "baseline_observed": true,
+          "final_test_observed": true
+        }
+      ],
+      "functional_passed": true,
+      "workflow_passed": true,
+      "second_external_verification": {
+        "accepted": true,
+        "tests_run": 1,
+        "exit_code": 0,
+        "output": "test_limit (test_acceptance.T) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 1 test in 0.000s\r\n\r\nOK\r\n",
+        "workspace_unchanged": true,
+        "backend": "appcontainer",
+        "host_fallback": false
+      },
+      "verified": true,
+      "observed_native_memory_events": {
+        "activated": 4,
+        "proposed": 4,
+        "stale": 2
+      },
+      "memory_adoption_effectiveness": null,
+      "api_calls": 0,
+      "note": "all decisions/faults/recovery scripted; mechanism evidence only"
+    },
+    {
+      "agent": "codetrail",
+      "task_id": "controller_add",
+      "repeat": 2,
+      "run_key": "06-codetrail-controller_add-r2",
+      "status": "completed",
+      "final_snapshot_valid": true,
+      "source_result_sha256": "4427c5cd8a7536c5393d045f70c6bdb170c9afd7c8300df58b13f0a103c616fa",
+      "phases": [
+        {
+          "phase": "b",
+          "session_id": "e32ca3973e554207b5af065a21f72877",
+          "model_requests": 9,
+          "model_responses": 9,
+          "tool_steps": 8,
+          "dispatch_rejections": 3,
+          "policy_denials": 2,
+          "returned_tool_ids": 8,
+          "returned_ids_paired": 8,
+          "duplicate_returned_ids": 0,
+          "not_dispatched": 0,
+          "patch_failures": [
+            {
+              "call_id": "fixture-4",
+              "later_same_file_corrected": true
+            }
+          ],
+          "evidence": {
+            "recall_at_5": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1.0
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1.0
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 4,
+              "value": 0.0
+            },
+            "repeated_reads": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            },
+            "retrieved_files": [
+              "compute.py"
+            ],
+            "context_observations": 7,
+            "unobserved_pending_evidence": 0,
+            "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+          },
+          "baseline_observed": true,
+          "final_test_observed": true
+        }
+      ],
+      "functional_passed": true,
+      "workflow_passed": true,
+      "second_external_verification": {
+        "accepted": true,
+        "tests_run": 1,
+        "exit_code": 0,
+        "output": "test_add (test_acceptance.T) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 1 test in 0.000s\r\n\r\nOK\r\n",
+        "workspace_unchanged": true,
+        "backend": "appcontainer",
+        "host_fallback": false
+      },
+      "verified": true,
+      "observed_native_memory_events": {
+        "activated": 2,
+        "proposed": 2,
+        "stale": 1
+      },
+      "memory_adoption_effectiveness": null,
+      "api_calls": 0,
+      "note": "all decisions/faults/recovery scripted; mechanism evidence only"
+    },
+    {
+      "agent": "apecode",
+      "task_id": "controller_changed_limit",
+      "repeat": 2,
+      "run_key": "07-apecode-controller_changed_limit-r2",
+      "status": "completed",
+      "final_snapshot_valid": true,
+      "source_result_sha256": "99b25781d4abfc38216cfd74218cc88f6e23e2e38ed0bf9032021728dfabb88b",
+      "phases": [
+        {
+          "phase": "a",
+          "session_id": "105c87e26f4e478589063cdb6411f267",
+          "model_requests": 2,
+          "model_responses": 2,
+          "tool_steps": 1,
+          "dispatch_rejections": 0,
+          "policy_denials": 0,
+          "returned_tool_ids": 1,
+          "returned_ids_paired": 1,
+          "duplicate_returned_ids": 0,
+          "not_dispatched": 0,
+          "patch_failures": [],
+          "evidence": {
+            "recall_at_5": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1.0
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1.0
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0.0
+            },
+            "repeated_reads": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0.0
+            },
+            "retrieved_files": [
+              "limits.py"
+            ],
+            "context_observations": 2,
+            "unobserved_pending_evidence": 0,
+            "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+          },
+          "baseline_observed": false,
+          "final_test_observed": false
+        },
+        {
+          "phase": "b",
+          "session_id": "d13260a06cde405f998148b6f0c0352a",
+          "model_requests": 10,
+          "model_responses": 10,
+          "tool_steps": 9,
+          "dispatch_rejections": 2,
+          "policy_denials": 2,
+          "returned_tool_ids": 9,
+          "returned_ids_paired": 9,
+          "duplicate_returned_ids": 0,
+          "not_dispatched": 0,
+          "patch_failures": [
+            {
+              "call_id": "fixture-5",
+              "later_same_file_corrected": true
+            }
+          ],
+          "evidence": {
+            "recall_at_5": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1.0
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 5,
+              "denominator": 5,
+              "value": 1.0
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 9,
+              "value": 0.0
+            },
+            "repeated_reads": {
+              "numerator": 1,
+              "denominator": 3,
+              "value": 0.3333333333333333
+            },
+            "retrieved_files": [
+              "compute.py",
+              "limits.py"
+            ],
+            "context_observations": 8,
+            "unobserved_pending_evidence": 0,
+            "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+          },
+          "baseline_observed": true,
+          "final_test_observed": true
+        }
+      ],
+      "functional_passed": true,
+      "workflow_passed": true,
+      "second_external_verification": {
+        "accepted": true,
+        "tests_run": 1,
+        "exit_code": 0,
+        "output": "test_limit (test_acceptance.T) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 1 test in 0.000s\r\n\r\nOK\r\n",
+        "workspace_unchanged": true,
+        "backend": "appcontainer",
+        "host_fallback": false
+      },
+      "verified": true,
+      "observed_native_memory_events": null,
+      "memory_adoption_effectiveness": null,
+      "api_calls": 0,
+      "note": "all decisions/faults/recovery scripted; mechanism evidence only"
+    },
+    {
+      "agent": "codetrail",
+      "task_id": "controller_add",
+      "repeat": 1,
+      "run_key": "08-codetrail-controller_add-r1",
+      "status": "completed",
+      "final_snapshot_valid": true,
+      "source_result_sha256": "beb2ac03a2d10c999a981ce5b1c11f24c4cef2946a1375e2878a3dbd822af95a",
+      "phases": [
+        {
+          "phase": "b",
+          "session_id": "3630e093cc4f4682a6b52d0dc096a6f9",
+          "model_requests": 9,
+          "model_responses": 9,
+          "tool_steps": 8,
+          "dispatch_rejections": 3,
+          "policy_denials": 2,
+          "returned_tool_ids": 8,
+          "returned_ids_paired": 8,
+          "duplicate_returned_ids": 0,
+          "not_dispatched": 0,
+          "patch_failures": [
+            {
+              "call_id": "fixture-4",
+              "later_same_file_corrected": true
+            }
+          ],
+          "evidence": {
+            "recall_at_5": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1.0
+            },
+            "necessary_evidence_coverage": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1.0
+            },
+            "immediate_context_loss": {
+              "numerator": 0,
+              "denominator": 4,
+              "value": 0.0
+            },
+            "repeated_reads": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            },
+            "retrieved_files": [
+              "compute.py"
+            ],
+            "context_observations": 7,
+            "unobserved_pending_evidence": 0,
+            "scope": "pre-first-edit exact versioned gold; missing observations unassessed; no semantic adoption inference; successful numbered read_file only; search/paraphrase/memory adoption unassessed"
+          },
+          "baseline_observed": true,
+          "final_test_observed": true
+        }
+      ],
+      "functional_passed": true,
+      "workflow_passed": true,
+      "second_external_verification": {
+        "accepted": true,
+        "tests_run": 1,
+        "exit_code": 0,
+        "output": "test_add (test_acceptance.T) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 1 test in 0.000s\r\n\r\nOK\r\n",
+        "workspace_unchanged": true,
+        "backend": "appcontainer",
+        "host_fallback": false
+      },
+      "verified": true,
+      "observed_native_memory_events": {
+        "activated": 2,
+        "proposed": 2,
+        "stale": 1
+      },
+      "memory_adoption_effectiveness": null,
+      "api_calls": 0,
+      "note": "all decisions/faults/recovery scripted; mechanism evidence only"
+    }
+  ],
+  "limitations": [
+    "No model decision quality or autonomous recovery claim",
+    "No actual Docker kernel test without a daemon",
+    "No semantic memory adoption metric",
+    "Parser/envelope observations do not prove all protocol behavior correct"
+  ]
+}

@@ -2,6 +2,8 @@
 
 2026-11-06。当前是基础实现与离线验证，**没有新增模型成绩，没有在线排行榜，尚未上传 Hugging Face**。整体方案见[设计稿](benchmark-program-v0.1.md)。
 
+后续进展：双 Agent 回调、跨会话阶段与隔离执行已在[新控制器](process-controller.md)中贯通并完成脚本化真实循环验证。下文“仍需整体串联”描述第一阶段状态；正式 API 数据集调度与公开容器验证依旧待完成。
+
 ## 已实现
 
 1. SWE-bench Lite 固定 revision/hash 读取、分层确定性抽样、输入字段白名单、控制器专用验收资产、官方预测 JSONL 导出，以及固定提交官方 harness 的调用入口。缺少 Linux Docker 时记录 blocked，不改用本项目 unittest 代替官方标准。

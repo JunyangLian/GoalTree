@@ -1,0 +1,3 @@
+agent,scenario_runs,sessions,tool_steps,scripted_model_requests,policy_denials,injected_patch_failures,scripted_patch_recoveries
+codetrail,4,6,36,42,8,4,4
+apecode,4,6,36,42,8,4,4
