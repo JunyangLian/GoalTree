@@ -1,0 +1,70 @@
+{
+  "derived_only": true,
+  "source": "../glm-repair12-compat-2026-11-06/runs-detailed.json",
+  "annotations": [
+    {
+      "run_key": "002-apecode-money_minor_units",
+      "source_category": "workflow_initial_test_missing",
+      "refined_category": "workflow_initial_test_missing",
+      "source_error": null,
+      "grades_unchanged": true,
+      "baseline_test_observed": false,
+      "final_test_observed": true
+    },
+    {
+      "run_key": "006-apecode-holdout_dotenv_override",
+      "source_category": "model_output_budget_truncation",
+      "refined_category": "model_output_budget_truncation",
+      "source_error": "RuntimeError: Truncated response; no incomplete tool call executed",
+      "grades_unchanged": true,
+      "baseline_test_observed": false,
+      "final_test_observed": false
+    },
+    {
+      "run_key": "010-apecode-ttl_expiry",
+      "source_category": "workflow_initial_test_missing",
+      "refined_category": "workflow_initial_and_final_tests_missing",
+      "source_error": null,
+      "grades_unchanged": true,
+      "baseline_test_observed": false,
+      "final_test_observed": false
+    },
+    {
+      "run_key": "011-apecode-boltons_splitlines",
+      "source_category": "model_output_budget_truncation",
+      "refined_category": "model_output_budget_truncation",
+      "source_error": "RuntimeError: Truncated response; no incomplete tool call executed",
+      "grades_unchanged": true,
+      "baseline_test_observed": false,
+      "final_test_observed": false
+    },
+    {
+      "run_key": "018-apecode-boltons_xfrange",
+      "source_category": "model_output_budget_truncation",
+      "refined_category": "model_output_budget_truncation",
+      "source_error": "RuntimeError: Truncated response; no incomplete tool call executed",
+      "grades_unchanged": true,
+      "baseline_test_observed": true,
+      "final_test_observed": false
+    },
+    {
+      "run_key": "023-apecode-humanize_metric",
+      "source_category": "model_or_controller_error",
+      "refined_category": "budget_pretransmission_stop",
+      "source_error": "BudgetExceeded: Frozen money/token budget stopped before transmission; no replacement run",
+      "grades_unchanged": true,
+      "baseline_test_observed": true,
+      "final_test_observed": false
+    }
+  ],
+  "budget_stop_evidence": {
+    "ledger": "artifacts/glm-repair12-compat-v3-2026-11-06/budget/ledger.jsonl",
+    "known_tokens": 1902634,
+    "unconfirmed_reserved_tokens": 66108,
+    "next_request_reserved_tokens": 31745,
+    "sum": 2000487,
+    "limit": 2000000,
+    "reason": "Token guard, before transmission; money guard not reached",
+    "no_model_call_after_denial": true
+  }
+}

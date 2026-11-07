@@ -1,0 +1,522 @@
+{
+  "worker_results_checked": 46,
+  "unique_observed_session_ids": 46,
+  "controller_terminal_without_session_result": 1,
+  "terminal_note": "The original run024 lacks session-result; its separate postterminal snapshot and external test are retained in the baseline terminal-external-audit.json. No invented missing session evidence.",
+  "rows": [
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "001-codetrail-money_minor_units",
+      "session_id": "7c5081d2d94d42ec9dae641c1d5ff502",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "002-apecode-money_minor_units",
+      "session_id": "64865bc6a70e4dfb8f604df0a9cdb22e",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "003-apecode-inventory_reservation",
+      "session_id": "0bdf8d961d5c472f8eeedcbf413c77f5",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "004-codetrail-inventory_reservation",
+      "session_id": "dcd0988e1ab14e37904b4570b58abcff",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "005-codetrail-holdout_dotenv_override",
+      "session_id": "767c5059082e4de2a7380b3065a293c5",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE",
+        "dotenv/__init__.py",
+        "dotenv/cli.py",
+        "dotenv/compat.py",
+        "dotenv/ipython.py",
+        "dotenv/parser.py",
+        "dotenv/variables.py",
+        "dotenv/version.py",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "006-apecode-holdout_dotenv_override",
+      "session_id": "6539a264fbe44a1ead9853c0fbe28d0f",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE",
+        "dotenv/__init__.py",
+        "dotenv/cli.py",
+        "dotenv/compat.py",
+        "dotenv/ipython.py",
+        "dotenv/parser.py",
+        "dotenv/variables.py",
+        "dotenv/version.py",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "007-apecode-pagination_boundaries",
+      "session_id": "d079a4c12e804cf29e141fa0c61f9da1",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_pagination.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "008-codetrail-pagination_boundaries",
+      "session_id": "33503e2117c44ce8b7c122e0530a41f2",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_pagination.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "009-codetrail-ttl_expiry",
+      "session_id": "a6574d7e9cd84b7abd89d22400777865",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "010-apecode-ttl_expiry",
+      "session_id": "ff515d300e5d4bad8c068593acc9bb44",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "011-apecode-boltons_splitlines",
+      "session_id": "b32a21722f00447ebc73ddc7b670d0d8",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "012-codetrail-boltons_splitlines",
+      "session_id": "92856161c7484fafa36a71c7f903dce9",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "013-codetrail-retry_schedule",
+      "session_id": "9afd16edcf824cfea10481b7272d4101",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "014-apecode-retry_schedule",
+      "session_id": "4a74cda6f5a546efaf1496361d262691",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "015-apecode-humanize_fractional",
+      "session_id": "7453795ab1d146379c6dfdebf314af80",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "016-codetrail-humanize_fractional",
+      "session_id": "01eeec3ff36b4e03801b169618152e37",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "017-codetrail-boltons_xfrange",
+      "session_id": "f8fa639e674a4285b2a4b21d82168b5d",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "018-apecode-boltons_xfrange",
+      "session_id": "c5dc06791e654a53a2fd26efdaac8980",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "019-apecode-boltons_isoparse",
+      "session_id": "4469ff97823a4424b6b9fd76a1642ffe",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "020-codetrail-boltons_isoparse",
+      "session_id": "ee744269281445fabb1e076e436387ba",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "021-codetrail-humanize_list",
+      "session_id": "dca5dd99297b47e3a13b75f7a6f9b3ff",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "022-apecode-humanize_list",
+      "session_id": "fdf0685404c04cd285ed3eef410644c2",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair30-v2-2026-11-06",
+      "run_key": "023-apecode-humanize_metric",
+      "session_id": "4d4e60c9f5ab4ec78749665a9b30f030",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "001-codetrail-money_minor_units",
+      "session_id": "2c57b3a8adf14068ad570ab9db3bd301",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "002-apecode-money_minor_units",
+      "session_id": "5b9aa39bcec4416993375c893ed71b85",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "003-apecode-inventory_reservation",
+      "session_id": "c37c5051a4064f2cbf14c64fcb72049b",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "004-codetrail-inventory_reservation",
+      "session_id": "5c5914addb444451b2bad92761e97019",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "005-codetrail-holdout_dotenv_override",
+      "session_id": "87cf4e8f1c234579b3c34578ca82ad90",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE",
+        "dotenv/__init__.py",
+        "dotenv/cli.py",
+        "dotenv/compat.py",
+        "dotenv/ipython.py",
+        "dotenv/parser.py",
+        "dotenv/variables.py",
+        "dotenv/version.py",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "006-apecode-holdout_dotenv_override",
+      "session_id": "10b36d28ed3f407a9d82e2c5c489bf03",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE",
+        "dotenv/__init__.py",
+        "dotenv/cli.py",
+        "dotenv/compat.py",
+        "dotenv/ipython.py",
+        "dotenv/parser.py",
+        "dotenv/variables.py",
+        "dotenv/version.py",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "007-apecode-pagination_boundaries",
+      "session_id": "6f472227c49f4264b1cecf63bb86502a",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_pagination.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "008-codetrail-pagination_boundaries",
+      "session_id": "095ff2ab3f094238a90325382c06e275",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_pagination.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "009-codetrail-ttl_expiry",
+      "session_id": "8c3a1c50c9cf4cf592b9f8efe551a79e",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "010-apecode-ttl_expiry",
+      "session_id": "cf1545cd4ba04a628ed51f2ba8e368f1",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "011-apecode-boltons_splitlines",
+      "session_id": "9ad7721856194b66a349eb8b5d54e0c8",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "012-codetrail-boltons_splitlines",
+      "session_id": "ec362002246749d7ac0b90c1f5225c4b",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "013-codetrail-retry_schedule",
+      "session_id": "79783935383546388f4ae5f4654e4464",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "014-apecode-retry_schedule",
+      "session_id": "937f6e67092c4a7ab1f8e50afb29cc57",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "015-apecode-humanize_fractional",
+      "session_id": "4e945e6e1a76412fbc78597203223316",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "016-codetrail-humanize_fractional",
+      "session_id": "e4dd7bd2f4fa40b0aa68cd4e4e26b52d",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "017-codetrail-boltons_xfrange",
+      "session_id": "f0657fa722f9426bad33c8f13bc0fc98",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "018-apecode-boltons_xfrange",
+      "session_id": "9f30aca860774274b5e3d154c37670f3",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "019-apecode-boltons_isoparse",
+      "session_id": "ad8b508ca75d48529f6f9810314c2eef",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "020-codetrail-boltons_isoparse",
+      "session_id": "fec236157d6e4f2d9eb33d54d3cb47c3",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "021-codetrail-humanize_list",
+      "session_id": "7cec15b1209a44ca88f71a8663b3d486",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "022-apecode-humanize_list",
+      "session_id": "76fb588823bb48d6928784bf4ce6df4c",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    },
+    {
+      "batch": "glm-repair12-compat-v3-2026-11-06",
+      "run_key": "023-apecode-humanize_metric",
+      "session_id": "ed369ff0ee624e8885cb221a07ccf97e",
+      "initial_files_match_frozen_task": true,
+      "readonly_files_unchanged": [
+        "README.md",
+        "UPSTREAM_LICENSE.txt",
+        "test_acceptance.py"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,345 @@
+{
+  "version": "verified-repair-score-v1",
+  "repetitions": 1,
+  "agents": {
+    "apecode": {
+      "planned_runs": 12,
+      "recorded_runs": 12,
+      "unique_tasks": 12,
+      "complete": true,
+      "verified_score": 50.0,
+      "functional_score": 66.66666666666667,
+      "verified_bounds": [
+        50.0,
+        50.0
+      ],
+      "stable_score": null,
+      "input_tokens": 335583,
+      "output_tokens": 34672,
+      "tool_steps": 113,
+      "categories": {
+        "single_file": {
+          "tasks": 3,
+          "planned_runs": 3,
+          "functional_passes": 3,
+          "verified_passes": 2,
+          "unobserved": 0,
+          "functional_score": 100.0,
+          "verified_score": 66.66666666666667,
+          "verified_bounds": [
+            66.66666666666667,
+            66.66666666666667
+          ],
+          "stable_tasks": 2,
+          "stable_score": null
+        },
+        "cross_file": {
+          "tasks": 3,
+          "planned_runs": 3,
+          "functional_passes": 2,
+          "verified_passes": 1,
+          "unobserved": 0,
+          "functional_score": 66.66666666666667,
+          "verified_score": 33.333333333333336,
+          "verified_bounds": [
+            33.333333333333336,
+            33.333333333333336
+          ],
+          "stable_tasks": 1,
+          "stable_score": null
+        },
+        "unknown_location": {
+          "tasks": 3,
+          "planned_runs": 3,
+          "functional_passes": 1,
+          "verified_passes": 1,
+          "unobserved": 0,
+          "functional_score": 33.333333333333336,
+          "verified_score": 33.333333333333336,
+          "verified_bounds": [
+            33.333333333333336,
+            33.333333333333336
+          ],
+          "stable_tasks": 1,
+          "stable_score": null
+        },
+        "regression_compatibility": {
+          "tasks": 3,
+          "planned_runs": 3,
+          "functional_passes": 2,
+          "verified_passes": 2,
+          "unobserved": 0,
+          "functional_score": 66.66666666666667,
+          "verified_score": 66.66666666666667,
+          "verified_bounds": [
+            66.66666666666667,
+            66.66666666666667
+          ],
+          "stable_tasks": 2,
+          "stable_score": null
+        }
+      }
+    },
+    "codetrail": {
+      "planned_runs": 12,
+      "recorded_runs": 11,
+      "unique_tasks": 12,
+      "complete": false,
+      "verified_score": null,
+      "functional_score": null,
+      "verified_bounds": [
+        91.66666666666667,
+        100.0
+      ],
+      "stable_score": null,
+      "input_tokens": null,
+      "output_tokens": null,
+      "tool_steps": null,
+      "categories": {
+        "single_file": {
+          "tasks": 3,
+          "planned_runs": 3,
+          "functional_passes": 3,
+          "verified_passes": 3,
+          "unobserved": 0,
+          "functional_score": 100.0,
+          "verified_score": 100.0,
+          "verified_bounds": [
+            100.0,
+            100.0
+          ],
+          "stable_tasks": 3,
+          "stable_score": null
+        },
+        "cross_file": {
+          "tasks": 3,
+          "planned_runs": 3,
+          "functional_passes": 3,
+          "verified_passes": 3,
+          "unobserved": 0,
+          "functional_score": 100.0,
+          "verified_score": 100.0,
+          "verified_bounds": [
+            100.0,
+            100.0
+          ],
+          "stable_tasks": 3,
+          "stable_score": null
+        },
+        "unknown_location": {
+          "tasks": 3,
+          "planned_runs": 3,
+          "functional_passes": 3,
+          "verified_passes": 3,
+          "unobserved": 0,
+          "functional_score": 100.0,
+          "verified_score": 100.0,
+          "verified_bounds": [
+            100.0,
+            100.0
+          ],
+          "stable_tasks": 3,
+          "stable_score": null
+        },
+        "regression_compatibility": {
+          "tasks": 3,
+          "planned_runs": 3,
+          "functional_passes": 2,
+          "verified_passes": 2,
+          "unobserved": 1,
+          "functional_score": null,
+          "verified_score": null,
+          "verified_bounds": [
+            66.66666666666667,
+            100.0
+          ],
+          "stable_tasks": 2,
+          "stable_score": null
+        }
+      }
+    }
+  },
+  "unique_tasks": 12,
+  "planned_runs": 24,
+  "formula": "100 * mean_over_4_categories(mean_over_tasks(mean_over_frozen_repeats(verified_success)))",
+  "efficiency_and_safety": "Separate diagnostics; no efficiency bonus, no inferred attack-defense score",
+  "uncertainty": "Fixed known regression set; repeats do not establish unseen-task generalization",
+  "core_12": {
+    "version": "verified-repair-score-v1",
+    "repetitions": 1,
+    "agents": {
+      "apecode": {
+        "planned_runs": 12,
+        "recorded_runs": 12,
+        "unique_tasks": 12,
+        "complete": true,
+        "verified_score": 50.0,
+        "functional_score": 66.66666666666667,
+        "verified_bounds": [
+          50.0,
+          50.0
+        ],
+        "stable_score": null,
+        "input_tokens": 335583,
+        "output_tokens": 34672,
+        "tool_steps": 113,
+        "categories": {
+          "single_file": {
+            "tasks": 3,
+            "planned_runs": 3,
+            "functional_passes": 3,
+            "verified_passes": 2,
+            "unobserved": 0,
+            "functional_score": 100.0,
+            "verified_score": 66.66666666666667,
+            "verified_bounds": [
+              66.66666666666667,
+              66.66666666666667
+            ],
+            "stable_tasks": 2,
+            "stable_score": null
+          },
+          "cross_file": {
+            "tasks": 3,
+            "planned_runs": 3,
+            "functional_passes": 2,
+            "verified_passes": 1,
+            "unobserved": 0,
+            "functional_score": 66.66666666666667,
+            "verified_score": 33.333333333333336,
+            "verified_bounds": [
+              33.333333333333336,
+              33.333333333333336
+            ],
+            "stable_tasks": 1,
+            "stable_score": null
+          },
+          "unknown_location": {
+            "tasks": 3,
+            "planned_runs": 3,
+            "functional_passes": 1,
+            "verified_passes": 1,
+            "unobserved": 0,
+            "functional_score": 33.333333333333336,
+            "verified_score": 33.333333333333336,
+            "verified_bounds": [
+              33.333333333333336,
+              33.333333333333336
+            ],
+            "stable_tasks": 1,
+            "stable_score": null
+          },
+          "regression_compatibility": {
+            "tasks": 3,
+            "planned_runs": 3,
+            "functional_passes": 2,
+            "verified_passes": 2,
+            "unobserved": 0,
+            "functional_score": 66.66666666666667,
+            "verified_score": 66.66666666666667,
+            "verified_bounds": [
+              66.66666666666667,
+              66.66666666666667
+            ],
+            "stable_tasks": 2,
+            "stable_score": null
+          }
+        }
+      },
+      "codetrail": {
+        "planned_runs": 12,
+        "recorded_runs": 11,
+        "unique_tasks": 12,
+        "complete": false,
+        "verified_score": null,
+        "functional_score": null,
+        "verified_bounds": [
+          91.66666666666667,
+          100.0
+        ],
+        "stable_score": null,
+        "input_tokens": null,
+        "output_tokens": null,
+        "tool_steps": null,
+        "categories": {
+          "single_file": {
+            "tasks": 3,
+            "planned_runs": 3,
+            "functional_passes": 3,
+            "verified_passes": 3,
+            "unobserved": 0,
+            "functional_score": 100.0,
+            "verified_score": 100.0,
+            "verified_bounds": [
+              100.0,
+              100.0
+            ],
+            "stable_tasks": 3,
+            "stable_score": null
+          },
+          "cross_file": {
+            "tasks": 3,
+            "planned_runs": 3,
+            "functional_passes": 3,
+            "verified_passes": 3,
+            "unobserved": 0,
+            "functional_score": 100.0,
+            "verified_score": 100.0,
+            "verified_bounds": [
+              100.0,
+              100.0
+            ],
+            "stable_tasks": 3,
+            "stable_score": null
+          },
+          "unknown_location": {
+            "tasks": 3,
+            "planned_runs": 3,
+            "functional_passes": 3,
+            "verified_passes": 3,
+            "unobserved": 0,
+            "functional_score": 100.0,
+            "verified_score": 100.0,
+            "verified_bounds": [
+              100.0,
+              100.0
+            ],
+            "stable_tasks": 3,
+            "stable_score": null
+          },
+          "regression_compatibility": {
+            "tasks": 3,
+            "planned_runs": 3,
+            "functional_passes": 2,
+            "verified_passes": 2,
+            "unobserved": 1,
+            "functional_score": null,
+            "verified_score": null,
+            "verified_bounds": [
+              66.66666666666667,
+              100.0
+            ],
+            "stable_tasks": 2,
+            "stable_score": null
+          }
+        }
+      }
+    },
+    "unique_tasks": 12,
+    "planned_runs": 24,
+    "formula": "100 * mean_over_4_categories(mean_over_tasks(mean_over_frozen_repeats(verified_success)))",
+    "efficiency_and_safety": "Separate diagnostics; no efficiency bonus, no inferred attack-defense score",
+    "uncertainty": "Fixed known regression set; repeats do not establish unseen-task generalization"
+  },
+  "budget": {
+    "known_tariff_upper_cny": "1.9387952",
+    "unknown_reserved_cny": "0.0692704",
+    "known_total_tokens": 1902634,
+    "unknown_reserved_tokens": 66108,
+    "max_cny": "5",
+    "max_total_tokens": 2000000,
+    "actual_account_debit_cny": null
+  },
+  "at": "2026-11-07T11:26:24.057793+00:00",
+  "run_records": 23
+}

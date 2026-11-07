@@ -203,9 +203,9 @@ def test_bigmodel_apecode_adapter_preserves_native_reasoning_and_pins_official_s
 
 
 @pytest.mark.parametrize('model_name,reasoning,finish', [
-    ('other-model', 'thinking', 'stop'), ('glm-5.3-flash', None, 'stop'),
+    ('other-model', 'thinking', 'stop'), ('glm-5.3-flash', 7, 'stop'),
     ('glm-5.3-flash', 'thinking', 'length')])
-def test_bigmodel_mismatch_missing_reasoning_and_truncation_fail_closed(tmp_path, model_name, reasoning, finish):
+def test_bigmodel_mismatch_malformed_reasoning_and_truncation_fail_closed(tmp_path, model_name, reasoning, finish):
     body = {'model': model_name, 'choices': [{'finish_reason': finish, 'message': {'reasoning_content': reasoning}}]}
     with patch.dict('os.environ', {'BIGMODEL_API_KEY': 'private-fixture-credential'}):
         model = BigModelChatModel(tmp_path)

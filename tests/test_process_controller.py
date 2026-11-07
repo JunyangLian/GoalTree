@@ -82,10 +82,12 @@ def test_code_loop_native_calls_observers_denials_and_failed_patch_recovery_are_
     task = fixtures()[0]
     state = start(task, tmp_path/'scenario', 'codetrail')
     workspace = tmp_path/'scenario/workspace'
+    executions = []
     class Executor:
         backend = 'scripted_unit_fixture_not_os_test'
         def execute(self, root, command, timeout):
             assert command == VERIFY
+            executions.append((root, command, timeout))
             green = 'return a + b' in (root/'compute.py').read_text()
             return {'returncode': 0 if green else 1,
                 'output': 'Ran 1 test in 0.01s\n\n'+('OK\n' if green else 'FAILED (failures=1)\n')}
@@ -95,8 +97,10 @@ def test_code_loop_native_calls_observers_denials_and_failed_patch_recovery_are_
         client.max_transport_attempts = 1
         return client
     scripted = ScriptedHTTP(actions(task, 'codetrail', 'b'), 'b')
-    with patch('urllib.request.urlopen', side_effect=scripted):
+    with patch('urllib.request.urlopen', side_effect=scripted), \
+         patch('pico.runtime.Pico._isolated_shell', side_effect=AssertionError('Unpinned native runner must not be captured')):
         result = run_codetrail(task, workspace, tmp_path/'session', Executor(), 'b', state['session_id'], factory)
+    assert len(executions) == 2  # baseline and final test must reach the supplied backend.
     assert result['completed'] and not result['agent_error']
     assert result['baseline_test_observed'] and result['final_test_observed']
     assert result['security_denials'] >= 2

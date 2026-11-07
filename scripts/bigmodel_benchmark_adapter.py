@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from pico.providers.clients import OpenAICompatibleModelClient
 from pico.evaluation.repair_suite import append_json, utcnow
-from pico.providers.glm_protocol import measured_zero_reasoning
+from pico.providers.glm_protocol import valid_optional_reasoning
 
 MODEL = 'glm-5.3-flash'
 BASE_URL = 'https://open.bigmodel.cn/api/paas/v4'
@@ -87,6 +87,6 @@ class BigModelChatModel:
         if choice.get('finish_reason') == 'length':
             raise RuntimeError('Truncated response; no incomplete tool call executed')
         message = choice['message']
-        if not isinstance(message.get('reasoning_content'), str) and not measured_zero_reasoning(message, data.get('usage') or {}):
-            raise RuntimeError('Thinking response missing reasoning_content; protocol not verified')
+        if not valid_optional_reasoning(message):
+            raise RuntimeError('Malformed GLM reasoning_content type; no action accepted')
         return message

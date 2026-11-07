@@ -22,7 +22,9 @@ from scripts.glm_live_support import Budget
 
 
 def jsonlines(p):
-    return [json.loads(s) for s in p.read_text(encoding='utf-8').splitlines()] if p.exists() else []
+    # JSONL separates records with LF. U+2028/U+2029 are valid JSON string
+    # contents (e.g. splitlines bug fixtures), not record separators.
+    return [json.loads(s) for s in p.read_text(encoding='utf-8').split('\n') if s.strip()] if p.exists() else []
 
 
 def resource_observations(directory, wire):
@@ -56,7 +58,51 @@ def resource_totals(rows, previous):
     return value
 
 
-def export(batch, output):
+def native_continuity(wire, tools):
+    """Posthoc wire evidence, not an inferred context-quality/faithfulness score."""
+    result = Counter()
+    tool_ids = {t.get('call_id') for t in tools}
+    for index, event in enumerate(wire):
+        if event['event'] != 'response':
+            continue
+        choice = (event.get('body', {}).get('choices') or [{}])[0]
+        message = choice.get('message', {})
+        calls = message.get('tool_calls') or []
+        if not calls or choice.get('finish_reason') == 'length':
+            continue
+        result['nontruncated_native_tool_responses'] += 1
+        absent = not isinstance(message.get('reasoning_content'), str)
+        if absent:
+            result['without_reasoning_text'] += 1
+        following = next((j for j in range(index+1, len(wire)) if wire[j]['event']=='request'), None)
+        if following is None:
+            result['without_next_request'] += 1
+            continue
+        ids = [c.get('id') for c in calls]
+        messages = wire[following]['body'].get('messages', [])
+        replay = next((m for m in messages if m.get('role')=='assistant'
+            and [c.get('id') for c in m.get('tool_calls', [])]==ids), None)
+        if replay is None:
+            result['not_visible_in_immediate_next_request'] += 1
+            continue
+        result['native_turn_visible_in_next_request'] += 1
+        if isinstance(message.get('reasoning_content'), str):
+            result['returned_reasoning_replay_checks'] += 1
+            if replay.get('reasoning_content') == message['reasoning_content']:
+                result['returned_reasoning_replayed_exactly'] += 1
+        elif not isinstance(replay.get('reasoning_content'), str):
+            result['absent_reasoning_not_invented'] += 1
+        returned_ids = {m.get('tool_call_id') for m in messages if m.get('role')=='tool'}
+        if set(ids).issubset(tool_ids) and set(ids).issubset(returned_ids):
+            result['all_calls_recorded_and_results_returned'] += 1
+            if absent:
+                result['absent_reasoning_with_tools_returned'] += 1
+            if following+1 < len(wire) and wire[following+1]['event']=='response':
+                result['continued_with_observed_response'] += 1
+    return {'method':'posthoc native call-ID and exact-text observation v1; tool records include rejected calls; not semantic context coverage', **dict(result)}
+
+
+def export(batch, output, test_report=None):
     check(batch)
     summary = report(batch)
     if not all(a['complete'] for a in summary['agents'].values()) and not (batch/'stopped.json').exists():
@@ -99,6 +145,8 @@ def export(batch, output):
                 if not isinstance(message.get('reasoning_content'),str):
                     missing.append(((e['body'].get('usage') or {}).get('completion_tokens_details') or {}).get('reasoning_tokens'))
         item.update(model_requests_observed=requests, protocol_rejections=sum(e['event']=='response_not_executable' for e in protocol),
+            protocol_rejection_reasons=dict(Counter(e.get('reason','unknown') for e in protocol if e['event']=='response_not_executable')),
+            native_continuity_posthoc=native_continuity(wire, tools),
             missing_reasoning_token_counts=missing,
             policy_denials=sum(t['metadata'].get('tool_error_code') in {'scenario_policy_denied','approval_denied'} for t in tools),
             tests_executed=sum(t['name'] in {'run_shell','exec_command'} and t.get('exit_code') is not None for t in tools),
@@ -117,6 +165,8 @@ def export(batch, output):
         if 'Undelivered native tool results' in (item.get('error') or '') and any(
                 t['metadata'].get('tool_error_code')=='verification_budget_reserved' for t in tools):
             item['detailed_failure_category']='verification_budget_boundary_with_undelivered_native_calls'
+        if item.get('functional_passed') is True and item.get('workflow_passed') is False and session.get('baseline_test_observed') is False:
+            item['detailed_failure_category']='workflow_initial_test_missing'
         item['tariff_upper_estimate_cny'] = str(sum((Decimal(e['tariff_upper_estimate_cny']) for e in ledger
             if e['event']=='settled' and str((d/'session-b').resolve())==owners[e['id']]),Decimal(0)))
         detailed.append(item)
@@ -146,6 +196,14 @@ def export(batch, output):
                 if (g:=[r for r in actual if tasks[r['task_id']]['origin']['kind']==kind])}}
         groups[agent]['matched_verified_tasks'] = sorted(matched)
         groups[agent]['matched_verified_efficiency'] = efficiency([r for r in prepared if r['task_id'] in matched])
+        groups[agent]['process_totals'] = {
+            'model_requests':sum(r.get('model_requests_observed',0) for r in actual),
+            'observed_tool_steps':sum(r.get('observed_tool_steps',0) for r in actual),
+            'protocol_rejection_reasons':dict(sum((Counter(r.get('protocol_rejection_reasons',{})) for r in actual),Counter())),
+            'native_continuity_posthoc':dict(sum((Counter({k:v for k,v in r.get('native_continuity_posthoc',{}).items()
+                if type(v) is int}) for r in actual),Counter())),
+            'duplicate_line_returns_posthoc':sum(r.get('overlapping_returned_lines_posthoc',{}).get('duplicate_line_returns',0) for r in actual),
+            'attributed_line_returns_posthoc':sum(r.get('overlapping_returned_lines_posthoc',{}).get('all_attributed_line_returns',0) for r in actual)}
         e=groups[agent]['efficiency']
         groups[agent]['tokens_per_verified_success'] = (e['tokens_observed']/groups[agent]['verified_passes']
             if e['token_complete'] and groups[agent]['verified_passes'] else None)
@@ -158,7 +216,7 @@ def export(batch, output):
             'tool_steps','model_requests_observed','input_tokens','output_tokens','elapsed_ms','protocol_rejections',
             'policy_denials','tests_executed','tariff_upper_estimate_cny','detailed_failure_category']
         w=csv.DictWriter(f,keys,extrasaction='ignore',lineterminator='\n');w.writeheader();w.writerows(detailed)
-    test = ROOT/'artifacts/glm-benchmark-full-v3-2026-11-06.xml'
+    test = Path(test_report) if test_report else ROOT/'artifacts/glm-benchmark-full-v3-2026-11-06.xml'
     tree=ET.parse(test).getroot()
     assert not tree.findall('.//failure') and not tree.findall('.//error') and not tree.findall('.//skipped')
     shutil.copyfile(test,output/test.name)
@@ -181,10 +239,12 @@ def export(batch, output):
         'tasks_source_unchanged':digest(ROOT/'benchmarks/final_agent_v1/tasks.json')==load_json(batch/'protocol.json')['task_source_sha256'],
         'raw_archive':archive.relative_to(ROOT).as_posix(),'raw_archive_sha256':digest(archive)},exclusive=True)
     def fmt(v):return '未完成' if v is None else f'{v:.2f}'
-    text=['# CTRepair30 已知回归集：GLM 同模型评测','',
+    count=len(tasks)
+    upstream=sum(t['origin']['kind']!='author_created' for t in tasks.values())
+    text=[f'# CTRepair{count} 已知回归集：GLM 同模型评测','',
         '主分为四类别等权的可验证修复率（0–100）。初次正式运行前冻结规则、任务、源码与预算，失败不替换。',
-        '30 道不同任务（18 道上游故障复现、12 道自设计），每题每 Agent 一次，计划 60 次；不称为新留出集或 SWE-bench。','',
-        '| Agent | 完整核心12题主分 | 全30题主分 | 全30题上下界 | 已记录/计划 | 功能通过 | 可验证通过 |',
+        f'{count} 道不同任务（{upstream} 道上游故障复现、{count-upstream} 道自设计），每题每 Agent 一次，计划 {len(plan)} 次；不称为新留出集或 SWE-bench。','',
+        '| Agent | 固定核心12题主分 | 本批主分 | 本批上下界 | 已记录/计划 | 功能通过 | 可验证通过 |',
         '|---|---:|---:|---|---:|---:|---:|']
     for a in ('codetrail','apecode'):
         s=summary['agents'][a]; c=summary['core_12']['agents'][a];g=groups[a]
@@ -203,12 +263,13 @@ def export(batch, output):
         '', f'两个 Agent 都可验证成功的共同任务数：{len(matched)}。共同成功样本的效率另存 diagnostics.json；全部失败开销仍保留在总开销及单位成功成本中。失败早退更快、更省 Token 不构成效率优势。',
         '', '普通 API `glm-5.3-flash`，具体参数及限额见 [protocol.json](protocol.json)。两 Agent 循环、提示和原生工具不同；协议异常处理也保留各自策略，不能将差异归因于单一记忆/上下文模块。',
         '', '这是固定上游循环加标准 API/策略适配器的对照，不能当作上游默认 CLI 成绩。配置常量 verification_status 沿用最初离线合同文字；真实调用确认以本批 preflight、wire 响应、usage 与独立验收证据为准，未事后改写冻结常量。',
+        '', '约束呈现也有差异：CodeTrail 原生工具 schema 列出允许的测试命令；ApeCode 保留上游 schema，题面给出相同精确命令，但其附加重定向可能被白名单拒绝。该差异属于本配置的权限契约适应能力，不能单独解释为代码推理能力优劣；未在正式运行中途改写提示或放开 Shell。',
         '', 'Agent 循环使用 Python 3.13.11，独立测试统一由固定 Python 3.10.1 的 AppContainer 后端执行；宿主可信启动器只负责内核隔离，禁止宿主执行测试及缺少内核证明的结果。初始 Python3.13 参考资格失败、预检用量和新环境的30题红绿资格记录另保留，没有更改 ACL、金标或换题。',
         '', '## 证据与限制','',
         f'- 全量自动化 {len(tree.findall(".//testcase"))} 项通过：[JUnit]({test.name})。',
         '- [计分方法](scoring-method.md)、[逐运行CSV](runs-detailed.csv)、[逐运行JSON及二次验收](runs-detailed.json)、[来源分组及失败归因](diagnostics.json)、[冻结与原始哈希/证据包索引](audit.json)。',
         '- 完整本地证据包包含逐次请求、响应、工具、最终文件、diff、两次验收和隔离审计；索引给出本地位置及 SHA256，不假称远程附件。',
-        '- 原30题测试保持原样，参考补丁不进入 Agent 工作区。API Key 仅存在临时进程环境，公开前另做凭据检查。',
+        '- 源30题及本批选用测试均保持原样，参考补丁不进入 Agent 工作区。API Key 仅存在临时进程环境，公开前另做凭据检查。',
         '- 旧上下文证据代理存在已知限制，本轮检索质量、语义记忆、广义忠实性和对抗安全不评分。可复核重复读取与实际请求，不能将其包装为 Recall 提升。',
         '- 额外事后诊断：按实际成功编号读取中的同路径/同文件版本/同行号/同文本，统计重复返回的源码行数 / 所有已归属源码行返回数。它可以发现区间不同但大量重叠的读取；不纳入冻结主分、不声称预注册，也不等于无效阅读或语义检索质量。',
         '- 未完成 Linux Docker 和官方 verifier 资格，SWE-bench 公开线未执行；旧模型和旧评测记录均未覆盖。',
@@ -221,4 +282,5 @@ def export(batch, output):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--batch',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
-    a=p.parse_args();export(a.batch.resolve(),a.output.resolve())
+    p.add_argument('--test-report',type=Path)
+    a=p.parse_args();export(a.batch.resolve(),a.output.resolve(),a.test_report)

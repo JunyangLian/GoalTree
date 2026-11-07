@@ -290,7 +290,7 @@ class OpenAICompatibleModelClient:
 
     def begin_native_run(self, tools, context, request, verification_command):
         self.native_conversation = NativeToolConversation(tools, context, request, verification_command,
-                                                        self.native_wire_options, require_reasoning=not self.siliconflow_deepseek)
+                                                        self.native_wire_options, require_reasoning=not (self.siliconflow_deepseek or self.bigmodel_glm))
 
     def observe_native_tool(self, content):
         self.native_conversation.observe(content)
@@ -506,17 +506,12 @@ class OpenAICompatibleModelClient:
                 provider_usage=data.get('usage'))
         if self.native_conversation is not None:
             if self.bigmodel_glm:
-                from .glm_protocol import measured_zero_reasoning
+                from .glm_protocol import measured_zero_reasoning, valid_optional_reasoning
                 message = (data.get('choices') or [{}])[0].get('message') or {}
-                zero = measured_zero_reasoning(message, data.get('usage') or {})
-                self.last_completion_metadata['glm_measured_zero_reasoning_turn'] = zero
-                if zero:
-                    required = self.native_conversation.require_reasoning
-                    self.native_conversation.require_reasoning = False
-                    try:
-                        return self.native_conversation.accept(data, self.last_completion_metadata)
-                    finally:
-                        self.native_conversation.require_reasoning = required
+                self.last_completion_metadata['glm_measured_zero_reasoning_turn'] = measured_zero_reasoning(message, data.get('usage') or {})
+                self.last_completion_metadata['glm_reasoning_text_missing'] = message.get('reasoning_content') is None
+                if not valid_optional_reasoning(message):
+                    raise RuntimeError('Malformed GLM reasoning_content type; no action accepted')
             return self.native_conversation.accept(data, self.last_completion_metadata)
         return _normalize_provider_text(self, _extract_openai_text(data))
 

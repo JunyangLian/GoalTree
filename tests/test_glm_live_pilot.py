@@ -125,7 +125,7 @@ def test_glm_zero_token_tool_round_passes_both_adapters_without_invented_reasoni
     code.begin_native_run({}, 'context', 'inspect', None)
     with patch('urllib.request.urlopen', return_value=Response(json.dumps(body).encode())):
         reply = code.complete('inspect', 128)
-    assert reply.action_kind == 'tool' and code.native_conversation.require_reasoning is True
+    assert reply.action_kind == 'tool' and code.native_conversation.require_reasoning is False
     assert 'reasoning_content' not in code.native_conversation.messages[-1]
     assert code.last_completion_metadata['glm_measured_zero_reasoning_turn'] is True
     assert measured_zero_reasoning(message, body['usage'])
@@ -139,3 +139,60 @@ def test_shared_observer_tracks_zero_token_native_id_without_protocol_rejection(
     audit.wire({'event': 'response', 'body': zero_response()})
     assert len(audit.pending) == 1 and audit.pending[0]['id'] == 'zero-call'
     assert not (tmp_path/'audit/protocol.jsonl').exists()
+
+
+@pytest.mark.parametrize('reasoning_tokens', [24, None])
+def test_glm_missing_text_does_not_invent_reasoning_or_block_valid_native_calls(tmp_path, reasoning_tokens):
+    body=zero_response()
+    body['usage']['completion_tokens_details']['reasoning_tokens']=reasoning_tokens
+    with patch.dict('os.environ', {'BIGMODEL_API_KEY':'unit-fixture-credential'}):
+        ape=BigModelChatModel(tmp_path/'ape')
+    with patch('urllib.request.urlopen',return_value=Response(json.dumps(body).encode())):
+        message=ape.complete(messages=[],tools=[])
+    assert 'reasoning_content' not in message
+    code=OpenAICompatibleModelClient('glm-5.3-flash',CONFIG['base_url'],'unit-fixture-credential',1,20,'chat_completions')
+    code.begin_native_run({},'context','inspect',None)
+    with patch('urllib.request.urlopen',return_value=Response(json.dumps(body).encode())):
+        reply=code.complete('inspect',128)
+    assert reply.action_kind=='tool'
+    assert code.last_completion_metadata['glm_reasoning_text_missing'] is True
+    code.observe_native_tool('actual unit tool response')
+    payload=code.native_conversation.payload()
+    assistant=next(m for m in payload['messages'] if m['role']=='assistant')
+    assert 'reasoning_content' not in assistant
+    assert payload['messages'][-1]['tool_call_id']=='zero-call'
+    class Executor: backend='unit'
+    audit=SessionAudit('codetrail',{'gold':{'required_files':[],'lines':[]}},tmp_path,tmp_path/'audit',Executor(),'b')
+    audit.wire({'event':'request','payload':{'messages':[]}})
+    audit.wire({'event':'response','body':body})
+    assert audit.pending[0]['id']=='zero-call'
+    assert not (tmp_path/'audit/protocol.jsonl').exists()
+
+
+@pytest.mark.parametrize('malformed', [7, False])
+def test_glm_malformed_reasoning_types_are_still_rejected_by_both_adapters(tmp_path,malformed):
+    body=zero_response();body['choices'][0]['message']['reasoning_content']=malformed
+    with patch.dict('os.environ',{'BIGMODEL_API_KEY':'unit-fixture-credential'}):
+        ape=BigModelChatModel(tmp_path/'ape')
+    code=OpenAICompatibleModelClient('glm-5.3-flash',CONFIG['base_url'],'unit-fixture-credential',1,20,'chat_completions')
+    code.begin_native_run({},'context','inspect',None)
+    for model in (ape,code):
+        with patch('urllib.request.urlopen',return_value=Response(json.dumps(body).encode())):
+            with pytest.raises(RuntimeError,match='Malformed GLM reasoning_content'):
+                model.complete(messages=[],tools=[]) if model is ape else model.complete('inspect',128)
+
+
+def test_glm_existing_reasoning_remains_byte_exact_and_other_providers_remain_strict():
+    text='original reasoning\n  keep spacing\n'
+    body=zero_response();body['choices'][0]['message']['reasoning_content']=text
+    code=OpenAICompatibleModelClient('glm-5.3-flash',CONFIG['base_url'],'unit-fixture-credential',1,20,'chat_completions')
+    code.begin_native_run({},'context','inspect',None)
+    with patch('urllib.request.urlopen',return_value=Response(json.dumps(body).encode())):
+        assert code.complete('inspect',128).action_kind=='tool'
+    assert code.native_conversation.messages[-1]['reasoning_content']==text
+    deep=OpenAICompatibleModelClient('deepseek-flash','https://api.deepseek.com','unit-fixture-credential',1,20,'chat_completions')
+    deep.begin_native_run({},'context','inspect',None)
+    assert deep.native_conversation.require_reasoning is True
+    missing=zero_response();missing['model']='deepseek-flash'
+    with patch('urllib.request.urlopen',return_value=Response(json.dumps(missing).encode())):
+        assert deep.complete('inspect',128).action_kind=='retry'

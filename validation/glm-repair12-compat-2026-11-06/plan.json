@@ -1,0 +1,170 @@
+[
+  {
+    "agent": "codetrail",
+    "task_id": "money_minor_units",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "001-codetrail-money_minor_units"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "money_minor_units",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "002-apecode-money_minor_units"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "inventory_reservation",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "003-apecode-inventory_reservation"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "inventory_reservation",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "004-codetrail-inventory_reservation"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "holdout_dotenv_override",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "005-codetrail-holdout_dotenv_override"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "holdout_dotenv_override",
+    "category": "cross_file",
+    "repeat": 1,
+    "run_key": "006-apecode-holdout_dotenv_override"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "pagination_boundaries",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "007-apecode-pagination_boundaries"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "pagination_boundaries",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "008-codetrail-pagination_boundaries"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "ttl_expiry",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "009-codetrail-ttl_expiry"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "ttl_expiry",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "010-apecode-ttl_expiry"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "boltons_splitlines",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "011-apecode-boltons_splitlines"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "boltons_splitlines",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "012-codetrail-boltons_splitlines"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "retry_schedule",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "013-codetrail-retry_schedule"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "retry_schedule",
+    "category": "single_file",
+    "repeat": 1,
+    "run_key": "014-apecode-retry_schedule"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "humanize_fractional",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "015-apecode-humanize_fractional"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "humanize_fractional",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "016-codetrail-humanize_fractional"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "boltons_xfrange",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "017-codetrail-boltons_xfrange"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "boltons_xfrange",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "018-apecode-boltons_xfrange"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "boltons_isoparse",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "019-apecode-boltons_isoparse"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "boltons_isoparse",
+    "category": "unknown_location",
+    "repeat": 1,
+    "run_key": "020-codetrail-boltons_isoparse"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "humanize_list",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "021-codetrail-humanize_list"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "humanize_list",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "022-apecode-humanize_list"
+  },
+  {
+    "agent": "apecode",
+    "task_id": "humanize_metric",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "023-apecode-humanize_metric"
+  },
+  {
+    "agent": "codetrail",
+    "task_id": "humanize_metric",
+    "category": "regression_compatibility",
+    "repeat": 1,
+    "run_key": "024-codetrail-humanize_metric"
+  }
+]

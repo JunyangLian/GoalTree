@@ -23,7 +23,7 @@ from scripts.run_glm_live_pilot import worker, check
 from scripts.glm_test_executor import PinnedTestExecutor
 
 
-def prepare(output, source, python, test_python=None, prior_budget=None):
+def prepare(output, source, python, test_python=None, prior_budget=None, core_only=False):
     output.mkdir(parents=True, exist_ok=False)
     original = ROOT/'benchmarks/final_agent_v1/tasks.json'
     tasks = load_json(original)['tasks']
@@ -36,7 +36,6 @@ def prepare(output, source, python, test_python=None, prior_budget=None):
         selected.append({**task, 'phase_a': None, 'split': 'known_regression',
             'development_exposure_current': 'Previously evaluated; not a new holdout',
             'gold': {'required_files': [], 'lines': [], 'status': 'not scored; historical evidence labels require review'}})
-    write_json(output/'tasks.json', selected, exclusive=True)
     plan = []
     ordered = selected.copy()
     random.Random(2026110602).shuffle(ordered)
@@ -48,21 +47,26 @@ def prepare(output, source, python, test_python=None, prior_budget=None):
             core.append(task)
             counts[category] = counts.get(category, 0)+1
     core_ids = {t['id'] for t in core}
-    ordered = core+[t for t in ordered if t['id'] not in core_ids]
+    ordered = core if core_only else core+[t for t in ordered if t['id'] not in core_ids]
+    selected = [t for t in selected if t['id'] in core_ids] if core_only else selected
+    write_json(output/'tasks.json', selected, exclusive=True)
     for i, task in enumerate(ordered):
         agents = ['codetrail', 'apecode'] if i % 2 == 0 else ['apecode', 'codetrail']
         for agent in agents:
             plan.append({'agent': agent, 'task_id': task['id'], 'category': task['category'],
                 'repeat': 1, 'run_key': f'{len(plan)+1:03d}-{agent}-{task["id"]}'})
-    protocol = {'at': utcnow(), 'mode': 'CTRepair30-v1-known-regression-real-glm', 'model': CONFIG,
+    protocol = {'at': utcnow(), 'mode': 'CTRepair12-controlled-compatibility-retest' if core_only else 'CTRepair30-v1-known-regression-real-glm', 'model': CONFIG,
         'score_version': VERSION, 'score_formula': '100 * mean_category(mean_task(verified_success))',
         'categories': ['single_file', 'cross_file', 'unknown_location', 'regression_compatibility'],
-        'repetitions': 1, 'planned_runs': 60, 'concurrency': 1, 'max_tools': 20,
+        'repetitions': 1, 'planned_runs': len(plan), 'concurrency': 1, 'max_tools': 20,
         'max_model_requests': 30, 'worker_deadline_seconds': 645, 'network_route': 'direct',
         'backend': 'appcontainer', 'budget_window': str((output/'budget').resolve()),
         'max_spend_cny': '5', 'max_total_tokens': 2000000,
         'core_task_ids': [t['id'] for t in core],
-        'nested_plan': 'First 12 tasks, 3 per category, are a separately reported frozen core. All 30 remain the full plan; report both, regardless of score.',
+        'core_only_compatibility_retest': core_only,
+        'reasoning_policy': 'Preserve returned strings unchanged; missing text is not reconstructed from token usage; reject malformed types and truncated actions',
+        'nested_plan': ('Controlled retest of the entire originally selected core only; original full30 stopped and remains unchanged.' if core_only else
+            'First 12 tasks, 3 per category, are a separately reported frozen core. All 30 remain the full plan; report both, regardless of score.'),
         'task_source_sha256': digest(original), 'original_tasks': str(original.relative_to(ROOT)),
         'safety_score': 'unassessed; no new adversarial suite',
         'context_score': 'unassessed; no validated equivalent-evidence gold for this batch',
@@ -155,7 +159,7 @@ def report(output):
             'audit_valid', 'origin_kind', 'tool_steps', 'input_tokens', 'output_tokens', 'elapsed_ms', 'failure_category']
         writer = csv.DictWriter(f, keys, extrasaction='ignore', lineterminator='\n')
         writer.writeheader(); writer.writerows(rows)
-    print(json.dumps({'recorded':len(rows), 'planned':60, 'tokens':tokens,
+    print(json.dumps({'recorded':len(rows), 'planned':len(load_json(output/'plan.json')), 'tokens':tokens,
         'tariff_upper_cny':str(money), 'scores':{a:v['verified_score'] for a,v in summary['agents'].items()}}), flush=True)
     return summary
 
@@ -251,12 +255,13 @@ if __name__=='__main__':
     p.add_argument('--python',type=Path)
     p.add_argument('--test-python',type=Path)
     p.add_argument('--prior-budget',type=Path)
+    p.add_argument('--core-only',action='store_true')
     p.add_argument('--apecode-source',type=Path,default=ROOT/'artifacts/cross-agent-sources/apecode')
     a=p.parse_args(); out=a.output.resolve()
     if not out.is_relative_to(ROOT/'artifacts'): p.error('Evidence must remain under artifacts')
     if a.prepare:
         if not a.python: p.error('Pinned worker Python required')
-        prepare(out,a.apecode_source.resolve(),a.python.resolve(),a.test_python,a.prior_budget)
+        prepare(out,a.apecode_source.resolve(),a.python.resolve(),a.test_python,a.prior_budget,a.core_only)
     elif a.worker:
         runtime=load_json(out/'protocol.json')['test_runtime']
         worker(out,a.worker,lambda backend,evidence: PinnedTestExecutor(backend,evidence,runtime))

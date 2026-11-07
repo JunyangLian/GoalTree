@@ -93,6 +93,7 @@ def test_frozen_plan_uses_identical_tasks_once_per_agent_without_reference_asset
          patch('scripts.run_glm_benchmark.source_info', return_value=hashes), \
          patch('scripts.run_glm_live_pilot.source_info', return_value=hashes):
         prepare(tmp_path/'cohort', source, Path(sys.executable))
+        prepare(tmp_path/'core-only', source, Path(sys.executable),core_only=True)
     plan = load_json(tmp_path/'cohort/plan.json')
     assert len(plan) == 60 and len({p['task_id'] for p in plan}) == 30
     for index in range(0, 60, 2):
@@ -103,6 +104,9 @@ def test_frozen_plan_uses_identical_tasks_once_per_agent_without_reference_asset
     assert len(core) == len(set(core)) == 12
     assert {p['task_id'] for p in plan[:24]} == set(core)
     assert all(len({p['task_id'] for p in plan[:24] if p['category']==c}) == 3 for c in CATEGORIES)
+    subset=load_json(tmp_path/'core-only/plan.json')
+    assert len(subset)==24 and {p['task_id'] for p in subset}==set(core)
+    assert len(load_json(tmp_path/'core-only/tasks.json'))==12
     assert not (tmp_path/'cohort/runs').exists()
 
 

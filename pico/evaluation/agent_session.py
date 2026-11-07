@@ -11,7 +11,7 @@ from .process_observer import ProcessObserver
 from .repair_suite import append_json, write_json, utcnow
 from ..tool_executor import ToolExecutionResult
 from ..windows_sandbox import VERIFY
-from ..providers.glm_protocol import measured_zero_reasoning
+from ..providers.glm_protocol import valid_optional_reasoning
 
 
 def apecode_result_status(name, content):
@@ -57,8 +57,8 @@ class SessionAudit:
             choice = body['choices'][0]
             message = choice['message']
             calls = message.get('tool_calls') or []
-            zero = body.get('model') == 'glm-5.3-flash' and measured_zero_reasoning(message, usage)
-            if choice.get('finish_reason') == 'length' or (not isinstance(message.get('reasoning_content'), str) and not zero):
+            optional_glm = body.get('model') == 'glm-5.3-flash' and valid_optional_reasoning(message)
+            if choice.get('finish_reason') == 'length' or (not isinstance(message.get('reasoning_content'), str) and not optional_glm):
                 append_json(self.directory/'protocol.jsonl', {'event': 'response_not_executable',
                     'reason': 'truncated' if choice.get('finish_reason') == 'length' else 'missing_reasoning'})
                 calls = []
@@ -135,14 +135,18 @@ def run_codetrail(task, workspace, directory, executor, phase, session_id, clien
     context = WorkspaceContext(str(workspace), str(workspace), '-', '-', 'fresh scenario phase', [], {})
     session = {'id': session_id, 'created_at': utcnow(), 'workspace_root': str(workspace),
                'history': [], 'memory': {}}
-    agent = Pico(client, context, SessionStore(workspace/'.pico/sessions'), session=session,
+    # The registry captures ToolContext during construction. Overriding the
+    # instance method afterwards leaves its original bound runner in partials.
+    class EvaluatedPico(Pico):
+        def _isolated_shell(self, command, timeout):
+            return executor.execute(self.root, command, timeout)
+
+    agent = EvaluatedPico(client, context, SessionStore(workspace/'.pico/sessions'), session=session,
         approval_policy='ask', max_steps=20, max_depth=0, max_new_tokens=4096,
         read_only=phase == 'a',
         allowed_tools=['read_file', 'list_files', 'search'] if phase == 'a' else None,
         verification_command=VERIFY, shell_backend='appcontainer',
         harness_profile='workbench', embedding_mode='off', secret_env_names={'BIGMODEL_API_KEY'})
-    # Both loops use the exact same executor. The controller supplies no host fallback.
-    agent._isolated_shell = lambda command, timeout: executor.execute(workspace, command, timeout)
     agent.approve = audit.allowed
     client.stream = False  # Pico workbench enables streaming; freeze both adapters to non-stream.
     original = agent.execute_tool

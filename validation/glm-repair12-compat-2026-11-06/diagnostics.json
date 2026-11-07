@@ -1,0 +1,182 @@
+{
+  "codetrail": {
+    "started_runs": 11,
+    "functional_passes": 11,
+    "verified_passes": 11,
+    "protocol_rejections": 8,
+    "policy_denials": 4,
+    "failure_categories": {
+      "success": 11
+    },
+    "efficiency": {
+      "runs": 11,
+      "successes": 11,
+      "tokens_observed": 517377,
+      "token_observed_runs": 11,
+      "token_complete": true,
+      "tokens_per_success": 47034.27272727273,
+      "elapsed_observed_runs": 11,
+      "p50_ms": 74713.0,
+      "p95_ms": 394743.5,
+      "currency_cost": null,
+      "currency_cost_status": "not_observed",
+      "overall_score": null,
+      "requests_without_observed_usage": 0,
+      "terminated_dispatch_wall_ms": [],
+      "elapsed_complete": true,
+      "timing_note": "Normal-record percentiles exclude missing timing; terminated dispatch wall times retained separately. Matched-success latency is separate, all failure tokens retained."
+    },
+    "origins": {
+      "author_created": {
+        "runs": 5,
+        "functional": 5,
+        "workflow": 5
+      },
+      "real_upstream_bug": {
+        "runs": 1,
+        "functional": 1,
+        "workflow": 1
+      },
+      "upstream_minimal_reproduction": {
+        "runs": 5,
+        "functional": 5,
+        "workflow": 5
+      }
+    },
+    "matched_verified_tasks": [
+      "boltons_isoparse",
+      "humanize_fractional",
+      "humanize_list",
+      "inventory_reservation",
+      "pagination_boundaries",
+      "retry_schedule"
+    ],
+    "matched_verified_efficiency": {
+      "runs": 6,
+      "successes": 6,
+      "tokens_observed": 192547,
+      "token_observed_runs": 6,
+      "token_complete": true,
+      "tokens_per_success": 32091.166666666668,
+      "elapsed_observed_runs": 6,
+      "p50_ms": 67021.0,
+      "p95_ms": 130807.25,
+      "currency_cost": null,
+      "currency_cost_status": "not_observed",
+      "overall_score": null
+    },
+    "process_totals": {
+      "model_requests": 84,
+      "observed_tool_steps": 85,
+      "protocol_rejection_reasons": {
+        "truncated": 8
+      },
+      "native_continuity_posthoc": {
+        "nontruncated_native_tool_responses": 65,
+        "without_reasoning_text": 16,
+        "native_turn_visible_in_next_request": 65,
+        "absent_reasoning_not_invented": 16,
+        "all_calls_recorded_and_results_returned": 65,
+        "absent_reasoning_with_tools_returned": 16,
+        "continued_with_observed_response": 65,
+        "returned_reasoning_replay_checks": 49,
+        "returned_reasoning_replayed_exactly": 49
+      },
+      "duplicate_line_returns_posthoc": 72,
+      "attributed_line_returns_posthoc": 938
+    },
+    "tokens_per_verified_success": 47034.27272727273
+  },
+  "apecode": {
+    "started_runs": 12,
+    "functional_passes": 8,
+    "verified_passes": 6,
+    "protocol_rejections": 3,
+    "policy_denials": 32,
+    "failure_categories": {
+      "workflow_initial_test_missing": 2,
+      "success": 6,
+      "model_output_budget_truncation": 3,
+      "model_or_controller_error": 1
+    },
+    "efficiency": {
+      "runs": 12,
+      "successes": 8,
+      "tokens_observed": 370255,
+      "token_observed_runs": 12,
+      "token_complete": true,
+      "tokens_per_success": 46281.875,
+      "elapsed_observed_runs": 12,
+      "p50_ms": 78573.5,
+      "p95_ms": 126912.79999999999,
+      "currency_cost": null,
+      "currency_cost_status": "not_observed",
+      "overall_score": null,
+      "requests_without_observed_usage": 0,
+      "terminated_dispatch_wall_ms": [],
+      "elapsed_complete": true,
+      "timing_note": "Normal-record percentiles exclude missing timing; terminated dispatch wall times retained separately. Matched-success latency is separate, all failure tokens retained."
+    },
+    "origins": {
+      "author_created": {
+        "runs": 5,
+        "functional": 5,
+        "workflow": 3
+      },
+      "real_upstream_bug": {
+        "runs": 1,
+        "functional": 0,
+        "workflow": 0
+      },
+      "upstream_minimal_reproduction": {
+        "runs": 6,
+        "functional": 3,
+        "workflow": 3
+      }
+    },
+    "matched_verified_tasks": [
+      "boltons_isoparse",
+      "humanize_fractional",
+      "humanize_list",
+      "inventory_reservation",
+      "pagination_boundaries",
+      "retry_schedule"
+    ],
+    "matched_verified_efficiency": {
+      "runs": 6,
+      "successes": 6,
+      "tokens_observed": 199249,
+      "token_observed_runs": 6,
+      "token_complete": true,
+      "tokens_per_success": 33208.166666666664,
+      "elapsed_observed_runs": 6,
+      "p50_ms": 73199.5,
+      "p95_ms": 101696.25,
+      "currency_cost": null,
+      "currency_cost_status": "not_observed",
+      "overall_score": null
+    },
+    "process_totals": {
+      "model_requests": 85,
+      "observed_tool_steps": 113,
+      "protocol_rejection_reasons": {
+        "truncated": 3
+      },
+      "native_continuity_posthoc": {
+        "nontruncated_native_tool_responses": 74,
+        "native_turn_visible_in_next_request": 73,
+        "returned_reasoning_replay_checks": 62,
+        "returned_reasoning_replayed_exactly": 62,
+        "all_calls_recorded_and_results_returned": 73,
+        "continued_with_observed_response": 73,
+        "without_reasoning_text": 12,
+        "absent_reasoning_not_invented": 11,
+        "absent_reasoning_with_tools_returned": 11,
+        "without_next_request": 1
+      },
+      "duplicate_line_returns_posthoc": 1,
+      "attributed_line_returns_posthoc": 1257
+    },
+    "tokens_per_verified_success": 61709.166666666664
+  }
+}

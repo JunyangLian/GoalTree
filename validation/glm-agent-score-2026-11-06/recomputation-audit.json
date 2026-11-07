@@ -1,0 +1,465 @@
+{
+  "attribution": "Post-run deterministic recomputation; separate external test processes, not an independent human review",
+  "frozen_primary_scores_recomputed": true,
+  "second_external_verdicts_agree": 23,
+  "actual_kernel_audits_checked": 61,
+  "kernel_stage_note": "execution includes ApeCode tool tests and first independent verifier; second-execution is one new external verifier per run. These records do not cover CodeTrail native test tools captured before callback reassignment.",
+  "primary_score_codetrail": null,
+  "primary_score_codetrail_bounds": [
+    91.66666666666667,
+    100.0
+  ],
+  "primary_score_apecode": 50.0,
+  "gold_source_sha256": "dc7399a51e4f62e6ad1a1f669779487326be5f48f5ea7cdd898d1664f61a182c",
+  "original_archives_unchanged": {
+    "validation/cross-agent-deepseek-pilot-2026-11-05/evidence.zip": "9ee564b9dd073fccb3a5c39e90bf3d3e0a4333bc18ce1f167e09bbc0cd1e5a46",
+    "benchmarks/results/final-agent-90-2026-10-25/evidence.zip": "2fc5e42cf764504137d4243b509171bcba46d3df6a254896e827ed42487d1c76",
+    "artifacts/process-controller-raw-evidence-2026-11-06.zip": "92621f829f890a45d2ea061ce5e14dc1cfaad827f9738f9148097f4678fb53f3"
+  },
+  "credential_pattern_scan_files_and_nested_entries": 3128,
+  "credential_pattern_findings": 0,
+  "credential_scan_scope": "Completed final staged set and all three evidence archives, recursively including nested source archives. Metadata edited afterwards is scanned again before commit.",
+  "kernel_evidence": [
+    {
+      "run_key": "001-codetrail-money_minor_units",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/001-codetrail-money_minor_units/execution/0001/kernel-audit.json",
+      "sha256": "5ec69ba66fad942b8d44f2bc4ef0eb75a2c334bc0cc33284e51444579667156a",
+      "exit_code": 0
+    },
+    {
+      "run_key": "001-codetrail-money_minor_units",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/001-codetrail-money_minor_units/second-execution/0001/kernel-audit.json",
+      "sha256": "0bc91b2a1f4a65f96cd1876ce9c78b573dc1265561c09a6aab7fa92439cc144d",
+      "exit_code": 0
+    },
+    {
+      "run_key": "002-apecode-money_minor_units",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/002-apecode-money_minor_units/execution/0001/kernel-audit.json",
+      "sha256": "229e093b1db4ec5ef15e189c3744c3730c359f165e1eab1ac5087d05c0c26239",
+      "exit_code": 0
+    },
+    {
+      "run_key": "002-apecode-money_minor_units",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/002-apecode-money_minor_units/execution/0002/kernel-audit.json",
+      "sha256": "b7dc2900f518b09a7d7da8c25b7e42342cc3d95a3fbcd4b2f2207264439045af",
+      "exit_code": 0
+    },
+    {
+      "run_key": "002-apecode-money_minor_units",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/002-apecode-money_minor_units/second-execution/0001/kernel-audit.json",
+      "sha256": "f0c0f20faab6a20bfce6f611764698a43158f14f37e70745603de49946d789f0",
+      "exit_code": 0
+    },
+    {
+      "run_key": "003-apecode-inventory_reservation",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/003-apecode-inventory_reservation/execution/0001/kernel-audit.json",
+      "sha256": "83344f533eb64c58d2b7bbbe2d43b6962baf5f3a74d53a0862e104723942103a",
+      "exit_code": 1
+    },
+    {
+      "run_key": "003-apecode-inventory_reservation",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/003-apecode-inventory_reservation/execution/0002/kernel-audit.json",
+      "sha256": "961884870f755324e8af1f23035ab131080584120b4419522e66c662f533052c",
+      "exit_code": 0
+    },
+    {
+      "run_key": "003-apecode-inventory_reservation",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/003-apecode-inventory_reservation/execution/0003/kernel-audit.json",
+      "sha256": "3c18f61f4d657354106265b71fbe50dc19ed99174eff2254f70f191a4da29468",
+      "exit_code": 0
+    },
+    {
+      "run_key": "003-apecode-inventory_reservation",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/003-apecode-inventory_reservation/second-execution/0001/kernel-audit.json",
+      "sha256": "110f0b490543559f49028e7ba115b99d2c1294a407fb526cac9940a45af4f2d6",
+      "exit_code": 0
+    },
+    {
+      "run_key": "004-codetrail-inventory_reservation",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/004-codetrail-inventory_reservation/execution/0001/kernel-audit.json",
+      "sha256": "ef08c351e6f741da9da9258fd6e27e4e980b220f6f4b75cf9fb677000c6e688c",
+      "exit_code": 0
+    },
+    {
+      "run_key": "004-codetrail-inventory_reservation",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/004-codetrail-inventory_reservation/second-execution/0001/kernel-audit.json",
+      "sha256": "7c785a1a1d2cdead506393992e76a76c34d4183d5832f75493de19a038f27560",
+      "exit_code": 0
+    },
+    {
+      "run_key": "005-codetrail-holdout_dotenv_override",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/005-codetrail-holdout_dotenv_override/execution/0001/kernel-audit.json",
+      "sha256": "87892315cb9d9e4edf0eb3d38cfa86f1b371ae1bfa2d57476fdd71bf3807af5a",
+      "exit_code": 0
+    },
+    {
+      "run_key": "005-codetrail-holdout_dotenv_override",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/005-codetrail-holdout_dotenv_override/second-execution/0001/kernel-audit.json",
+      "sha256": "1341b7c365a12ed3b68b8c6451b0f5c9c7a82391a3ebd9caed81744dd7737f2e",
+      "exit_code": 0
+    },
+    {
+      "run_key": "006-apecode-holdout_dotenv_override",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/006-apecode-holdout_dotenv_override/execution/0001/kernel-audit.json",
+      "sha256": "a9fadfd87154c9e4835fc7de030df0a5dea6952dff886f7b7daf866e47ecd826",
+      "exit_code": 1
+    },
+    {
+      "run_key": "006-apecode-holdout_dotenv_override",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/006-apecode-holdout_dotenv_override/second-execution/0001/kernel-audit.json",
+      "sha256": "fa68e318542feea0f637c75db77e8d604c41f07941453ad2604a78050fdf9fbe",
+      "exit_code": 1
+    },
+    {
+      "run_key": "007-apecode-pagination_boundaries",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/007-apecode-pagination_boundaries/execution/0001/kernel-audit.json",
+      "sha256": "6b5e8790f880977221cfdcb5ae734cbd6fc7a08cefa440110965704aa70108a2",
+      "exit_code": 1
+    },
+    {
+      "run_key": "007-apecode-pagination_boundaries",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/007-apecode-pagination_boundaries/execution/0002/kernel-audit.json",
+      "sha256": "feca22942f8ac03155eabeb7f07bc88dddb9f4058d8b3618aa0ba9228c547ffa",
+      "exit_code": 0
+    },
+    {
+      "run_key": "007-apecode-pagination_boundaries",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/007-apecode-pagination_boundaries/execution/0003/kernel-audit.json",
+      "sha256": "f0ba384a8414fb1b1a2c538ca510d80a39190ac283a1de64538e8ed4f98699d2",
+      "exit_code": 0
+    },
+    {
+      "run_key": "007-apecode-pagination_boundaries",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/007-apecode-pagination_boundaries/second-execution/0001/kernel-audit.json",
+      "sha256": "f034d2ac1612db7dca047af27b2aefdd1d825423ad86c30cf0504fa5ba832b5e",
+      "exit_code": 0
+    },
+    {
+      "run_key": "008-codetrail-pagination_boundaries",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/008-codetrail-pagination_boundaries/execution/0001/kernel-audit.json",
+      "sha256": "ded5b0dc1f1409f485543ef946743522e0cc14cff150115c61eba37fa546f94c",
+      "exit_code": 0
+    },
+    {
+      "run_key": "008-codetrail-pagination_boundaries",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/008-codetrail-pagination_boundaries/second-execution/0001/kernel-audit.json",
+      "sha256": "9ec0a8bab06d14db212bf6b3f6571e09370e87a7ed7020e712a9525eee8f03bb",
+      "exit_code": 0
+    },
+    {
+      "run_key": "009-codetrail-ttl_expiry",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/009-codetrail-ttl_expiry/execution/0001/kernel-audit.json",
+      "sha256": "deeab6bafed132236099301fe7decd45c2618c1e11291ac484dae1a9fb393748",
+      "exit_code": 0
+    },
+    {
+      "run_key": "009-codetrail-ttl_expiry",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/009-codetrail-ttl_expiry/second-execution/0001/kernel-audit.json",
+      "sha256": "c3ee397a311a970eb4e927a2feb53db6f45120de6ad58c53763f1940064f5c9a",
+      "exit_code": 0
+    },
+    {
+      "run_key": "010-apecode-ttl_expiry",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/010-apecode-ttl_expiry/execution/0001/kernel-audit.json",
+      "sha256": "7243827a5dc8fc7a3a01a81527dd43f18ffcc97a95df2cf6ca101944a2cfade8",
+      "exit_code": 0
+    },
+    {
+      "run_key": "010-apecode-ttl_expiry",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/010-apecode-ttl_expiry/second-execution/0001/kernel-audit.json",
+      "sha256": "c45d668482f877fb08ca84d9be2a52c62d02ac21158f367a3174e020a68a8732",
+      "exit_code": 0
+    },
+    {
+      "run_key": "011-apecode-boltons_splitlines",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/011-apecode-boltons_splitlines/execution/0001/kernel-audit.json",
+      "sha256": "8ea5116a04b4e2d940fe80eaa11fecd2a5dd54a3d8a6a48af3ea6e3a465a4a2a",
+      "exit_code": 1
+    },
+    {
+      "run_key": "011-apecode-boltons_splitlines",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/011-apecode-boltons_splitlines/second-execution/0001/kernel-audit.json",
+      "sha256": "18b3e39a5b846a245277cedafaa81a1a059dca8ab175c7b8ddae719bf114ff97",
+      "exit_code": 1
+    },
+    {
+      "run_key": "012-codetrail-boltons_splitlines",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/012-codetrail-boltons_splitlines/execution/0001/kernel-audit.json",
+      "sha256": "a11657efbd1f24ec7fbc9192bc1a3d2cf3ebc774b658486ea7476bce7c2e6aca",
+      "exit_code": 0
+    },
+    {
+      "run_key": "012-codetrail-boltons_splitlines",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/012-codetrail-boltons_splitlines/second-execution/0001/kernel-audit.json",
+      "sha256": "275796f3b35e6588553351cd08ca20321f7636a862f82e649de91f08124639f7",
+      "exit_code": 0
+    },
+    {
+      "run_key": "013-codetrail-retry_schedule",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/013-codetrail-retry_schedule/execution/0001/kernel-audit.json",
+      "sha256": "800e9c7088a65fe671a9f7b80ec68d2445075421d9461dac1ee18fd9de75668e",
+      "exit_code": 0
+    },
+    {
+      "run_key": "013-codetrail-retry_schedule",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/013-codetrail-retry_schedule/second-execution/0001/kernel-audit.json",
+      "sha256": "07be5d803bd1b418ce47a3e755ea62b08ce52a23d3d3c8b9752ec44358f3c1f7",
+      "exit_code": 0
+    },
+    {
+      "run_key": "014-apecode-retry_schedule",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/014-apecode-retry_schedule/execution/0001/kernel-audit.json",
+      "sha256": "87e5f4f91b4ef842a570bc4f91be0de38f6e7891aa4e33f7b9631933ea8a499a",
+      "exit_code": 1
+    },
+    {
+      "run_key": "014-apecode-retry_schedule",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/014-apecode-retry_schedule/execution/0002/kernel-audit.json",
+      "sha256": "cf0335a19593a00f124d214905a94793bbe54c1ffdd247329b2a17d710d55bdd",
+      "exit_code": 0
+    },
+    {
+      "run_key": "014-apecode-retry_schedule",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/014-apecode-retry_schedule/execution/0003/kernel-audit.json",
+      "sha256": "12b8b9bcb14f854d52bb016a58d5a6e3fe55825a19abceb08d20e0fa82a292a0",
+      "exit_code": 0
+    },
+    {
+      "run_key": "014-apecode-retry_schedule",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/014-apecode-retry_schedule/second-execution/0001/kernel-audit.json",
+      "sha256": "98c7110970b81479750b011bb8c9e6162e250ec4cd9c78c59a0d687c2eeebeee",
+      "exit_code": 0
+    },
+    {
+      "run_key": "015-apecode-humanize_fractional",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/015-apecode-humanize_fractional/execution/0001/kernel-audit.json",
+      "sha256": "cdcfeed1479e129ce18d59a07835ddf797064a786087b15b45c957962c835147",
+      "exit_code": 1
+    },
+    {
+      "run_key": "015-apecode-humanize_fractional",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/015-apecode-humanize_fractional/execution/0002/kernel-audit.json",
+      "sha256": "3760fc5fab33014bcf307133f5c3e717eb9d76217c45fbc3fc398a8949de7571",
+      "exit_code": 0
+    },
+    {
+      "run_key": "015-apecode-humanize_fractional",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/015-apecode-humanize_fractional/execution/0003/kernel-audit.json",
+      "sha256": "457b0b25af2b6c61972a64d2b597711b3867f028ce26a1191bc548440ed0d261",
+      "exit_code": 0
+    },
+    {
+      "run_key": "015-apecode-humanize_fractional",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/015-apecode-humanize_fractional/second-execution/0001/kernel-audit.json",
+      "sha256": "2ce578b50c50395c78d873a9a358145c8234801656df15119975ec957c83af1f",
+      "exit_code": 0
+    },
+    {
+      "run_key": "016-codetrail-humanize_fractional",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/016-codetrail-humanize_fractional/execution/0001/kernel-audit.json",
+      "sha256": "4a10249ce5b855148e09b025f1e376a45589a413c47c8e5ef468897e4b767366",
+      "exit_code": 0
+    },
+    {
+      "run_key": "016-codetrail-humanize_fractional",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/016-codetrail-humanize_fractional/second-execution/0001/kernel-audit.json",
+      "sha256": "e8ebebb48a5f0c7cea4f7bf91914970318936b61fec1609c4efa4efdd6796d5b",
+      "exit_code": 0
+    },
+    {
+      "run_key": "017-codetrail-boltons_xfrange",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/017-codetrail-boltons_xfrange/execution/0001/kernel-audit.json",
+      "sha256": "dcceee9dedb3cfd9efddc951f9edec344dd869ddfd601768b673d90b7b791c12",
+      "exit_code": 0
+    },
+    {
+      "run_key": "017-codetrail-boltons_xfrange",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/017-codetrail-boltons_xfrange/second-execution/0001/kernel-audit.json",
+      "sha256": "ad1bd52a8df2c3431ae593059fe30dabe2509e971c00ff7f937ce43f61d5a441",
+      "exit_code": 0
+    },
+    {
+      "run_key": "018-apecode-boltons_xfrange",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/018-apecode-boltons_xfrange/execution/0001/kernel-audit.json",
+      "sha256": "17fa2157b94f2d0dac95b1155f866fd7c92b1f823e534e634b6120e28ff7ab87",
+      "exit_code": 1
+    },
+    {
+      "run_key": "018-apecode-boltons_xfrange",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/018-apecode-boltons_xfrange/execution/0002/kernel-audit.json",
+      "sha256": "fe81580fda51fbc675341beeb37cb7f869f82116635c7f26b3e8a84b21bda920",
+      "exit_code": 1
+    },
+    {
+      "run_key": "018-apecode-boltons_xfrange",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/018-apecode-boltons_xfrange/second-execution/0001/kernel-audit.json",
+      "sha256": "e4a4d546f15df0ed1d5ba641c5c211d26975c552d86d25e0849df465e46529ce",
+      "exit_code": 1
+    },
+    {
+      "run_key": "019-apecode-boltons_isoparse",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/019-apecode-boltons_isoparse/execution/0001/kernel-audit.json",
+      "sha256": "91869ebee6dfd20d0c42bbfcb77afebe5fb532051a63e88cd823aeeae093546f",
+      "exit_code": 1
+    },
+    {
+      "run_key": "019-apecode-boltons_isoparse",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/019-apecode-boltons_isoparse/execution/0002/kernel-audit.json",
+      "sha256": "8f7c8c0383ce822216ccf09f2c2eaf5583ef94fde4a2b3906bfc151432dce94e",
+      "exit_code": 0
+    },
+    {
+      "run_key": "019-apecode-boltons_isoparse",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/019-apecode-boltons_isoparse/execution/0003/kernel-audit.json",
+      "sha256": "83867cea567003584a5005edef38b5b558f8089c2b45cf7afb621f27380f31f7",
+      "exit_code": 0
+    },
+    {
+      "run_key": "019-apecode-boltons_isoparse",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/019-apecode-boltons_isoparse/second-execution/0001/kernel-audit.json",
+      "sha256": "c5061f4ec815cafbc40c7c3bc3d0f0f7e19afc9070845a742776b6fd34f9dc0c",
+      "exit_code": 0
+    },
+    {
+      "run_key": "020-codetrail-boltons_isoparse",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/020-codetrail-boltons_isoparse/execution/0001/kernel-audit.json",
+      "sha256": "a3d7d9d7a467c5190201ce63d4be7ec2502423a521e671d3b1523d0cf55765b8",
+      "exit_code": 0
+    },
+    {
+      "run_key": "020-codetrail-boltons_isoparse",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/020-codetrail-boltons_isoparse/second-execution/0001/kernel-audit.json",
+      "sha256": "8b81bd04745a50939409ce1a73662ff1e5a338ed64f4957eeecb1033ccdc406a",
+      "exit_code": 0
+    },
+    {
+      "run_key": "021-codetrail-humanize_list",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/021-codetrail-humanize_list/execution/0001/kernel-audit.json",
+      "sha256": "7ee3ab2f6335e71b8feb8d59bc87df110895efca1d779ca4f855d4c7d42faf80",
+      "exit_code": 0
+    },
+    {
+      "run_key": "021-codetrail-humanize_list",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/021-codetrail-humanize_list/second-execution/0001/kernel-audit.json",
+      "sha256": "e55603f3b94b0a2835fe87614d31a82c874efdd7c5845f87e81724cd397cc6d2",
+      "exit_code": 0
+    },
+    {
+      "run_key": "022-apecode-humanize_list",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/022-apecode-humanize_list/execution/0001/kernel-audit.json",
+      "sha256": "ba6aa46d6f9bf6f3dd34fbf2a01713d542538322f914cdfb0e017883b11ed80e",
+      "exit_code": 1
+    },
+    {
+      "run_key": "022-apecode-humanize_list",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/022-apecode-humanize_list/execution/0002/kernel-audit.json",
+      "sha256": "316c56f23b582855cb348ae6c934d32ab311963891d91ed90371994532ede06c",
+      "exit_code": 0
+    },
+    {
+      "run_key": "022-apecode-humanize_list",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/022-apecode-humanize_list/execution/0003/kernel-audit.json",
+      "sha256": "01bef167cf02842ffcf8621d31d6a1bf138bfbe2b5c4796646765240edfd3165",
+      "exit_code": 0
+    },
+    {
+      "run_key": "022-apecode-humanize_list",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/022-apecode-humanize_list/second-execution/0001/kernel-audit.json",
+      "sha256": "acb5a69af2ab9c12834857107f953d3cb0a34339cc34849fdba8bb4b30247b52",
+      "exit_code": 0
+    },
+    {
+      "run_key": "023-apecode-humanize_metric",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/023-apecode-humanize_metric/execution/0001/kernel-audit.json",
+      "sha256": "00e63373d4a62759b1533b0e62b7462ed1c291423ddba8a54d129eb3c42f5e58",
+      "exit_code": 1
+    },
+    {
+      "run_key": "023-apecode-humanize_metric",
+      "stage": "execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/023-apecode-humanize_metric/execution/0002/kernel-audit.json",
+      "sha256": "c50243f5049bbe0c618cc86f011b7632a7f2628ba898d3b33fd300b6bbc9c023",
+      "exit_code": 1
+    },
+    {
+      "run_key": "023-apecode-humanize_metric",
+      "stage": "second-execution",
+      "evidence": "artifacts/glm-repair12-compat-v3-2026-11-06/runs/023-apecode-humanize_metric/second-execution/0001/kernel-audit.json",
+      "sha256": "f6a1e913636a91b338b983de74e6184e37bd6dcc32d20c130c6b180cda5e93aa",
+      "exit_code": 1
+    }
+  ],
+  "runtime_conformance": false,
+  "formal_comparative_scores_valid": false,
+  "runtime_erratum": "runtime-conformance-erratum.md",
+  "final_staged_credential_scan": {
+    "staged_files_at_scan": 49,
+    "files_and_nested_archive_entries": 3195,
+    "findings": 0,
+    "included_archives": [
+      "glm-repair30-v2-2026-11-06-evidence.zip",
+      "glm-repair12-compat-v3-2026-11-06-evidence.zip",
+      "glm-callback-qualification-evidence-2026-11-07.zip"
+    ],
+    "index_evidence_bytes_match_manifests": true
+  }
+}

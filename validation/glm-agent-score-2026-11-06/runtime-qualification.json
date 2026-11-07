@@ -1,0 +1,40 @@
+{
+  "mechanism_only_not_benchmark": true,
+  "model_api_calls": 0,
+  "decisions": "offline scripted HTTP fixture; actual tool execution",
+  "worker_python": "3.13.11 (main, Dec  9 2025, 19:02:08) [MSC v.1944 64 bit (AMD64)]",
+  "test_runtime": {
+    "python": "E:\\Python\\python.exe",
+    "python_sha256": "8eaa62b6ca393ac1b8651b39f51de8e8bf8d22aca2627222d078e1c98ed875ad",
+    "version": "Python 3.10.1",
+    "boundary": "Trusted fixed-command launcher, actual tests inside original AppContainer backend; no ACL changes"
+  },
+  "supplied_executor_calls": 1,
+  "actual_test_exit_code": 0,
+  "kernel_token_is_appcontainer": true,
+  "host_fallback": false,
+  "host_acl_changed": false,
+  "capabilities": [],
+  "session_source_sha256": "a19ab34f84d926413b4290205bab286435d74c3b8bd2986e048bc11b8e8d0eb1",
+  "script_sha256": "729b2c6064375a24af039b619f920e0cceeb5c128ea0be87ccfbfbd278d3c983",
+  "test_source_sha256": "3db2cc94ffb25386f41f5abc670e61673acc691a90da5d1e5187d54d40930dad",
+  "result": "qualified",
+  "prior_probe_attempts": [
+    {
+      "directory": "artifacts/glm-callback-kernel-probe-2026-11-07",
+      "status": "probe_metadata_error_after_tool",
+      "error": "KeyError expected_tests"
+    },
+    {
+      "directory": "artifacts/glm-callback-kernel-probe-v2-2026-11-07",
+      "status": "probe_metadata_error_after_tool",
+      "error": "KeyError sha256"
+    },
+    {
+      "directory": "artifacts/glm-callback-kernel-probe-v3-2026-11-07",
+      "status": "qualified"
+    }
+  ],
+  "raw_archive": "artifacts/glm-callback-qualification-evidence-2026-11-07.zip",
+  "raw_archive_sha256": "b598a5af0ce7d39947fc55eb7535dcaea08221fdcee67c846078fbe41e17e5ad"
+}

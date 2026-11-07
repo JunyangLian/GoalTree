@@ -1,0 +1,44 @@
+{
+  "final_full_suite": {
+    "junit": "glm-callback-final-full-v2-2026-11-07.xml",
+    "tests": 474,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "duration_seconds": 691.2,
+    "source_freeze": "glm-callback-final-validation-freeze-2026-11-07.json",
+    "source_unchanged": true,
+    "model_api_calls": 0,
+    "python": "3.10.1 (tags/v3.10.1:2cd268a, Dec  6 2021, 19:10:37) [MSC v.1929 64 bit (AMD64)]",
+    "python_executable": "E:\\Python\\python.exe",
+    "python_sha256": "8eaa62b6ca393ac1b8651b39f51de8e8bf8d22aca2627222d078e1c98ed875ad",
+    "pytest_version": "9.0.2"
+  },
+  "earlier_runs": [
+    {
+      "artifact": "artifacts/glm-final-full-2026-11-07.xml",
+      "tests": 474,
+      "passed": 474,
+      "role": "Diagnostic earlier run; source changed while it ran, not used as final fixed-source proof"
+    },
+    {
+      "artifact": "glm-callback-red-2026-11-07.xml",
+      "tests": 1,
+      "failed": 1,
+      "role": "New executor-dispatch assertion catches old binding defect"
+    },
+    {
+      "artifact": "glm-callback-fixed-targeted-2026-11-07.xml",
+      "tests": 47,
+      "passed": 47,
+      "role": "Corrected wiring and related regressions"
+    },
+    {
+      "artifact": "glm-report-regression-2026-11-07.xml",
+      "tests": 3,
+      "passed": 3,
+      "role": "LF JSONL handling and fail-closed audit evidence"
+    }
+  ],
+  "counting": "Current collected total 474; overlapping runs not added. Formal compatibility cohort preceded callback fix and had 471 full-suite passes."
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="27.885" timestamp="2026-11-07T19:33:04.885736+08:00" hostname="羊叽叽"><testcase classname="tests.test_process_controller" name="test_code_loop_native_calls_observers_denials_and_failed_patch_recovery_are_connected" time="27.139"><failure message="assert 0 == 2&#10; +  where 0 = len([])">tmp_path = WindowsPath('C:/Users/羊叽叽/AppData/Local/Temp/pytest-of-羊叽叽/pytest-59/test_code_loop_native_calls_ob0')
+
+    def test_code_loop_native_calls_observers_denials_and_failed_patch_recovery_are_connected(tmp_path):
+        task = fixtures()[0]
+        state = start(task, tmp_path/'scenario', 'codetrail')
+        workspace = tmp_path/'scenario/workspace'
+        executions = []
+        class Executor:
+            backend = 'scripted_unit_fixture_not_os_test'
+            def execute(self, root, command, timeout):
+                assert command == VERIFY
+                executions.append((root, command, timeout))
+                green = 'return a + b' in (root/'compute.py').read_text()
+                return {'returncode': 0 if green else 1,
+                    'output': 'Ran 1 test in 0.01s\n\n'+('OK\n' if green else 'FAILED (failures=1)\n')}
+        def factory(directory):
+            client = OpenAICompatibleModelClient(CONFIG['model'], CONFIG['base_url'], 'offline-fixture',
+                                                1, 10, 'chat_completions')
+            client.max_transport_attempts = 1
+            return client
+        scripted = ScriptedHTTP(actions(task, 'codetrail', 'b'), 'b')
+        with patch('urllib.request.urlopen', side_effect=scripted), \
+             patch('pico.runtime.Pico._isolated_shell', side_effect=AssertionError('Unpinned native runner must not be captured')):
+            result = run_codetrail(task, workspace, tmp_path/'session', Executor(), 'b', state['session_id'], factory)
+&gt;       assert len(executions) == 2  # baseline and final test must reach the supplied backend.
+E       assert 0 == 2
+E        +  where 0 = len([])
+
+tests\test_process_controller.py:103: AssertionError</failure></testcase></testsuite></testsuites>
