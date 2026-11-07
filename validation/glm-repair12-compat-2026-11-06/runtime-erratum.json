@@ -7,5 +7,8 @@
   "original_report_sha256": "382ce67ca44c5b2de64ccb0089b9b750a75de03966d172389362b71b146a5046",
   "summary_json_unchanged_sha256": "8c2b932383a9569d73875d44d79e26703a0ee97cb24ad938fbd55a01741a7299",
   "raw_archive_unchanged": "adf1dabed7e40381ad942d7b0584aaa3b5df060d1379bc2791577bb8df77e430",
-  "erratum": "../glm-agent-score-2026-11-06/runtime-conformance-erratum.md"
+  "erratum": "../glm-agent-score-2026-11-06/runtime-conformance-erratum.md",
+  "system_descriptive_comparison_valid": true,
+  "formal_comparative_scores_valid_scope": "Only the previously declared identical internal test-runtime profile; system descriptive comparisons remain valid",
+  "latest_system_report": "../system-comparison-v2-2026-11-07/report.md"
 }

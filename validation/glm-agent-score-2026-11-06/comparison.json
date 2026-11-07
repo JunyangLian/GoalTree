@@ -536,5 +536,9 @@
   "runtime_conformance": false,
   "formal_comparative_scores_valid": false,
   "external_functional_verdicts_still_valid": true,
-  "runtime_erratum": "runtime-conformance-erratum.md"
+  "runtime_erratum": "runtime-conformance-erratum.md",
+  "system_descriptive_comparison_valid": true,
+  "formal_comparative_scores_valid_scope": "False refers only to conformity with the earlier identical-test-runtime protocol; not invalidity of all system evaluation",
+  "causal_module_comparison_supported": false,
+  "latest_system_report": "../system-comparison-v2-2026-11-07/report.md"
 }

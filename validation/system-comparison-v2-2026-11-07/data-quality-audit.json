@@ -1,0 +1,13 @@
+{
+  "actual_attempts_with_trace": 47,
+  "unique_tasks": 12,
+  "unfinished_session_record": 1,
+  "new_api_calls": 0,
+  "zero_patch_opportunities_not_assigned_100": true,
+  "missing_next_request_not_counted_as_context_loss": true,
+  "recall_memory_regression_not_invented": true,
+  "independent_raw_grade_and_trace_hashes_validated": true,
+  "recomputation_output_byte_equal": true,
+  "targeted_mechanism_tests": 21,
+  "benchmarks_task_source_sha256": "dc7399a51e4f62e6ad1a1f669779487326be5f48f5ea7cdd898d1664f61a182c"
+}

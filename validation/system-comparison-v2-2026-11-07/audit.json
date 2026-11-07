@@ -1,0 +1,42 @@
+{
+  "model_api_calls": 0,
+  "new_benchmark_attempts": 0,
+  "actual_prior_attempts": 47,
+  "unique_prior_tasks": 12,
+  "system_descriptive_comparison_valid": true,
+  "single_factor_causal_claim_supported": false,
+  "strict_original_identical_internal_runtime_claim_conformant": false,
+  "frozen_grades_and_raw_records_unchanged": true,
+  "independent_recomputation_equal_files": [
+    "metrics.json",
+    "metrics.csv",
+    "trace-metrics.json"
+  ],
+  "catalog_sha256": "e0f0baabd2e8191498f9cc067a426a87211e16199db9328c6c9674a2b31eac14",
+  "sources_sha256": {
+    "pico/evaluation/system_diagnostics.py": "37c66f127bc8ec05039782d044827faec117662cf762d1bcc5d3071f03fe56c0",
+    "scripts/report_system_comparison.py": "568fde2b6558d5f61941b171184d88fd892a45faf718d4bff10fd5bd38902514",
+    "tests/test_system_diagnostics.py": "5a0c32cf6c0aa5c40ace2dc44bc5defc2e0d58ec4174fe03751fb458a3008993"
+  },
+  "reused_observers_and_helpers": [
+    "ProcessObserver exact versioned source snippets and actual outbound requests",
+    "process_trace.ratio",
+    "seven_dimensions.percentile",
+    "report_glm_benchmark.jsonlines and native_continuity"
+  ],
+  "originals": [
+    {
+      "batch": "glm-repair30-baseline-2026-11-06",
+      "archive": "artifacts/glm-repair30-v2-2026-11-06-evidence.zip",
+      "sha256": "1e531f1dd0fe1b855ad4c7c14c4303278f2aa601560f0303e4cea2f96199c0cf",
+      "all_raw_cohort_files_unchanged": true
+    },
+    {
+      "batch": "glm-repair12-compat-2026-11-06",
+      "archive": "artifacts/glm-repair12-compat-v3-2026-11-06-evidence.zip",
+      "sha256": "adf1dabed7e40381ad942d7b0584aaa3b5df060d1379bc2791577bb8df77e430",
+      "all_raw_cohort_files_unchanged": true
+    }
+  ],
+  "official_benchmark_scores_claimed": false
+}

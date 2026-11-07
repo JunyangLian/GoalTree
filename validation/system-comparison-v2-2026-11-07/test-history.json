@@ -1,0 +1,29 @@
+{
+  "final_full": {
+    "tests": 483,
+    "passed": 483,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "duration_seconds": 696.5,
+    "junit": "system-diagnostics-full-v2-2026-11-07.xml",
+    "source_freeze": "system-diagnostics-full-v2-freeze-2026-11-07.json",
+    "source_hashes_unchanged": true,
+    "model_api_calls": 0
+  },
+  "earlier": [
+    {
+      "junit": "artifacts/system-diagnostics-full-2026-11-07.xml",
+      "passed": 481,
+      "role": "Earlier diagnostic run; code updated while running, not final fixed-version proof"
+    },
+    {
+      "junit": "targeted-21.xml",
+      "passed": 21,
+      "role": "Final focused metric boundary checks; overlaps final full suite"
+    }
+  ],
+  "new_test_cases": 9,
+  "previous_collected_cases": 474,
+  "counts_not_summed": true
+}
