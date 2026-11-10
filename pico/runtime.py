@@ -279,7 +279,7 @@ class Pico:
 
         # 工作区事实相对稳定，所以这里按整体刷新；
         # 只有这些事实真的变化了，才重建完整 prefix。
-        refreshed_workspace = (WorkspaceContext.build(self.root, repo_root_override=self.root) if self.capabilities
+        refreshed_workspace = (WorkspaceContext.build(self.root, repo_root_override=self.root,lightweight=bool(getattr(self.workspace,'planning_only',False))) if self.capabilities
                                else WorkspaceContext.build(self.root))
         if self.capabilities:
             refreshed_workspace.project_docs = {k: v for k, v in refreshed_workspace.project_docs.items() if self.capabilities.allowed_path(k)}
@@ -392,6 +392,10 @@ class Pico:
         refresh = self.refresh_prefix()
         self.resume_state = self.evaluate_resume_state()
         prompt, metadata = self.context_manager.build(user_message)
+        if getattr(self, 'goal_context', None):
+            if getattr(self, 'goal_tool_budget', None) is not None:
+                self.goal_context['remaining_tool_budget'] = self.goal_tool_budget['remaining']
+            prompt += '\n\nGoalTree current scoped task state:\n' + self.redact_text(json.dumps(self.goal_context, ensure_ascii=False))
         if self.capabilities and not getattr(self.model_client, 'supports_native_tools', False):
             prompt += '\n\n' + self.redact_text(self.capabilities.refresh_rules(
                 getattr(self.capabilities, 'active_path', self.workspace.cwd)))
@@ -444,7 +448,7 @@ class Pico:
                 continue
             if any(part in IGNORED_PATH_NAMES for part in relative_parts):
                 continue
-            if not path.is_file():
+            if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(self.root.resolve()):
                 continue
             try:
                 snapshot[path.relative_to(self.root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -593,7 +597,8 @@ class Pico:
         if self.capabilities:
             promoted, superseded = [], []
             for topic, text in promotions:
-                candidate = self.memory.knowledge.propose(text, 'legacy-proposal:' + topic + ':' + hashlib.sha256(text.encode()).hexdigest()[:12])
+                scope = {'scope': 'session', 'session_id': self.session['id']} if getattr(self, 'goal_binding', None) else {}
+                candidate = self.memory.knowledge.propose(text, 'legacy-proposal:' + topic + ':' + hashlib.sha256(text.encode()).hexdigest()[:12], **scope)
                 promoted.append('candidate_requires_confirmation:' + candidate['id'])
         else:
             promoted, superseded = self.memory.promote_durable(promotions)
@@ -635,6 +640,13 @@ class Pico:
 
     def execute_tool(self, name, args):
         self._raw_tool_evidence = None
+        budget = getattr(self, 'goal_tool_budget', None)
+        if budget is not None:
+            if budget['remaining'] <= 0:
+                from .tool_executor import ToolExecutionResult
+                return ToolExecutionResult('Shared conversation tool budget exhausted; no action executed.',
+                    {'tool_status': 'rejected', 'tool_error_code': 'shared_budget_exhausted', 'workspace_changed': False})
+            budget['remaining'] -= 1
         if self.capabilities:
             self.capabilities.last_sources = []
             if not isinstance(args, dict):
@@ -696,7 +708,10 @@ class Pico:
     def repeated_tool_call(self, name, args):
         # agent 很常见的一种坏循环，是在没有新信息的情况下反复发起同一调用。
         # 这里提前挡掉最简单的这种循环。
-        tool_events = [item for item in self.session["history"] if item["role"] == "tool"]
+        history = self.session['history']
+        if getattr(self, 'goal_binding', None):
+            history = history[getattr(self, '_run_history_start', 0):]
+        tool_events = [item for item in history if item["role"] == "tool"]
         if len(tool_events) < 2:
             return False
         recent = tool_events[-2:]

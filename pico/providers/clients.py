@@ -15,6 +15,7 @@ from urllib.parse import urlparse
 
 from .deepseek_protocol import normalize_dsml_call
 from .native_tools import NativeToolConversation
+from .streaming import IncompleteSSEError
 
 OPENAI_COMPATIBLE_USER_AGENT = "pico/0.1"
 
@@ -274,6 +275,7 @@ class OpenAICompatibleModelClient:
         self.stream = False
         self.cancellation = None
         self.on_delta = None
+        self.on_progress = None
         self.active_response = None
         self.network_route = 'environment'
 
@@ -360,6 +362,8 @@ class OpenAICompatibleModelClient:
         if self.stream and self.api_format == 'chat_completions':
             payload['stream'] = True
             payload['stream_options'] = {'include_usage': True}
+            if self.bigmodel_glm:
+                payload['tool_stream'] = True
         # runtime 传入的是“稳定前缀”的签名，而不是整段 prompt 的签名。
         # 这样缓存复用针对的是稳定段，不会因为动态 history 每轮变化而失效。
         if self.supports_prompt_cache and prompt_cache_key:
@@ -397,18 +401,24 @@ class OpenAICompatibleModelClient:
             if remaining <= 0:
                 raise TimeoutError('OpenAI-compatible transport retry budget exhausted; failed-request usage is unknown')
             try:
+                headers = {}
+                self.last_completion_metadata.pop('stream_diagnostics',None)
                 phase = 'connect_or_response_headers'
                 if self.network_route not in {'environment', 'direct'}:
                     raise ValueError('Unknown explicit network route')
                 opener = urllib.request.urlopen if self.network_route == 'environment' else urllib.request.build_opener(urllib.request.ProxyHandler({})).open
                 with opener(request, timeout=min(self.timeout, remaining)) as response:
                     self.active_response = response
+                    if self.on_progress:
+                        self.on_progress({'phase': 'connected'})
                     phase = 'response_body'
                     headers = getattr(response, "headers", {}) or {}
                     content_type = headers.get("Content-Type", "")
                     if self.stream and self.api_format == 'chat_completions' and content_type.startswith('text/event-stream'):
                         from .streaming import read_chat_stream
-                        body_text = json.dumps(read_chat_stream(response, self.cancellation, self.on_delta))
+                        body_text = json.dumps(read_chat_stream(response, self.cancellation, self.on_delta, self.on_progress,
+                            lambda audit:self.last_completion_metadata.update(stream_diagnostics=audit),
+                            max_seconds=max(0,min(self.timeout,remaining)-(time.monotonic()-started))))
                         content_type = 'application/json'
                         self.last_completion_metadata['streamed'] = True
                     else:
@@ -421,8 +431,27 @@ class OpenAICompatibleModelClient:
                                         'sha256':hashlib.sha256(body_text.encode('utf-8')).hexdigest()})
                 self._transport_event({'attempt':attempt+1, 'ok':True,
                     'request_id':headers.get('x-request-id') or headers.get('X-Request-ID') or headers.get('x-siliconcloud-trace-id'),
+                    **({'stream_diagnostics':self.last_completion_metadata['stream_diagnostics']}
+                       if 'stream_diagnostics' in self.last_completion_metadata else {}),
                     'elapsed_ms':round((time.monotonic()-started)*1000)})
                 break
+            except IncompleteSSEError as exc:
+                self.active_response = None
+                if self.cancellation:self.cancellation.check()
+                delay = 0.5 * (attempt + 1)
+                retry = attempt<attempts-1 and deadline-time.monotonic()>delay
+                self._transport_event({'attempt':attempt+1,'ok':False,'error_type':type(exc).__name__,
+                    'phase':'response_body','failure_category':'stream_incomplete',
+                    'request_id':headers.get('x-request-id') or headers.get('X-Request-ID') or headers.get('x-siliconcloud-trace-id'),
+                    'stream_diagnostics':exc.diagnostics,'will_retry':retry,
+                    'stream_reset':retry,'retry_delay_seconds':delay if retry else 0,
+                    'elapsed_ms':round((time.monotonic()-started)*1000)})
+                if retry:
+                    # Nothing in the partial response reached accept()/observe().
+                    # Reissue only this model request; completed tools stay intact.
+                    self.cancellation.wait(delay) if self.cancellation else time.sleep(delay)
+                    continue
+                raise
             except urllib.error.HTTPError as exc:
                 if self.cancellation:
                     self.cancellation.check()
@@ -461,6 +490,8 @@ class OpenAICompatibleModelClient:
                     f"Base URL: {self.base_url}\n"
                     f"Model: {self.model}"
                 ) from exc
+            finally:
+                self.active_response = None
 
         # 有些兼容后端返回普通 JSON，有些返回 SSE。
         # 这里两种都接住，并尽量统一抽取文本和 usage/cache 元数据。

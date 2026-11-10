@@ -52,12 +52,54 @@ class Capabilities:
             return False
 
     def registry(self):
-        return {name: {'schema': schema, 'risky': risky, 'description': description,
+        return {**{name: {'schema': schema, 'risky': risky, 'description': description,
                        'run': lambda args, name=name: self.run(name, args)}
-                for name, (schema, risky, description) in SPECS.items()}
+                for name, (schema, risky, description) in SPECS.items()}, **self.goal_registry()}
+
+    def goal_registry(self):
+        tools = {}
+        if getattr(self.agent, 'goal_planner', None):
+            tools['plan_tasks'] = {'schema': {'steps': 'str'}, 'risky': False,
+            'description': 'Persist 1..20 GoalTree tasks as a JSON array of id,title,description,acceptance,parent_id,depends_on. '
+                           'Optional verification_mode is configured (default) or manual (requires operator acceptance, never self-completion). '
+                           'Use temporary ids to link new tasks. Existing unexecuted planned IDs may be updated. '
+                           'For multi-stage planning use stage nodes and child tasks linked by parent_id, '
+                           'with concrete descriptions and acceptance conditions. Research/documents use manual verification. '
+                           'Never delete history or declare completed. This replaces no existing tasks implicitly.',
+            'run': lambda args: self.run('plan_tasks', args)}
+        if getattr(self.agent, 'goal_action', None):
+            tools['goal_action'] = {'schema': {'proposal': 'str'}, 'risky': False,
+                'description': 'Maintain the current goal tree using a JSON object. Actions: create_goal (new conversation only), '
+                               'create_task, update_goal, update_task, reopen_task, archive_task, record_progress, set_status (planned/blocked/cancelled). '
+                               'proposal is a JSON-encoded string. create_goal fields: action, title:string (1..160 chars), '
+                               'description:string (max 6000), constraints:string (max 4000), acceptance:string (max 2000). '
+                               'constraints must be a single text string, NEVER an array or object; use newlines for multiple constraints. '
+                               'create_task additionally requires title and may use parent_id:string, depends_on:array of task IDs, '
+                               'verification_mode:manual/configured. update_goal uses goal_id and revision; '
+                               'update_task uses task_id and revision. Only send fields for the requested action. '
+                               'record_progress uses task_id, revision, status:active/review, note (max1200). '
+                               'review requires output (actual deliverable text,max20000) OR evidence_id from this session, never both. '
+                               'This records conversation work without rerunning it; it is NOT acceptance. '
+                               'For newly learned facts update_goal context_notes; this preserves task contracts. '
+                               'Changing goal description/constraints/acceptance invalidates task contracts; use only for actual scope changes. '
+                               'Updates require the observed revision. No acceptance or permission changes. '
+                               'Do not create goals for ordinary questions. Never touch another goal.',
+                'run': lambda args: self.run('goal_action', args)}
+            tools['run_task'] = {'schema': {'task_id': 'str', 'instruction': "str='Execute this task against its acceptance conditions.'"}, 'risky': False, 'observes_effects': True,
+                'description': 'Execute an existing task of this goal in its isolated session, then return actual verification and evidence. '
+                               'Shares the current turn tool budget. File/Shell effects still require their original approvals. '
+                               'Dependencies must have current acceptance. Do not claim success without inspecting the result.',
+                'run': lambda args: self.run('run_task', args)}
+            tools['confirm_task'] = {'schema': {'task_id': 'str', 'reason': 'str','include_children':'int=0'}, 'risky': True,
+                'description': 'Request operator approval to accept a manually reviewed task with explicit supporting evidence. '
+                               'include_children=1 requests ONE approval for a stage plus its listed eligible descendants; '
+                               'all leaf tasks must already be submitted for review or currently accepted. '
+                               'Approval is required; never invoke just to make the tree look complete.',
+                'run': lambda args: self.run('confirm_task', args)}
+        return tools
 
     def validate(self, name, args):
-        schema = SPECS[name][0]
+        schema = self.registry()[name]['schema']
         if not isinstance(args, dict) or set(args) - set(schema):
             raise ValueError('Unknown workbench tool argument')
         for key, declaration in schema.items():
@@ -91,7 +133,15 @@ class Capabilities:
     def run(self, name, args):
         agent = self.agent
         self.last_sources = []
-        if name == 'code_search':
+        if name == 'plan_tasks':
+            result = agent.goal_planner(json.loads(args['steps']))
+        elif name == 'goal_action':
+            result = agent.goal_action(json.loads(args['proposal']))
+        elif name == 'run_task':
+            result = agent.goal_runner(args['task_id'], args.get('instruction', 'Execute this task against its acceptance conditions.'))
+        elif name == 'confirm_task':
+            result = agent.goal_confirmation(args['task_id'], args['reason'],args.get('include_children',0))
+        elif name == 'code_search':
             result = self.index.search(args['query'], args.get('limit', 5))
             self.last_sources = sorted({r['path'] for r in result})
             agent.evidence.event(agent.session['id'], getattr(agent.current_task_state, 'run_id', ''),
@@ -130,7 +180,8 @@ class Capabilities:
                 raise ValueError('Evidence paths must be an array of <=8 paths')
             if any(not self.allowed_path(path) for path in paths):
                 raise ValueError('Memory evidence source is not authorized')
-            result = agent.memory.knowledge.propose(args['text'], category + ':' + args['key'], paths)
+            scope = {'scope': 'session', 'session_id': agent.session['id']} if getattr(agent, 'goal_binding', None) else {}
+            result = agent.memory.knowledge.propose(args['text'], category + ':' + args['key'], paths, **scope)
         elif name == 'apply_changes':
             result = self.changes.apply(json.loads(args['changes']))
         elif name == 'rewind_changes':
@@ -163,8 +214,9 @@ class Capabilities:
                   'command': verification['command'], 'exit_code': 0, 'paths': paths,
                   'evidence_id': verification['evidence_id'], 'snapshot_sha256': verification.get('snapshot_sha256'),
                   'scope': 'This test passed for this snapshot; revalidate after changes. Not a repair recipe.'}
+        scope = {'scope': 'session', 'session_id': agent.session['id']} if getattr(agent, 'goal_binding', None) else {}
         candidate = agent.memory.knowledge.propose(json.dumps(record, ensure_ascii=False),
-            'experience:' + hashlib.sha256(json.dumps(paths).encode()).hexdigest()[:16], paths)
+            'experience:' + hashlib.sha256(json.dumps(paths).encode()).hexdigest()[:16], paths, **scope)
         # Only the deterministic host observation above is confirmed here. No
         # arbitrary model text uses this path, and general prose stays candidate.
         activated = agent.memory.knowledge.activate(candidate['id'], candidate['version'], reviewer='host_verified_execution')

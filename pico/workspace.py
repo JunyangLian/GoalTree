@@ -53,8 +53,12 @@ class WorkspaceContext:
         self.project_docs = project_docs
 
     @classmethod
-    def build(cls, cwd, repo_root_override=None):
+    def build(cls, cwd, repo_root_override=None,lightweight=False):
         cwd = Path(cwd).resolve()
+        if lightweight:
+            result=cls(str(cwd),str(Path(repo_root_override).resolve() if repo_root_override else cwd),'-','-','not inspected',[],{})
+            result.planning_only=True
+            return result
 
         def git(args, fallback=""):
             try:
@@ -100,6 +104,10 @@ class WorkspaceContext:
         )
 
     def text(self):
+        if getattr(self,'planning_only',False):
+            return ('Selected workspace: '+self.cwd+'\nFolder contents are not automatically included. '
+                    'Use only the current goal, conversation and supplied attachments. '
+                    'Do not infer a new goal\'s topic from files in this folder. Inspect files only when requested or necessary for an established task.')
         # 这段文本会被塞进 prompt prefix，作为相对稳定的基线上下文。
         commits = "\n".join(f"- {line}" for line in self.recent_commits) or "- none"
         docs = "\n".join(f"- {path}\n{snippet}" for path, snippet in self.project_docs.items()) or "- none"

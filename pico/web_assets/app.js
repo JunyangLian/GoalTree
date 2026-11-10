@@ -1,492 +1,469 @@
 "use strict";
+/* Evidence-derived activity, not generated or private model reasoning. */
+(function(root){
+  'use strict';
+  const tools={goal_action:'更新目标',plan_tasks:'保存任务树',run_task:'执行子任务',read_file:'读取文件',list_files:'查看工作区',code_search:'检索代码',symbol_info:'查找符号',write_file:'写入文件',patch_file:'修改文件',apply_changes:'应用修改',run_shell:'运行命令',confirm_task:'申请人工验收',recall_evidence:'查回证据',find_evidence:'查找证据',load_skill:'读取技能说明'};
+  const stages={connected:'已连接模型服务',analysis:'模型正在分析',answer:'正在生成回复',tool_arguments:'正在准备工具操作'};
+  function target(e){
+    if(e.target)return String(e.target).slice(0,180);
+    const args=e.args||{};
+    if(typeof args.path==='string')return args.path.slice(0,180);
+    if(e.name==='web_search')return '['+String(args.source||'auto')+'] '+String(args.query||'').slice(0,160);
+    if(e.name==='web_read')return String(args.url||'').slice(0,180);
+    if(e.name==='web_find')return String(args.pattern||'').slice(0,120);
+    try {if(e.name==='goal_action')return String(JSON.parse(args.proposal||'{}').title||'').slice(0,160);}catch{}
+    return '';
+  }
+  function toolLabel(e){
+    if(e.name==='plan_tasks') {
+      let count=e.task_count;
+      try {count??=JSON.parse(e.args?.steps||'[]').length;}catch{}
+      return '任务树'+(count?'（'+count+'项）':'');
+    }
+    return (tools[e.name]||({web_search:'搜索网页',web_read:'读取网页',web_find:'页内查找'}[e.name])||'工具操作')+(target(e)?'：'+target(e):'');
+  }
+  function describe(job){
+    const done=['completed','failed','stopped'].includes(job.status),entries=[];
+    let phase='waiting',label=job.status==='queued'?'请求已提交，正在准备':'等待模型响应',detail='请求准备中，收到响应后将更新进度。';
+    let errors=0;
+    const push=(text,kind='info')=>{if(entries.at(-1)?.text!==text)entries.push({text,kind});};
+    for(const e of job.events||[]) {
+      const child=e.delegated_run_id?'子任务 · ':'';
+      if(e.event==='model_requested') {phase='waiting';label=child+'等待模型响应';detail='模型请求已发出，等待服务返回。';push(child+'已发送模型请求');}
+      if(e.event==='model_progress'&&stages[e.phase]) {phase=e.phase;label=child+stages[e.phase];detail=e.phase==='tool_arguments'?'正在接收操作参数，尚未执行。':e.phase==='analysis'?'模型正在处理请求，尚未返回完整结果。':e.phase==='answer'?'正文会逐步显示，最终结果以本轮结束后的记录为准。':'服务已开始返回数据。';push(child+stages[e.phase]);}
+      if(e.event==='tool_started') {phase='tool';label=child+'准备'+toolLabel(e);detail='通过校验与所需确认后才会执行。';}
+      if(e.event==='tool_executed') {
+        const ok=e.tool_status==='ok';if(!ok)errors++;
+        phase='tool';label=child+(ok?'已完成操作：':'操作未完成：')+toolLabel(e);
+        detail=ok?'工具已返回，正在处理结果。':'已保留失败或拒绝记录，后续动作仍需遵守原约束。';push(label,ok?'success':'warning');
+        if(e.name==='web_search'&&e.search_sources){
+          const names={exa_mcp:'Exa Search MCP',bing:'Bing',baidu:'百度',wechat:'微信·搜狗索引',crossref:'Crossref',pubmed:'PubMed'};
+          label='搜索来源：'+e.search_sources.map(s=>(names[s.source]||s.source)+(s.status==='error'?(s.failure_type==='verification_required'?'需验证':'不可用'):s.status==='empty'?'无结果':' '+s.count+'条')+(s.low_query_overlap?'（关键词匹配不足）':'')).join(' · ');
+          detail=e.search_status==='partial'?'部分来源未返回，已保留错误和可用结果。':'各来源结果已记录；检索摘要不等于正文核验。';
+          push(label,e.search_status==='ok'||e.search_status==='empty'?'success':'warning');
+        }
+        if(e.web_cache==='hit'||e.web_cache==='snapshot')push(child+'复用本会话网页快照（未重新联网）','success');
+        if(e.web_citation)push(child+'已保留原文片段位置','success');
+        if(e.document_type==='pdf'){
+          push(child+'PDF · 共'+e.pdf_page_count+'页'+(e.pdf_start_page?' · 本次第'+e.pdf_start_page+(e.pdf_end_page!==e.pdf_start_page?'–'+e.pdf_end_page:'')+'页':''),'info');
+          if(e.pdf_text_status!=='text_extracted')push(child+'PDF存在无可提取文字的页面，尚未进行OCR','warning');
+        }
+        if(e.web_budget_stop)push(child+'检索预算已用尽，使用已有证据回答','warning');
+      }
+      if(e.event==='approval_requested')push(child+'等待你的确认');
+      if(e.event==='approval_resolved')push(child+(e.allowed?'已收到确认':'本项操作已被拒绝'),e.allowed?'success':'warning');
+      if(e.event==='model_transport'&&e.ok===false) {phase='network';label=e.will_retry?'连接异常，正在重试':'模型连接未成功';detail='可以查看最近记录，或停止后重试。';push(label,'warning');}
+    }
+    if(job.status==='waiting_approval'){phase='approval';label='等待你确认下一步';detail='确认前不会继续该项操作。';}
+    if(job.status==='cancelling'){phase='cancelling';label='正在停止';detail='已完成的操作会保留，尚未执行的操作不会自动重放。';}
+    if(done){phase=job.status;label=job.status==='failed'?'本轮发生异常':job.status==='stopped'?'本轮已停止':'本轮回复已结束';detail=errors?'包含'+errors+'项未完成操作，可展开查看；回复结束不等于任务验收通过。':'执行摘要来自真实记录；任务验收状态以右侧任务树为准。';}
+    return {phase,label,detail,done,elapsedSeconds:Math.max(0,Math.floor((Number(job.elapsed_ms)||0)/1000)),entries:entries.slice(-8)};
+  }
+  root.GoalTreeProgress=Object.freeze({describe});
+})(globalThis);
 
-const $ = (id) => document.getElementById(id);
-const welcome = $("welcome").cloneNode(true);
-const state = { config: null, sessionId: "", taskId: "", busy: false, messages: [], base: [], job: null, eventKey: "", diffKey: "" };
-const statusNames = { queued: "准备中", running: "执行中", waiting_approval: "等待确认", finishing: "整理结果", cancelling: "正在取消", completed: "已结束", failed: "执行异常", stopped: "已停止" };
+const $ = id => document.getElementById(id);
+const welcome = $('welcome').cloneNode(true);
+const state = {config:null, tree:null, goalId:'', nodeId:'', focusId:'', mode:'assistant', sessionId:'', taskId:'', messages:[], base:[], busy:false, switching:false, initializing:false, scopeEpoch:0, latestJob:null, job:null};
+state.cooperation={planning:'balanced',implementation:'balanced'}; state.drafts=new Map(); state.uploading=0; state.savingCooperation=false;
+state.activityOpen=new Map();
+state.workspaceId='';state.switchingWorkspace=false;
+function draftKey(session=state.sessionId,workspace=state.workspaceId){return workspace?workspace+'|'+session:session;}
 let toastTimer;
-
-function node(tag, className, text) {
-  const element = document.createElement(tag);
-  if (className) element.className = className;
-  if (text !== undefined) element.textContent = text;
-  return element;
-}
-function toast(message) {
-  $("toast").textContent = message;
-  $("toast").classList.remove("hidden");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => $("toast").classList.add("hidden"), 5000);
-}
-async function api(path, data) {
-  const options = data === undefined ? {} : {
-    method: "POST", headers: { "Content-Type": "application/json", "X-Pico-Token": state.config.csrf },
-    body: JSON.stringify(data),
-  };
-  const response = await fetch(path, options);
-  const result = await response.json();
-  if (!response.ok) throw new Error(result.error || "请求失败，请刷新重试。");
-  return result;
+function node(tag, className='', text) { const e=document.createElement(tag); if(className)e.className=className; if(text!==undefined)e.textContent=text; return e; }
+function toast(text) { $('toast').textContent=text; $('toast').classList.remove('hidden'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),5000); }
+async function api(path,data,scope) {
+  const headers={};const workspace=scope?.workspaceId??state.workspaceId;
+  if(workspace)headers['X-GoalTree-Workspace']=workspace;
+  if(data!==undefined){headers['Content-Type']='application/json';headers['X-Pico-Token']=scope?.csrf??state.config.csrf;}
+  const response=await fetch(path,data===undefined?{headers}:{method:'POST',headers,body:JSON.stringify(data)});
+  const value=await response.json(); if(!response.ok)throw new Error(value.error||'请求失败'); return value;
 }
 function setBusy(value) {
-  state.busy = value;
-  for (const id of ["send", "policy", "steps", "new-session"]) $(id).disabled = value;
-  $("send").textContent = value ? "任务执行中…" : "开始任务 ↗";
-  if ($('cancel-task')) $('cancel-task').disabled = !value;
-  if ($('resume-task')) $('resume-task').disabled = value || !state.job?.id || state.job.status === 'completed';
-  $("composer-state").textContent = value ? "可以在右侧查看实时过程" : policyHint();
-}
-function policyHint() {
-  return { ask: "写入和命令执行会先征求确认", auto: "受控工具将自动执行", never: "写入和命令执行将被拒绝" }[$("policy").value];
+  state.busy=value; $('send').disabled=value||state.switching||state.initializing; $('new-session').disabled=value||state.switching||state.initializing;
+  $('cancel-task').classList.toggle('hidden',!value); $('cancel-task').disabled=!value;
+  $('session-badge').textContent=value?(state.latestJob&&globalThis.GoalTreeProgress?GoalTreeProgress.describe(state.latestJob).label:'请求已提交'):'';
+  $('composer-state').textContent=value?'进度会随真实记录更新':'Enter 发送 · Shift + Enter 换行';
+  renderTree();
+  renderComposerTools();
 }
 function showMessages(messages) {
-  const container = $("conversation");
-  const stayAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 90;
-  const fragment = document.createDocumentFragment();
-  if (!messages.length) fragment.append(welcome.cloneNode(true));
-  for (const message of messages) {
-    const article = node("article", `message ${message.role}${message.pending ? " pending" : ""}${message.error ? " error" : ""}`);
-    const label = node("div", "message-label");
-    label.append(node("b", "", message.role === "user" ? "你" : "C"), node("span", "", message.role === "user" ? "你的任务" : "CodeTrail"));
-    article.append(label, node("div", "message-body", message.content));
+  const container=$('conversation'); const follow=container.scrollHeight-container.scrollTop-container.clientHeight<100;
+  const fragment=document.createDocumentFragment(); if(!messages.length)fragment.append(welcome.cloneNode(true));
+  for(const m of messages) {
+    const article=node('article',`message ${m.role}${m.pending?' pending':''}${m.error?' error':''}`);
+    const body=node('div','message-body');
+    if(m.role==='assistant'&&!m.error&&globalThis.GoalTreeMarkdown) {
+      body.classList.add('markdown-body');
+      // Only this local renderer's HTML is accepted, never raw model HTML.
+      body.innerHTML=GoalTreeMarkdown.render(m.content);
+    } else body.textContent=m.content;
+    if(m.attachments?.length) {
+      const attachments=node('div','message-attachments');
+      for(const file of m.attachments)attachments.append(node('span','attachment-chip',`${file.mime?.startsWith('image/')?'图片':'文件'} · ${file.name}`));
+      body.append(attachments);
+    }
+    article.append(node('div','message-label',m.role==='user'?'你':'GoalTree'));
+    if(m.activity&&globalThis.GoalTreeProgress)article.append(activityCard(m.activity));
+    if(m.content||m.attachments?.length)article.append(body);
     fragment.append(article);
   }
-  container.replaceChildren(fragment);
-  if (stayAtBottom) container.scrollTop = container.scrollHeight;
-}
-function emptyView(symbol, title, description) {
-  const empty = node("div", "detail-empty");
-  empty.append(node("span", "", symbol), node("strong", "", title), node("p", "", description));
-  return empty;
-}
-function resetInspector() {
-  state.eventKey = "";
-  state.diffKey = "";
-  $("tool-count").textContent = "0";
-  $("elapsed").textContent = "—";
-  $("token-count").textContent = "—";
-  $("diff-count").textContent = "0";
-  $("task-status").className = "status-pill";
-  $("task-status").textContent = "待开始";
-  $("approval").classList.add("hidden");
-  $("run-outcome").className = "run-outcome";
-  $("outcome-title").textContent = "等待任务开始";
-  $("outcome-detail").textContent = "模型回答结束与验证命令通过会分别展示。";
-  $("verification-command").textContent = state.config?.verification_command || "";
-  $("outcome-action").textContent = "";
-  $("timeline").replaceChildren(emptyView("⌁", "每一步，都看得见", "开始任务后，这里显示真实执行过程。"));
-  $("diffs").replaceChildren(emptyView("±", "等待代码变化", "任务结束后展示本次文本差异。"));
-  $("tests").replaceChildren(emptyView("✓", "用执行结果说话", "运行命令的输出会显示在这里。"));
-}
-function selectTab(name) {
-  if (!["timeline", "diffs", "tests", 'governance'].includes(name)) return;
-  for (const button of document.querySelectorAll("[data-tab]")) {
-    const selected = button.dataset.tab === name;
-    button.classList.toggle("active", selected);
-    button.setAttribute("aria-selected", String(selected));
-    button.tabIndex = selected ? 0 : -1;
-    $(button.dataset.tab).classList.toggle("hidden", !selected);
-  }
-  if (name === 'governance') refreshGovernance().catch(error => toast(error.message));
-}
-async function refreshSessions() {
-  const sessions = await api("/api/sessions");
-  const list = $("sessions");
-  list.replaceChildren();
-  for (const session of sessions) {
-    const button = node("button", `session-item${state.sessionId === session.id ? " active" : ""}`);
-    button.append(node("strong", "", session.title), node("small", "", formatDate(session.created_at)));
-    button.title = session.id;
-    button.addEventListener("click", () => selectSession(session.id));
-    list.append(button);
-  }
-  if (!sessions.length) list.append(node("div", "muted small sidebar-empty", "你的第一个会话，会保存在这里。"));
-}
-function formatDate(value) {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "本地会话" : date.toLocaleString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
-}
-async function selectSession(id) {
-  if (state.busy) return toast("请等待当前任务结束后切换会话。");
-  try {
-    const data = await api(`/api/sessions/${encodeURIComponent(id)}`);
-    state.sessionId = id;
-    state.messages = data.messages;
-    state.taskId = "";
-    state.job = null;
-    $("conversation-title").textContent = "继续历史会话";
-    $("session-badge").textContent = id.slice(-13);
-    showMessages(state.messages);
-    $("conversation").scrollTop = $("conversation").scrollHeight;
-    resetInspector();
-    await refreshSessions();
-  } catch (error) { toast(error.message); }
-}
-function newSession() {
-  if (state.busy) return;
-  state.sessionId = "";
-  state.taskId = "";
-  state.job = null;
-  state.messages = [];
-  state.base = [];
-  $("conversation-title").textContent = "新会话";
-  $("session-badge").textContent = "准备就绪";
-  $("prompt").value = "";
-  showMessages([]);
-  resetInspector();
-  refreshSessions().catch((error) => toast(error.message));
-  $("prompt").focus();
-}
-async function send() {
-  const prompt = $("prompt").value.trim();
-  if (state.busy) return;
-  if (!prompt) return toast("先描述一个你想完成的任务。");
-  if (!state.config.configured) return toast("请先在本地 .env 配置模型 Key，并重启工作台。");
-  const steps = Number($("steps").value);
-  if (!Number.isInteger(steps) || steps < 1 || steps > 20) return toast("工具步数应在 1–20 之间。");
-  state.base = [...state.messages, { role: "user", content: prompt }];
-  resetInspector();
-  setBusy(true);
-  showMessages([...state.base, { role: "assistant", content: "正在准备工作区…", pending: true }]);
-  try {
-    const job = await api("/api/tasks", { prompt, session_id: state.sessionId, policy: $("policy").value, max_steps: steps });
-    state.taskId = job.id;
-    $("prompt").value = "";
-    renderJob(job);
-    poll(job.id);
-  } catch (error) {
-    setBusy(false);
-    showMessages(state.messages);
-    toast(error.message);
-  }
+  container.replaceChildren(fragment); if(follow)container.scrollTop=container.scrollHeight;
 }
 function renderConnection() {
-  const mode = state.config.shell_backend === "appcontainer" ? "AppContainer 隔离模式" : "宿主执行 · 无 OS 隔离";
-  $("connection").replaceChildren(node("span", "local-dot"), document.createTextNode(state.config.configured ? `模型已配置 · ${mode}` : `模型尚未配置 · ${mode}`));
-}
-async function poll(id, failures = 0) {
-  if (state.taskId !== id) return;
-  try {
-    const job = await api(`/api/tasks/${id}`);
-    if (state.taskId !== id) return;
-    renderConnection();
-    renderJob(job);
-    if (["completed", "failed", "stopped"].includes(job.status)) {
-      setBusy(false);
-      await refreshSessions().catch((error) => toast(error.message));
-    } else setTimeout(() => poll(id), 1000);
-  } catch (error) {
-    if (state.taskId !== id) return;
-    const attempts = failures + 1;
-    if (attempts < 5) {
-      $("connection").textContent = `连接中断 · 正在重试 ${attempts}/4`;
-      setTimeout(() => poll(id, attempts), Math.min(1000 * 2 ** failures, 8000));
-    } else {
-      $("connection").textContent = "连接中断 · 自动重试已停止，请刷新页面";
-      toast(error.message);
-    }
+  const offline=/offline|scripted/i.test(state.config.model);
+  $('model-name').textContent=offline?'离线脚本 · 不支持自由规划':state.config.model;
+  $('model-name').title=state.config.model;
+  if(offline) {
+    welcome.textContent='当前为固定脚本演示；自由对话与目标规划需要接入真实模型。';
+    $('prompt').placeholder='离线模式仅支持预设的资料整理演示…';
   }
+  $('connection').textContent=(state.config.shell_backend==='appcontainer'?'本地 · 隔离执行':'本地 · 宿主执行')+(state.config.web_access?' · 可联网':'')+(state.config.search_backend==='exa-mcp'?(state.config.search_mcp?.ready?' · Exa MCP':' · MCP待连接'):'');
+}
+async function refreshSessions() { /* Goal conversations replace the old session list. */ }
+async function refreshTree() { state.tree=await api('/api/tree'); renderTree(); }
+function isViewedJob(job) { const b=job.binding; return b?b.goal_id===state.goalId&&b.task_id===state.nodeId&&b.mode===state.mode:!state.goalId; }
+function baseForRun(messages,prompt) {
+  for(let i=messages.length-1;i>=0;i--)if(messages[i].role==='user'&&messages[i].content===prompt)return messages.slice(0,i+1);
+  return [...messages,{role:'user',content:prompt}];
+}
+function adoptGoal(job) {
+  if(job.binding?.mode==='assistant'&&job.binding.goal_id&&!state.goalId&&job.session_id===state.sessionId) {
+    state.goalId=job.binding.goal_id; state.nodeId=''; state.mode='assistant';
+  }
+}
+async function send() {
+  if(state.busy||state.switching||state.switchingWorkspace||state.initializing||state.uploading||state.savingCooperation)return;
+  const attachments=state.drafts.get(draftKey())||[];
+  const prompt=$('prompt').value.trim()||(attachments.length?'请查看这些附件，先概括内容，不自动创建目标或执行任务。':''); if(!prompt)return;
+  if(!state.config.configured)return toast('请在本地配置模型接口后重启服务。');
+  state.base=[...state.messages,{role:'user',content:prompt,attachments}]; setBusy(true);
+  showMessages([...state.base,{role:'assistant',content:'请求正在提交…',pending:true}]); $('run-error').classList.add('hidden');
+  try {
+    const job=await api('/api/tasks',{prompt,goal_id:state.goalId,node_id:'',mode:'assistant',session_id:state.sessionId,policy:'ask',cooperation:state.cooperation,attachments:attachments.map(f=>f.id),max_steps:state.config.recommended_steps||20});
+    state.drafts.delete(draftKey()); renderComposerTools();
+    state.taskId=job.id; state.latestJob=job; $('prompt').value=''; adoptGoal(job); if(isViewedJob(job))renderJob(job); poll(job.id);
+  } catch(error) { setBusy(false); showMessages(state.messages); toast(error.message); }
+}
+async function poll(id,failures=0) {
+  if(state.taskId!==id)return;
+  try {
+    const job=await api(`/api/tasks/${id}`); if(state.taskId!==id)return;
+    renderConnection(); state.latestJob=job; adoptGoal(job); if(isViewedJob(job))renderJob(job);
+    if(state.tree)await refreshTree().catch(error=>toast(error.message));
+    if(['completed','failed','stopped'].includes(job.status)) { setBusy(false); await refreshSessions().catch(error=>toast(error.message)); }
+    else setTimeout(()=>poll(id),1000);
+  } catch(error) {
+    if(state.taskId!==id)return; const attempts=failures+1;
+    if(attempts<5) { $('connection').textContent=`连接中断 · 正在重试 ${attempts}/4`; setTimeout(()=>poll(id,attempts),Math.min(1000*2**failures,8000)); }
+    else { $('connection').textContent='连接中断 · 自动重试已停止，请刷新页面'; toast(error.message); }
+  }
+}
+function pendingAnswer(events) {
+  events=(events||[]).filter(e=>!e.delegated_run_id);
+  const boundary=events.map(e=>e.event==='model_requested'||(e.event==='model_transport'&&e.stream_reset===true)).lastIndexOf(true);
+  return events.slice(boundary+1).filter(e=>e.event==='model_delta').map(e=>e.text||'').join('');
+}
+function modelErrorText(job) {
+  if(!job.error)return '';
+  if(job.outcome?.code==='model_stream_interrupted'||/Incomplete SSE response/.test(job.error))
+    return '模型回复流中断，未收到完整结果。残缺工具调用未执行，已完成操作已保留，可以继续当前会话。';
+  return job.error;
 }
 function renderJob(job) {
-  state.job = job;
-  if (job.session_id) {
-    state.sessionId = job.session_id;
-    $("session-badge").textContent = job.session_id.slice(-13);
-    $("conversation-title").textContent = "当前会话";
+  state.job=job; if(job.session_id)state.sessionId=job.session_id;
+  const done=['completed','failed','stopped'].includes(job.status), messages=[...state.base];
+  if(job.answer)messages.push({role:'assistant',content:job.answer,activity:job});
+  const errorText=modelErrorText(job);
+  if(errorText)messages.push({role:'assistant',content:errorText,error:true,activity:job.answer?null:job});
+  if(!done) {
+    const partial=pendingAnswer(job.events);
+    messages.push({role:'assistant',content:partial,pending:true,activity:job});
   }
-  const done = ["completed", "failed", "stopped"].includes(job.status);
-  const messages = [...state.base];
-  if (job.answer) messages.push({ role: "assistant", content: job.answer });
-  if (job.error) messages.push({ role: "assistant", content: job.error, error: true });
-  if (!done) {
-    const events = job.events || [];
-    const boundary = events.map(e => e.event).lastIndexOf('model_requested');
-    const partial = events.slice(boundary + 1).filter(e => e.event === 'model_delta').map(e => e.text || '').join('');
-    messages.push({ role: 'assistant', content: job.status === 'waiting_approval' ? '等待你确认下一步操作。' : job.status === 'cancelling' ? '取消已请求，正在等待在途操作退出；已完成的修改会保留。' : partial || 'CodeTrail 正在执行，右侧可以查看过程…', pending: true });
-  }
-  state.messages = messages.filter((message) => !message.pending);
-  showMessages(messages);
-  $("task-status").className = `status-pill ${job.status}`;
-  $("task-status").textContent = statusNames[job.status] || job.status;
-  const outcome = job.outcome;
-  if (outcome) {
-    $("run-outcome").className = `run-outcome ${outcome.code}`;
-    $("outcome-title").textContent = outcome.title;
-    $("outcome-detail").textContent = outcome.detail;
-    $("outcome-action").textContent = outcome.action;
-    const verification = job.verification || {};
-    const labels = { passed: "通过", failed: "失败", stale: "需重测", blocked: "未获准执行", not_run: "尚未执行" };
-    $("verification-command").textContent = verification.command ? `${verification.command}\n${labels[verification.status] || "待核对"}${Number.isInteger(verification.exit_code) ? ` · 退出码 ${verification.exit_code}` : ""} · 本次执行 ${verification.runs || 0} 次` : "未指定验证命令";
-  }
-  $("tool-count").textContent = job.tool_steps || 0;
-  $("elapsed").textContent = job.elapsed_ms ? formatDuration(job.elapsed_ms) : "—";
-  const usage = job.usage || {};
-  const complete = usage.complete === true;
-  const tokens = complete ? usage.input_tokens + usage.output_tokens : (usage.known_input_tokens || 0) + (usage.known_output_tokens || 0);
-  $('token-count').textContent = complete ? tokens.toLocaleString() : tokens ? `≥${tokens.toLocaleString()}` : '未知';
-  $('token-count').title = `输入 ${usage.input_tokens ?? '未知'} / 输出 ${usage.output_tokens ?? '未知'}${complete ? '' : ' · 用量记录不完整，未知值未计为零'}；实际费用未评估`;
-  renderEvents(job.events || []);
-  renderDiffs(job.diffs || [], done);
+  state.messages=messages.filter(m=>!m.pending); showMessages(messages);
+  $('session-badge').textContent=globalThis.GoalTreeProgress?GoalTreeProgress.describe(job).label:(done?'已结束':'等待响应');
+  $('run-error').classList.toggle('hidden',!errorText); $('run-error').textContent=errorText;
   renderApproval(job.approval);
-  if ($('resume-task')) $('resume-task').disabled = !done || !job.id || job.status === 'completed';
 }
-function formatDuration(ms) {
-  const seconds = Math.floor(ms / 1000);
-  return seconds < 60 ? `${seconds}s` : `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
-}
-const toolNames = { list_files: "列出文件", read_file: "读取文件", search: "搜索代码", patch_file: "修改代码", write_file: "写入文件", run_shell: "运行命令", delegate: "只读调查" };
-function eventTitle(event) {
-  const labels = { run_started: "开始任务", prompt_built: "准备上下文", model_requested: "请求模型", checkpoint_created: "保存恢复点", run_finished: "运行结束", model_failed: "模型请求失败", approval_requested: "等待你的确认", approval_resolved: event.allowed ? "操作已允许" : "操作已拒绝", runtime_identity_mismatch: "检查恢复现场", diff_unavailable: "差异快照未能保存" };
-  if (event.event === "tool_executed") return toolNames[event.name] || event.name;
-  if (event.event === "model_parsed") return event.kind === "tool" ? "收到工具调用" : event.kind === "final" ? "收到最终回复" : "重新整理模型回复";
-  return labels[event.event] || null;
-}
-function renderEvents(events) {
-  const key = JSON.stringify(events);
-  if (state.eventKey === key) return;
-  state.eventKey = key;
-  const container = $("timeline");
-  const follow = container.scrollHeight - container.scrollTop - container.clientHeight < 60;
-  const opened = new Set([...container.querySelectorAll("details[open]")].map((item) => item.dataset.key));
-  const fragment = document.createDocumentFragment();
-  events.forEach((event, index) => {
-    const title = eventTitle(event);
-    if (!title) return;
-    const bad = event.tool_status && event.tool_status !== "ok" || event.event === "model_failed";
-    const row = node("div", `event${bad ? " error" : ""}`);
-    const heading = node("div", "event-title");
-    const date = new Date(event.created_at);
-    heading.append(node("span", "", title), node("small", "", Number.isNaN(date.getTime()) ? "" : date.toLocaleTimeString("zh-CN", { hour12: false })));
-    row.append(node("span", "event-dot"), heading);
-    let detail = event.args?.path || event.args?.command || event.tool_error_code || "";
-    if (event.event === "prompt_built") detail = `${event.prompt_metadata?.prompt_chars || "—"} 字符上下文`;
-    if (event.event === "checkpoint_created") detail = event.trigger || "";
-    if (event.event === "run_finished") detail = `${statusNames[event.status] || event.status} · ${{ final_answer_returned: "模型返回最终回答", step_limit_reached: "工具步数已耗尽", retry_limit_reached: "回复格式多次无效", model_error: "模型请求失败" }[event.stop_reason] || event.stop_reason || ""}`;
-    if (event.event === "model_failed") detail = event.error || "连接模型时发生错误";
-    if (detail) row.append(node("div", "event-detail", detail));
-    if (bad && event.event === "tool_executed") {
-      const reasons = { approval_denied: "操作未获批准", tool_not_allowed: "当前模式禁止此工具", invalid_arguments: "工具参数无效", unknown_tool: "工具不存在", repeated_identical_call: "重复调用被拦截", tool_timeout: "命令执行超时", tool_failed: "工具执行失败", tool_partial_success: "发生修改，但命令未成功结束" };
-      row.append(node("div", "event-detail", reasons[event.tool_error_code] || "工具执行异常"));
-    }
-    if (event.result || event.event === "approval_requested") {
-      const details = node("details");
-      details.dataset.key = String(index);
-      details.open = opened.has(String(index));
-      details.append(node("summary", "", "查看记录"), node("pre", "", event.result || JSON.stringify(event.args, null, 2)));
-      row.append(details);
-    }
-    fragment.append(row);
-  });
-  if (!fragment.childNodes.length) fragment.append(emptyView("⌁", "正在准备", "执行事件即将出现。"));
-  container.replaceChildren(fragment);
-  if (follow) container.scrollTop = container.scrollHeight;
-  const tests = events.filter((event) => event.event === "tool_executed" && event.name === "run_shell");
-  if (!tests.length) $("tests").replaceChildren(emptyView("✓", "还没有运行命令", "测试和其他命令的真实输出会保留在这里。"));
-  else {
-    const cards = tests.map((event, index) => {
-      const card = node("div", "test-card");
-      const code = Number.isInteger(event.exit_code) ? event.exit_code : event.result?.match(/^\s*exit_code:\s*(-?\d+)/)?.[1];
-      const label = event.timed_out ? "执行超时" : code !== undefined ? `退出码 ${code}` : "无退出码 · 未执行或异常";
-      card.append(node("h3", "", `命令 ${index + 1}`), node("code", "", event.args?.command || ""), node("span", `test-status${event.tool_status === "ok" ? "" : " error"}`, label), node("pre", "test-output", event.result || "没有记录输出"));
-      return card;
-    });
-    $("tests").replaceChildren(...cards);
+function activityCard(job) {
+  const progress=GoalTreeProgress.describe(job),card=node('details','run-progress'+(progress.done?' finished':''));
+  card.open=state.activityOpen.get(job.id)??!progress.done;
+  const summary=node('summary');summary.append(node('span','progress-label',progress.label),node('small','progress-elapsed',`总耗时 ${progress.elapsedSeconds}秒`));
+  summary.addEventListener('click',()=>state.activityOpen.set(job.id,!card.open));
+  card.append(summary,node('p','progress-detail',progress.detail));
+  if(progress.entries.length) {
+    const list=node('ol','progress-steps');
+    for(const entry of progress.entries)list.append(node('li',entry.kind,entry.text));
+    card.append(list);
   }
+  return card;
 }
-function renderDiffs(diffs, done) {
-  const key = JSON.stringify([diffs, done]);
-  if (state.diffKey === key) return;
-  state.diffKey = key;
-  $("diff-count").textContent = diffs.length;
-  if (!diffs.length) return $("diffs").replaceChildren(emptyView("±", done ? "没有文本差异" : "等待任务结束", done ? "本次没有可展示的文本变更，或历史记录未保存差异快照。" : "任务结束后生成代码差异。"));
-  $("diffs").replaceChildren(...diffs.map((file) => {
-    const card = node("div", "diff-file");
-    const pre = node("pre", "diff-content");
-    for (const line of file.diff.split("\n")) {
-      const type = line.startsWith("+") && !line.startsWith("+++") ? "add" : line.startsWith("-") && !line.startsWith("---") ? "remove" : line.startsWith("@@") ? "hunk" : "";
-      pre.append(node("span", `diff-line ${type}`, line));
-    }
-    card.append(node("strong", "", file.path), pre);
-    if (file.truncated) card.append(node("small", "muted", "差异过长，仅展示前 50000 字符。"));
-    return card;
-  }));
+const toolNames={write_file:'写入文件',patch_file:'修改文件',apply_changes:'应用修改',run_shell:'运行命令',confirm_task:'确认任务验收',rewind_changes:'撤销修改'};
+function approvalContent(approval) {
+  let args=approval.args||{}, task=args.task||args;
+  if(typeof args.proposal==='string'){try{task=JSON.parse(args.proposal);}catch{task={description:'提议格式尚未通过校验，请核对原始参数。'};}}
+  if(!task||typeof task!=='object'||Array.isArray(task))task={description:'请核对原始参数。'};
+  const blocks=[];
+  if(args.step)blocks.push(`步骤 ${args.step} / ${args.total}`);
+  if(task.title)blocks.push('### '+task.title);
+  for(const [key,label] of [['description','说明'],['constraints','边界'],['acceptance','验收条件'],['instruction','执行要求']])if(typeof task[key]==='string'&&task[key])blocks.push('**'+label+'**\n\n'+task[key]);
+  if(Array.isArray(args.stages))blocks.push('**阶段安排**\n\n'+args.stages.map(s=>'- '+s).join('\n'));
+  if(Array.isArray(args.proposal))for(const step of args.proposal)blocks.push((step.parent_id?'#### ':'### ')+step.title+'\n\n'+(step.description||''));
+  if(args.path)blocks.push('**文件**\n\n`'+String(args.path).replaceAll('`','')+'`');
+  if(args.command)blocks.push('**将执行的命令**\n\n'+String(args.command).split('\n').map(s=>'    '+s).join('\n'));
+  if(typeof args.content==='string') {
+    const content=args.content.slice(0,12000);
+    blocks.push('**拟写入内容**\n\n'+(/\.(md|markdown)$/i.test(args.path||'')?content:content.split('\n').map(s=>'    '+s).join('\n')));
+    if(args.content.length>12000)blocks.push('预览已截断，完整内容请展开原始参数核对。');
+  }
+  for(const [key,label] of [['old_text','待替换原文'],['new_text','替换后内容']])if(typeof args[key]==='string') {
+    blocks.push('**'+label+'**\n\n'+args[key].slice(0,12000).split('\n').map(s=>'    '+s).join('\n'));
+    if(args[key].length>12000)blocks.push('预览已截断，完整内容请展开原始参数核对。');
+  }
+  if(typeof args.reason==='string')blocks.push('**验收依据**\n\n'+args.reason);
+  if(approval.name==='confirm_task'&&Array.isArray(args.tasks)) {
+    blocks.push('**本次验收范围（系统读取的实际节点）**');
+    for(const item of args.tasks)blocks.push('### '+item.title+'\n\n'+
+      (item.acceptance?'验收条件：'+item.acceptance+'\n\n':'')+
+      (item.progress_note?'产出说明：'+item.progress_note+'\n\n':'')+
+      (item.output_preview?'实际产出：\n\n'+item.output_preview+'\n\n'+(item.output_preview_truncated?'预览已截断，请核对完整产出。\n\n':''):'')+
+      '版本：'+item.revision+'；当前状态：'+(statuses[item.status]||item.status));
+  }
+  if(!blocks.length)blocks.push('请确认是否允许此项操作。具体参数可在下方展开核对。');
+  return blocks.join('\n\n');
 }
 function renderApproval(approval) {
-  $("approval").classList.toggle("hidden", !approval);
-  if (!approval) return;
-  $("approval-name").textContent = toolNames[approval.name] || approval.name;
-  $("approval-args").textContent = JSON.stringify(approval.args, null, 2);
-  $("approve").disabled = false;
-  $("deny").disabled = false;
+  $('approval').classList.toggle('hidden',!approval); if(!approval)return;
+  $('approval-name').textContent=approval.kind&&approval.kind!=='safety'?({'planning_step':'确认规划步骤','planning_direction':'确认规划方向','implementation_task':'确认启动任务','implementation_step':'确认实现步骤'}[approval.kind]||'确认推进'):(toolNames[approval.name]||approval.name);
+  const summary=$('approval-summary'),text=approvalContent(approval);
+  if(globalThis.GoalTreeMarkdown)summary.innerHTML=GoalTreeMarkdown.render(text);else summary.textContent=text;
+  $('approve').textContent=approval.kind?.startsWith('planning_')?'确认规划':approval.kind==='implementation_task'?'启动此任务':'允许执行';
+  $('approval-args').textContent=JSON.stringify(approval.args,null,2); $('approve').disabled=false; $('deny').disabled=false;
 }
 async function decide(allowed) {
-  const approval = state.job?.approval;
-  if (!approval) return;
-  $("approve").disabled = true;
-  $("deny").disabled = true;
-  try {
-    await api(`/api/tasks/${state.taskId}/approvals/${approval.id}`, { allowed });
-    $("approval").classList.add("hidden");
-  } catch (error) { toast(error.message); }
+  const a=state.latestJob?.approval; if(!a)return; $('approve').disabled=true; $('deny').disabled=true;
+  try { await api(`/api/tasks/${state.taskId}/approvals/${a.id}`,{allowed}); $('approval').classList.add('hidden'); } catch(error) { toast(error.message); }
 }
-async function history() {
-  if (state.busy) return toast("当前任务执行中，结束后可查看其他运行。");
-  try {
-    const runs = await api("/api/runs");
-    const list = $("run-history");
-    list.replaceChildren();
-    for (const run of runs) {
-      const button = node("button", "run-row");
-      const description = node("span");
-      description.append(node("strong", "", run.title), node("small", "", run.id));
-      button.append(description, node("b", "", run.outcome?.title || statusNames[run.status] || run.status));
-      button.addEventListener("click", async () => {
-        try {
-          const job = await api(run.task_id ? `/api/tasks/${run.task_id}` : `/api/runs/${run.id}`);
-          state.taskId = "";
-          state.sessionId = job.session_id || "";
-          state.base = job.prompt ? [{ role: "user", content: job.prompt }] : [];
-          renderJob(job);
-          $("conversation-title").textContent = "历史运行";
-          $("session-badge").textContent = run.id.slice(-13);
-          $("history-dialog").close();
-          await refreshSessions();
-        } catch (error) { toast(error.message); }
-      });
-      list.append(button);
-    }
-    if (!runs.length) list.append(node("p", "muted", "当前工作区还没有运行记录。"));
-    $("history-dialog").showModal();
-  } catch (error) { toast(error.message); }
+const statuses={planned:'待进行',active:'进行中',blocked:'已阻塞',completed:'已完成',review:'待验收',failed:'失败',cancelled:'已取消'};
+function taskStatusLabel(task) {
+  if(task.context_status==='archived')return '已归档';
+  if(task.validity==='stale'&&task.status==='completed')return '待复核';
+  const status=task.display_status||task.status;
+  return statuses[status]||status;
 }
-
-$("send").addEventListener("click", send);
-$("new-session").addEventListener("click", newSession);
-$("refresh-sessions").addEventListener("click", () => refreshSessions().catch((error) => toast(error.message)));
-$("show-history").addEventListener("click", history);
-$("close-history").addEventListener("click", () => $("history-dialog").close());
-$("approve").addEventListener("click", () => decide(true));
-$("deny").addEventListener("click", () => decide(false));
-$("policy").addEventListener("change", () => $("composer-state").textContent = policyHint());
-document.addEventListener("click", (event) => {
-  const tab = event.target.closest("[data-tab]");
-  if (tab) selectTab(tab.dataset.tab);
-  const suggestion = event.target.closest("[data-prompt]");
-  if (suggestion && !state.busy) { $("prompt").value = suggestion.dataset.prompt; $("prompt").focus(); }
-});
-document.addEventListener("keydown", (event) => {
-  const tab = event.target.closest("[data-tab]");
-  if (tab && ["ArrowRight", "ArrowLeft"].includes(event.key)) {
-    event.preventDefault();
-    const tabs = [...document.querySelectorAll("[data-tab]")];
-    const next = tabs[(tabs.indexOf(tab) + (event.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
-    selectTab(next.dataset.tab);
-    next.focus();
+function renderTree() {
+  if(!state.tree)return;
+  const key=JSON.stringify([state.tree.revision,state.goalId,state.nodeId,state.focusId,state.mode,state.busy,state.latestJob?.id,state.latestJob?isViewedJob(state.latestJob):null]);
+  if(key===state.treeRenderKey)return; state.treeRenderKey=key; paintTree();
+}
+function paintTree() {
+  const list=$('goals'); list.replaceChildren();
+  for(const g of Object.values(state.tree.goals).sort((a,b)=>a.created_at.localeCompare(b.created_at))) {
+    const b=node('button',`goal-item${g.id===state.goalId?' selected':''}`,g.title); b.dataset.goalId=g.id;
+    b.addEventListener('click',()=>selectNode(g.id).catch(e=>toast(e.message))); list.append(b);
   }
-  if ((event.ctrlKey || event.metaKey) && event.key === "Enter" && document.activeElement === $("prompt")) { event.preventDefault(); send(); }
-  if (event.key.toLowerCase() === "n" && !event.ctrlKey && !event.metaKey && !["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) newSession();
-});
-async function init() {
-  try {
-    state.config = await api("/api/config");
-    installControls();
-    $('steps').value = String(state.config.recommended_steps || 8);
-    const command = state.config.verification_command;
-    if (state.config.demo) $("steps").value = "12";
-    if (command) {
-      for (const root of [welcome, document]) {
-        root.querySelector('[data-suggestion="verify"]').dataset.prompt = `请只运行 ${command}，汇报实际退出码和结果，不修改任何文件。`;
-        if (state.config.demo) {
-          root.querySelector('[data-suggestion="inspect"]').dataset.prompt = "请读取 README.md、order_pricing.py 和 test_order_pricing.py，说明订单计价规则及函数关系，不修改文件。";
-          root.querySelector('[data-suggestion="repair"]').dataset.prompt = `先运行 ${command} 查看真实失败，再读取 order_pricing.py，只修复这个实现文件。业务规则：商品金额为单价乘数量；折扣10表示九折；折后满100免运费否则8，空订单0；保留输入校验和Decimal精度。最后运行同一测试命令，汇报实际结果。不要修改测试、calculator.py 或其他文件，不运行重置。若测试已通过则说明结果，不制造错误。`;
-        }
+  if(!Object.keys(state.tree.goals).length)list.append(node('p','muted small','暂无目标'));
+  $('return-active').classList.toggle('hidden',!state.busy||!state.latestJob||isViewedJob(state.latestJob));
+  const goal=state.tree.goals[state.goalId], tree=$('task-tree'); tree.replaceChildren();
+  $('conversation-title').textContent=goal?.title||'新对话';
+  const tasks=Object.values(state.tree.tasks).filter(t=>t.goal_id===state.goalId).sort((a,b)=>a.created_at.localeCompare(b.created_at));
+  $('tree-count').textContent=tasks.length?String(tasks.length):'';
+  if(globalThis.GoalTreeView){
+    $('node-detail').classList.add('hidden');
+    GoalTreeView.render({goal,tasks,events:state.tree.events||[],container:tree,scope:state.workspaceId+'|'+state.goalId,focusId:state.focusId,
+      onFocus:id=>{state.focusId=id;state.treeRenderKey=null;renderTree();}});
+    return;
+  }
+  if(!goal||!tasks.length)tree.append(node('p','muted','暂无任务'));
+  else {
+    const heading=node('div','tree-goal',goal.title); tree.append(heading);
+    function branch(parent) {
+      const ul=node('ul','tree-branches');
+      for(const t of tasks.filter(t=>t.parent_id===parent)) {
+        const li=node('li'), button=node('button',`tree-node${state.focusId===t.id?' selected':''}`); button.dataset.nodeId=t.id;
+        const status=t.display_status||t.status, progress=t.rollup;
+        const label=taskStatusLabel(t);
+        const badge=node('small','',label+(progress?.total?' · '+progress.completed+'/'+progress.total:''));
+        if(progress)badge.title=`${progress.completed}/${progress.total} 个子任务已有效验收；${progress.review} 个待验收；${progress.excluded} 个已归档或取消`;
+        button.append(node('span',`tree-dot ${status}`),node('strong','',t.title),badge);
+        button.addEventListener('click',()=>{state.focusId=state.focusId===t.id?'':t.id;renderTree();});
+        li.append(button); if(tasks.some(x=>x.parent_id===t.id))li.append(branch(t.id)); ul.append(li);
       }
+      return ul;
     }
-    $("verification-command").textContent = command || "";
-    $("workspace-name").textContent = state.config.workspace_name;
-    $("workspace-path").textContent = state.config.workspace;
-    $("workspace-path").title = state.config.workspace;
-    $("model-name").textContent = state.config.model;
-    renderConnection();
-    await refreshSessions();
-    if (state.config.active_id) {
-      const job = await api(`/api/tasks/${state.config.active_id}`);
-      state.taskId = job.id;
-      state.base = [{ role: "user", content: job.prompt }];
-      setBusy(true);
-      renderJob(job);
-      poll(job.id);
-    } else if (state.config.recoverable_tasks?.length) {
-      const job = await api(`/api/tasks/${state.config.recoverable_tasks[0]}`);
-      state.taskId = job.id; state.base = [{role: 'user', content: job.prompt}];
-      renderJob(job); setBusy(false);
-      toast('已找回中断任务。旧审批已失效，请先核对未决操作，再继续。');
+    tree.append(branch(''));
+  }
+  const detail=$('node-detail'), item=state.tree.tasks[state.focusId]; detail.replaceChildren(); detail.classList.toggle('hidden',!item||item.goal_id!==state.goalId);
+  if(item&&item.goal_id===state.goalId) {
+    detail.append(node('strong','',item.title));
+    if(item.rollup) {
+      const p=item.rollup;
+      detail.append(node('p','',`子任务：${p.completed}/${p.total} 已有效验收，${p.review} 待验收，${p.active} 进行中，${p.blocked+p.failed} 阻塞或失败。`));
+      if(p.excluded)detail.append(node('p','muted',`${p.excluded} 个已归档或取消的子任务不计入当前范围。`));
+      if(p.display_status==='review')detail.append(node('p','muted','子任务和阶段自身仍需完成相应验收；状态汇总不会自动批准验收。'));
     }
-  } catch (error) {
-    $("connection").textContent = "无法连接本地服务";
-    $("send").disabled = true;
-    toast(error.message);
+    for(const value of [item.description,item.acceptance&&'验收：'+item.acceptance,item.constraints&&'约束：'+item.constraints])if(value)detail.append(node('p','',value));
+    if(item.progress_note&&!(item.status==='planned'&&item.validity==='stale'))detail.append(node('p','', '进展：'+item.progress_note));
+    if(item.validity==='stale')detail.append(node('p','muted','任务要求已更新；历史结论需要按当前要求核对。'));
+    if(item.depends_on.length)detail.append(node('p','muted','依赖：'+item.depends_on.map(id=>state.tree.tasks[id]?.title||id).join('、')));
   }
 }
+async function selectNode(goalId,nodeId='',mode='assistant') {
+  const epoch=++state.scopeEpoch; state.switching=true; $('send').disabled=true; $('prompt').disabled=true;
+  $('new-session').disabled=true;
+  try {
+    const context=await api(`/api/tree/context?goal_id=${encodeURIComponent(goalId)}&node_id=${encodeURIComponent(nodeId)}&mode=${mode}`);
+    if(epoch!==state.scopeEpoch)return;
+    const result=await api('/api/tree',{action:'select',goal_id:goalId,task_id:nodeId}); if(epoch!==state.scopeEpoch)return;
+    state.tree=result.tree; state.goalId=goalId; state.nodeId=nodeId; state.focusId=''; state.mode=mode; state.sessionId=context.session_id;
+    state.messages=context.messages; state.base=[...context.messages]; state.job=null;
+    state.cooperation=context.cooperation||{planning:'balanced',implementation:'balanced'};
+    if(state.config?.attachments) { $('cooperation-panel').classList.add('hidden');$('cooperation-toggle').setAttribute('aria-expanded','false'); }
+    $('conversation-title').textContent=context.node.title; $('prompt').value=''; $('session-badge').textContent='';
+    $('approval').classList.add('hidden'); $('run-error').classList.add('hidden'); showMessages(state.messages); renderTree();
+    if(state.busy&&state.latestJob&&isViewedJob(state.latestJob)) {
+      state.base=baseForRun(context.messages,state.latestJob.prompt); renderJob(state.latestJob);
+    }
+  } finally { if(epoch===state.scopeEpoch) {state.switching=false;$('prompt').disabled=state.initializing;$('send').disabled=state.busy||state.initializing;$('new-session').disabled=state.busy||state.initializing;renderComposerTools();} }
+}
 
+function renderComposerTools() {
+  if(!state.config?.attachments)return;
+  const locked=state.busy||state.switching||state.switchingWorkspace||state.initializing||!!state.uploading||state.savingCooperation;
+  $('workspace-select').disabled=locked||!state.config.workspace_switching;
+  $('goals').inert=state.switchingWorkspace||state.initializing;
+  for(const id of ['add-attachment','cooperation-toggle','save-cooperation','attachment-input'])$(id).disabled=locked;
+  for(const input of $('cooperation-panel').querySelectorAll('input'))input.disabled=locked;
+  $('send').disabled=locked; $('new-session').disabled=locked;
+  const labels={step:'逐步',balanced:'适中',autonomous:'自主'};
+  $('cooperation-toggle').textContent=`规划 ${labels[state.cooperation.planning]} · 实现 ${labels[state.cooperation.implementation]}`;
+  const list=$('attachment-drafts');list.replaceChildren();
+  for(const file of state.drafts.get(draftKey())||[]) {
+    const chip=node('div','attachment-chip');
+    if(file.mime.startsWith('image/')) {
+      const img=node('img','attachment-thumbnail');img.src=`/api/attachments/${encodeURIComponent(file.id)}?goal_id=${encodeURIComponent(state.goalId)}&session_id=${encodeURIComponent(state.sessionId)}&workspace_id=${encodeURIComponent(state.workspaceId)}`;img.alt=file.name;chip.append(img);
+    }
+    chip.append(node('span','',file.name));
+    const remove=node('button','attachment-remove','×');remove.type='button';remove.setAttribute('aria-label','移除附件 '+file.name);remove.disabled=locked;
+    remove.addEventListener('click',()=>{state.drafts.set(draftKey(),(state.drafts.get(draftKey())||[]).filter(f=>f.id!==file.id));renderComposerTools();});chip.append(remove);list.append(chip);
+  }
+  if(state.uploading)list.append(node('span','muted small','正在读取附件…'));
+}
+
+async function addAttachments(files) {
+  if(state.busy||state.switching||state.switchingWorkspace||state.initializing||state.uploading)return;
+  const owner=state.sessionId, goal=state.goalId, epoch=state.scopeEpoch, workspace=state.workspaceId, csrf=state.config.csrf;
+  const key=draftKey(owner,workspace);
+  const selected=Array.from(files);
+  if((state.drafts.get(key)||[]).length+selected.length>4)return toast('每条消息最多4个附件。');
+  state.uploading++;renderComposerTools();
+  try {
+    for(const file of selected) {
+      if(file.size>state.config.attachments.max_bytes)throw new Error('单个附件不能超过5MB。');
+      if(/\.(png|jpe?g|webp)$/i.test(file.name)&&!state.config.attachments.image_input)throw new Error('当前模型未启用图片理解，不能发送图片。');
+      const data=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(',')[1]);r.onerror=()=>reject(new Error('文件读取失败'));r.readAsDataURL(file);});
+      const result=await api('/api/attachments',{name:file.name,data,goal_id:goal,session_id:owner},{workspaceId:workspace,csrf});
+      state.drafts.set(key,[...(state.drafts.get(key)||[]),result]);
+    }
+    if(epoch!==state.scopeEpoch)toast('附件已保留在原对话，未带入当前目标。');
+  } catch(error) {toast(error.message);}
+  finally {state.uploading--;$('attachment-input').value='';renderComposerTools();}
+}
+
+async function saveCooperation() {
+  if(state.busy||state.switching||state.switchingWorkspace||state.initializing||state.savingCooperation)return;
+  const settings={planning:document.querySelector('input[name="planning"]:checked').value,implementation:document.querySelector('input[name="implementation"]:checked').value};
+  const epoch=state.scopeEpoch;
+  state.savingCooperation=true;renderComposerTools();
+  try {
+    const result=await api('/api/cooperation',{goal_id:state.goalId,session_id:state.sessionId,cooperation:settings});
+    if(epoch!==state.scopeEpoch)return;
+    state.cooperation=result;$('cooperation-panel').classList.add('hidden');$('cooperation-toggle').setAttribute('aria-expanded','false');renderComposerTools();
+  } catch(error) {toast(error.message);}
+  finally {state.savingCooperation=false;renderComposerTools();}
+}
+async function newSession() {
+  if(state.busy||state.switching||state.switchingWorkspace||state.initializing)return;
+  const epoch=++state.scopeEpoch;
+  let handedOff=false;
+  state.switching=true; $('send').disabled=true; $('prompt').disabled=true; $('new-session').disabled=true;
+  try {
+    const data=await api('/api/tree',{action:'new_conversation'});
+    if(epoch!==state.scopeEpoch)return;
+    state.tree=data.tree;state.taskId='';state.latestJob=null;handedOff=true;await selectNode('');$('prompt').focus();
+  }
+  catch(e) { toast(e.message); }
+  finally {if(!handedOff&&epoch===state.scopeEpoch){state.switching=false;$('send').disabled=state.busy;$('prompt').disabled=false;$('new-session').disabled=state.busy;}}
+}
+function renderWorkspaces() {
+  const select=$('workspace-select');select.replaceChildren();
+  for(const item of state.config.workspaces||[{id:'',name:state.config.workspace_name,path:state.config.workspace,available:true}]) {
+    const option=node('option','',item.name);option.value=item.id;option.title=item.path;option.disabled=!item.available;select.append(option);
+  }
+  if(state.config.workspace_switching){const option=node('option','','＋ 打开文件夹…');option.value='__open__';select.append(option);}
+  select.value=state.workspaceId;select.title=state.config.workspace;
+}
+async function switchWorkspace(id) {
+  if(state.busy||state.initializing||state.switching||state.switchingWorkspace||state.uploading||state.savingCooperation) {
+    $('workspace-select').value=state.workspaceId;return toast('请先等待当前操作结束，或停止后切换工作区。');
+  }
+  const fields=['workspaceId','config','tree','goalId','nodeId','focusId','sessionId','messages','base','latestJob','job','taskId','busy','cooperation','treeRenderKey'];
+  const old=Object.fromEntries(fields.map(k=>[k,state[k]]));
+  state.switchingWorkspace=true;state.switching=true;state.scopeEpoch++;renderComposerTools();
+  try {
+    const config=await api('/api/config',undefined,{workspaceId:id});
+    state.workspaceId=config.workspace_id||'';state.config=config;
+    Object.assign(state,{tree:null,goalId:'',nodeId:'',focusId:'',sessionId:'',messages:[],base:[],latestJob:null,job:null,taskId:''});
+    renderWorkspaces();renderConnection();showMessages([]);
+    await refreshTree();await selectNode(state.tree.selection.goal_id||'');
+    if(config.active_id){const job=await api(`/api/tasks/${config.active_id}`);state.taskId=job.id;state.latestJob=job;setBusy(true);if(isViewedJob(job)){state.base=baseForRun(state.messages,job.prompt);renderJob(job);}poll(job.id);}
+    const url=new URL(location.href);url.searchParams.set('workspace',state.workspaceId);history.replaceState(null,'',url);
+  } catch(error){Object.assign(state,old);renderWorkspaces();renderConnection();showMessages(state.messages);renderTree();toast(error.message);}
+  finally {state.switchingWorkspace=false;state.switching=false;renderComposerTools();}
+}
+async function openWorkspace(native=false) {
+  if(state.switchingWorkspace)return;
+  const pick=$('pick-workspace'),open=$('open-workspace-path');pick.disabled=true;open.disabled=true;
+  try {
+    const result=await api(native?'/api/workspaces/pick':'/api/workspaces/open',native?{}:{path:$('workspace-path').value.trim()});
+    if(result.cancelled||!$('workspace-dialog').open)return;
+    $('workspace-dialog').close();await switchWorkspace(result.workspace_id);
+  } catch(error){toast(error.message);}
+  finally {pick.disabled=false;open.disabled=false;}
+}
 function installControls() {
-  const cancel = node('button', 'secondary-button', '取消任务'); cancel.id = 'cancel-task'; cancel.disabled = true;
-  cancel.addEventListener('click', async () => {
-    try { await api(`/api/tasks/${state.taskId}/cancel`, {}); cancel.disabled = true; toast('已请求取消，将保留已完成效果和未决操作。'); }
-    catch (error) { toast(error.message); }
+  $('workspace-select').addEventListener('change',event=>{
+    if(event.target.value==='__open__'){$('workspace-select').value=state.workspaceId;$('workspace-path').value='';$('workspace-dialog').showModal();}
+    else switchWorkspace(event.target.value);
   });
-  const resume = node('button', 'secondary-button', '继续未完成任务'); resume.id = 'resume-task'; resume.disabled = true;
-  resume.addEventListener('click', async () => {
-    try {
-      const job = await api(`/api/tasks/${state.job.id}/resume`, {});
-      state.taskId = job.id; state.base = [{role: 'user', content: job.prompt}];
-      setBusy(true); renderJob(job); poll(job.id);
-    } catch (error) { toast(error.message); }
+  $('pick-workspace').addEventListener('click',()=>openWorkspace(true));
+  $('open-workspace-path').addEventListener('click',()=>openWorkspace(false));
+  $('close-workspace-dialog').addEventListener('click',()=>$('workspace-dialog').close());
+  $('add-attachment').addEventListener('click',()=>$('attachment-input').click());
+  $('attachment-input').addEventListener('change',event=>addAttachments(event.target.files));
+  $('cooperation-toggle').addEventListener('click',()=>{
+    const panel=$('cooperation-panel'), opening=panel.classList.contains('hidden');
+    for(const [key,value] of Object.entries(state.cooperation))document.querySelector(`input[name="${key}"][value="${value}"]`).checked=true;
+    panel.classList.toggle('hidden',!opening);$('cooperation-toggle').setAttribute('aria-expanded',String(opening));
   });
-  const actions = node('div', 'workbench-actions');
-  actions.append($('show-history'), cancel, resume);
-  document.querySelector('.page-heading').append(actions);
-  if (state.config.harness_profile !== 'workbench') return;
-  const tab = node('button', '', '计划与记忆'); tab.dataset.tab = 'governance'; tab.setAttribute('role', 'tab'); tab.setAttribute('aria-selected', 'false');
-  document.querySelector('.inspector-tabs').append(tab);
-  const section = node('section', 'detail-view hidden'); section.id = 'governance';
-  document.querySelector('.inspector').insertBefore(section, document.querySelector('.inspector-footer'));
-  section.append(node('p', 'muted', '选择后查看计划、记忆来源、失效状态和恢复核对。'));
+  $('save-cooperation').addEventListener('click',saveCooperation);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('cooperation-panel').classList.add('hidden');$('cooperation-toggle').setAttribute('aria-expanded','false');}});
+  $('send').addEventListener('click',send); $('new-session').addEventListener('click',newSession);
+  $('approve').addEventListener('click',()=>decide(true)); $('deny').addEventListener('click',()=>decide(false));
+  $('cancel-task').addEventListener('click',async()=>{try {await api(`/api/tasks/${state.taskId}/cancel`,{});$('cancel-task').disabled=true;}catch(e){toast(e.message);}});
+  $('return-active').addEventListener('click',async()=>{const b=state.latestJob?.binding;if(b)await selectNode(b.goal_id,b.task_id,b.mode).catch(e=>toast(e.message));});
+  $('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send();}});
 }
-
-async function refreshGovernance() {
-  const section = $('governance'); if (!section) return;
-  const data = await api('/api/governance' + (state.sessionId ? `?session_id=${encodeURIComponent(state.sessionId)}` : ''));
-  state.governance = data; section.replaceChildren();
-  const refresh = node('button', 'secondary-button', '刷新现场'); refresh.addEventListener('click', () => refreshGovernance().catch(e => toast(e.message))); section.append(refresh);
-  section.append(node('h3', '', '任务计划'));
-  for (const step of data.plan) section.append(node('p', '', `${step.status} · ${step.title}\n验收：${step.acceptance}\n证据：${step.evidence.join(', ') || '尚无'}`));
-  if (!data.plan.length) section.append(node('p', 'muted', '当前会话尚未创建计划。'));
-  section.append(node('h3', '', '跨会话知识'));
-  for (const memory of data.memories.slice(0, 15)) {
-    const card = node('div', 'knowledge-card');
-    card.append(node('strong', '', `${memory.fact_key} · ${memory.status} · v${memory.version}`), node('pre', '', memory.text), node('small', '', `来源：${memory.evidence}`));
-    for (const [action, label] of memory.status === 'candidate' ? [['confirm_memory', '确认这条记忆'], ['retract_memory', '撤销']] : memory.status === 'active' ? [['retract_memory', '撤销']] : []) {
-      const button = node('button', 'secondary-button', label); button.disabled = state.busy;
-      button.addEventListener('click', () => govern({action, id: memory.id, version: memory.version})); card.append(button);
-    }
-    section.append(card);
-  }
-  if (!data.memories.length) section.append(node('p', 'muted', '暂无仓库知识；候选需要确认，源码变化会使相关记录失效。'));
-  section.append(node('h3', '', '未决操作'));
-  for (const operation of data.operations) {
-    const card = node('div', 'knowledge-card'); card.append(node('pre', '', JSON.stringify(operation, null, 2)));
-    const reason = node('input'); reason.placeholder = '核对文件和外部副作用后填写结论'; reason.setAttribute('aria-label', '操作核对结论');
-    const button = node('button', 'secondary-button', '已核对，结束旧意图（不重放）'); button.disabled = state.busy;
-    button.addEventListener('click', () => { if (!reason.value.trim()) return toast('请先核对现场并填写结论。'); govern({action: 'reconcile_operation', id: operation.id, snapshot_sha256: data.snapshot_sha256, reason: reason.value}); });
-    card.append(reason, button); section.append(card);
-  }
-  if (!data.operations.length) section.append(node('p', 'muted', '没有需要人工核对的未决操作。'));
-  section.append(node('h3', '', '规则与按需流程'), node('pre', '', JSON.stringify({rules: data.rules, skills: data.skills}, null, 2)));
-}
-
-async function govern(action) {
-  try { await api('/api/governance', {...action, session_id: state.governance.session_id}); await refreshGovernance(); }
-  catch (error) { toast(error.message); }
+async function init() {
+  state.initializing=true; $('workspace-select').disabled=true; $('goals').inert=true; $('prompt').disabled=true; $('send').disabled=true; $('new-session').disabled=true;
+  try {
+    state.workspaceId=new URL(location.href).searchParams.get('workspace')||'';
+    try {state.config=await api('/api/config');}
+    catch(error){if(!state.workspaceId)throw error;state.workspaceId='';state.config=await api('/api/config');toast('原工作区不可访问，已恢复初始工作区。');}
+    state.workspaceId=state.config.workspace_id||'';installControls(); renderConnection();renderWorkspaces();
+    await refreshTree(); await selectNode(state.tree.selection.goal_id||'');
+    if(state.config.active_id) { const job=await api(`/api/tasks/${state.config.active_id}`);state.taskId=job.id;state.latestJob=job;setBusy(true);if(isViewedJob(job)){state.base=[{role:'user',content:job.prompt}];renderJob(job);}poll(job.id); }
+    state.initializing=false; $('prompt').disabled=state.switching; setBusy(state.busy);
+  } catch(e) {$('connection').textContent='无法连接本地服务';$('send').disabled=true;toast(e.message);}
 }
 init();

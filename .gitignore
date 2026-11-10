@@ -25,6 +25,13 @@ tmp/
 .worktrees/
 release/
 readme_intro_locked/
+# Local browser receipts, conversation captures, credentials and validation runs
+/validation/
+/%SystemDrive%/
+# Personal preparation notes
+/docs/interview-*.md
+/docs/final-agent-interview.md
+/docs/resume-*.md
 *.tmp
 *.temp
 .DS_Store

@@ -296,7 +296,7 @@ def test_welcome_screen_keeps_box_shape_for_long_paths(tmp_path):
     assert "(  o o  )" in welcome
     assert "MINI-CODING-AGENT" not in welcome
     assert "MINI CODING AGENT" not in welcome
-    assert "CodeTrail" in welcome
+    assert "GoalTree" in welcome
     assert "local coding workbench" in welcome
     assert "// READY" not in welcome
     assert "SLASH" not in welcome

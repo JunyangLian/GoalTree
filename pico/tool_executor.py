@@ -79,6 +79,9 @@ class ToolExecutor:
 
         try:
             agent.validate_tool(name, args)
+            approval_args=args
+            if name=='confirm_task' and getattr(agent,'goal_confirmation_preview',None):
+                approval_args=agent.goal_confirmation_preview(args)
         except Exception as exc:
             example = agent.tool_example(name)
             message = f"error: invalid arguments for {name}: {exc}"
@@ -123,7 +126,20 @@ class ToolExecutor:
             )
 
         operation_id = None
-        before_snapshot = agent.capture_workspace_snapshot() if tool['risky'] else {}
+        # Optional GoalTree collaboration gates run after argument/scope checks.
+        # Risky tools still require the original safety approval below.
+        checkpoint = getattr(agent, 'collaboration_gate', None)
+        try:
+            consent = checkpoint(name, args, tool['risky']) if checkpoint else True
+        except (ValueError, TypeError, KeyError) as exc:
+            return ToolExecutionResult('error: invalid collaboration proposal: ' + str(exc),
+                                       _metadata('rejected', tool_error_code='invalid_arguments'))
+        if not consent:
+            return ToolExecutionResult('error: collaboration confirmation denied; no action was applied. '
+                                       'Respect the decision and ask for revised requirements; do not bypass it with another tool.',
+                                       _metadata('rejected', tool_error_code='collaboration_denied'))
+        observe_effects = tool['risky'] or tool.get('observes_effects', False)
+        before_snapshot = agent.capture_workspace_snapshot() if observe_effects else {}
         if tool['risky']:
             try:
                 conversation = getattr(agent.model_client, 'native_conversation', None)
@@ -135,7 +151,7 @@ class ToolExecutor:
             except RecoveryRequired as exc:
                 return ToolExecutionResult('error: ' + str(exc), _metadata('rejected',
                     tool_error_code='operation_recovery_required', risk_level='high', read_only=False))
-        if tool["risky"] and not agent.approve(name, args):
+        if tool["risky"] and not agent.approve(name, approval_args):
             agent.operations.reject(operation_id)
             detail = (f"; use the exact configured verification command {agent.verification_command!r}; "
                       "do not try pipes or alternative commands" if name=='run_shell' and agent.verification_command else '')
@@ -171,8 +187,12 @@ class ToolExecutor:
             raw_content = tool['run'](args)
             if getattr(agent, 'evidence', None):
                 agent._raw_tool_evidence = agent.redact_text(clip(raw_content, 131072))
-            content = agent.redact_text(clip(raw_content, 12000 if name == 'run_shell' else 4000))
-            after_snapshot = agent.capture_workspace_snapshot() if tool["risky"] else before_snapshot
+            # Web results are already bounded as complete JSON envelopes. A
+            # second 4K clip would silently lose lines/citations and break JSON.
+            output_limit=(agent.web_budget.result_limit if name in {'web_read','web_find','web_search'}
+                          and hasattr(agent,'web_budget') else 12000 if name=='run_shell' else 4000)
+            content = agent.redact_text(clip(raw_content, output_limit))
+            after_snapshot = agent.capture_workspace_snapshot() if observe_effects else before_snapshot
             affected_paths, diff_summary = agent.diff_workspace_snapshots(before_snapshot, after_snapshot)
             workspace_changed = bool(affected_paths)
             tool_status = "ok"
@@ -190,8 +210,8 @@ class ToolExecutor:
             metadata = _metadata(
                 tool_status,
                 tool_error_code=tool_error_code,
-                risk_level="high" if tool["risky"] else "low",
-                read_only=not tool["risky"],
+                risk_level="high" if tool["risky"] or workspace_changed else "low",
+                read_only=not tool["risky"] and not workspace_changed,
                 affected_paths=affected_paths,
                 workspace_changed=workspace_changed,
                 workspace_fingerprint=agent.workspace.fingerprint(),
@@ -200,13 +220,32 @@ class ToolExecutor:
             if name == "run_shell":
                 metadata["exit_code"] = int(match.group(1)) if match else None
                 metadata["execution_backend"] = getattr(agent, 'shell_backend', 'host')
+            if name == 'web_search':
+                search = json.loads(raw_content)
+                metadata['search_status'] = search['status']
+                metadata['search_audit_evidence_id'] = search.get('audit_evidence_id')
+                metadata['search_sources'] = [{k: row[k] for k in ('source','status','count','error','failure_type','low_query_overlap','max_query_overlap') if k in row}
+                                             for row in search['attempts']]
+                if search['status'] == 'partial':
+                    metadata.update(tool_status='partial_success', tool_error_code='search_source_failed')
+                metadata['web_cache'] = search.get('cache')
+                metadata['web_budget'] = search.get('web_budget')
+            if name in {'web_read','web_find'}:
+                page=json.loads(raw_content)
+                metadata.update(web_page_id=page['page_id'],web_cache=page.get('cache','snapshot'),
+                    web_citation=page.get('citation') or next((m['citation'] for m in page.get('matches',[])),None),web_budget=page.get('web_budget'))
+                if page.get('document_type')=='pdf':
+                    metadata.update(document_type='pdf',pdf_page_count=page['page_count'],pdf_text_status=page['text_extraction_status'],
+                                    pdf_start_page=page.get('start_page'),pdf_end_page=page.get('end_page'))
+                    if page['text_extraction_status']!='text_extracted':
+                        metadata.update(tool_status='partial_success',tool_error_code='pdf_text_incomplete')
             if operation_id:
                 metadata['operation_id'] = operation_id
                 agent.operations.complete(operation_id, after_snapshot, content, metadata)
             agent.record_process_note_for_tool(name, metadata)
             return ToolExecutionResult(content=content, metadata=metadata)
         except Exception as exc:
-            after_snapshot = agent.capture_workspace_snapshot() if tool["risky"] else before_snapshot
+            after_snapshot = agent.capture_workspace_snapshot() if observe_effects else before_snapshot
             affected_paths, diff_summary = agent.diff_workspace_snapshots(before_snapshot, after_snapshot)
             workspace_changed = bool(affected_paths)
             security_event_type = "path_escape" if "path escapes workspace" in str(exc) else "sensitive_path" if "sensitive path denied" in str(exc) else ""
@@ -214,8 +253,8 @@ class ToolExecutor:
                 "partial_success" if workspace_changed else "error",
                 tool_error_code="tool_partial_success" if workspace_changed else "tool_failed",
                 security_event_type=security_event_type,
-                risk_level="high" if tool["risky"] else "low",
-                read_only=not tool["risky"],
+                risk_level="high" if tool["risky"] or workspace_changed else "low",
+                read_only=not tool["risky"] and not workspace_changed,
                 affected_paths=affected_paths,
                 workspace_changed=workspace_changed,
                 workspace_fingerprint=agent.workspace.fingerprint(),
@@ -226,6 +265,15 @@ class ToolExecutor:
                 metadata["timed_out"] = True
             if exc.__class__.__name__ == 'Cancelled':
                 metadata['tool_error_code'] = 'cancelled'
+            if getattr(exc,'web_budget_exhausted',False):
+                metadata.update(tool_error_code='web_budget_exhausted',web_budget_stop=True)
+            if getattr(exc,'pdf_error',False):metadata['tool_error_code']='pdf_read_failed'
+            if name == 'web_search' and getattr(exc, 'search_report', None):
+                metadata['search_audit_evidence_id'] = getattr(exc,'audit_evidence_id',None)
+                metadata['tool_error_code'] = 'web_search_failed'
+                metadata['search_status'] = 'error'
+                metadata['search_sources'] = [{k: row[k] for k in ('source','status','count','error','failure_type') if k in row}
+                                             for row in exc.search_report['attempts']]
             if name == 'run_shell':
                 metadata['execution_backend'] = getattr(agent, 'shell_backend', 'host')
                 if exc.__class__.__name__ == 'SandboxUnavailable':

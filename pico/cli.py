@@ -37,7 +37,7 @@ WELCOME_ART = (
     "       /   ^   \\\\",
     "      /|       |\\\\",
 )
-WELCOME_NAME = "CodeTrail"
+WELCOME_NAME = "GoalTree"
 WELCOME_SUBTITLE = "local coding workbench"
 WELCOME_STATUS = "calm shell, ready for work"
 HELP_DETAILS = textwrap.dedent(
@@ -288,7 +288,7 @@ def build_agent(args):
 def build_arg_parser():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        description="CodeTrail: local coding agent for DeepSeek, OpenAI-compatible, Anthropic-compatible, or Ollama models.",
+        description="GoalTree: local agent for DeepSeek, OpenAI-compatible, Anthropic-compatible, or Ollama models.",
     )
     parser.add_argument("prompt", nargs="*", help="Optional one-shot prompt.")
     parser.add_argument("--cwd", default=".", help="Workspace directory.")
@@ -356,7 +356,7 @@ def main(argv=None):
         # 交互模式：每次读取一条用户输入，交给同一个 agent，
         # 因此 session history 和 working memory 会跨轮延续。
         try:
-            user_input = input("\ncodetrail> ").strip()
+            user_input = input("\ngoaltree> ").strip()
         except (EOFError, KeyboardInterrupt):
             print("")
             return 0

@@ -6,6 +6,7 @@ import textwrap
 from dataclasses import dataclass
 
 from .workspace import now
+from .goal_instructions import GOAL_COORDINATOR_INSTRUCTIONS, is_goal_coordinator
 
 
 @dataclass
@@ -89,6 +90,13 @@ def build_prompt_prefix(workspace, tools, built_at=None, verification_command=No
         {completion_rule}
         """
     ).strip()
+    if is_goal_coordinator(tools):
+        text = (GOAL_COORDINATOR_INSTRUCTIONS + '\n\n'
+                'Return exactly one <tool>...</tool> or one <final>...</final>. '
+                'Tool format: <tool>{"name":"tool_name","args":{...}}</tool>. '
+                'Tool arguments containing JSON arrays or objects must be JSON-encoded strings '
+                'when the schema declares str. Final format: <final>your answer</final>.\n\n'
+                'Tools:\n' + tool_text + '\n\n' + workspace.text())
     signature = tool_signature(tools)
     return PromptPrefix(
         text=text,

@@ -47,7 +47,7 @@ def test_packaging_discovers_pico_subpackages():
     pyproject_text = Path("pyproject.toml").read_text(encoding="utf-8")
 
     assert "[tool.setuptools.packages.find]" in pyproject_text
-    assert 'include = ["pico*"]' in pyproject_text
+    assert 'include = ["pico*", "goaltree*"]' in pyproject_text
 
 
 @pytest.mark.parametrize("script", [

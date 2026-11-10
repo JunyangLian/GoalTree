@@ -191,9 +191,11 @@ def test_http_assets_and_mutation_protection(make_app):
     try:
         config = json.loads(opener.open(url + "/api/config").read())
         assert "web-test-private-key" not in json.dumps(config)
-        assert "CodeTrail · 代码执行工作台" in opener.open(url).read().decode("utf-8")
+        assert "GoalTree · 目标规划与执行" in opener.open(url).read().decode("utf-8")
         assert opener.open(url + "/app.js").status == 200
         assert opener.open(url + "/style.css").status == 200
+        for asset in ('markdown.js', 'markdown-it.min.js'):
+            assert opener.open(url + '/' + asset).status == 200
         for path in ("/.env", "/api/sessions/..%2fsecret"):
             with pytest.raises(urllib.error.HTTPError):
                 opener.open(url + path)

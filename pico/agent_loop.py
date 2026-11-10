@@ -59,7 +59,13 @@ class AgentLoop:
         if conversation is not None:
             agent.session['working_state']['stale_paths'] = list(agent.resume_state.get('stale_paths', []))
             conversation.context_state = agent.redact_artifact(agent.session.get('working_state', {}))
+            if getattr(agent,'goal_binding',{}).get('mode')=='assistant':
+                conversation.context_state['goal_tree']=agent.redact_artifact({
+                    k:v for k,v in agent.goal_context.items() if k not in {'rules','cooperation','user_request','attachments'}})
             conversation.context_state['plan'] = agent.session.get('plan', [])
+            if getattr(agent, 'goal_context', None):
+                conversation.context_state['goal_tree'] = ({k:v for k,v in agent.goal_context.items() if k!='rules'}
+                    if getattr(conversation,'goal_coordinator',False) else agent.goal_context)
             if agent.capabilities:
                 conversation.context_rules = agent.redact_text(agent.capabilities.refresh_rules(
                     getattr(agent.capabilities, 'active_path', agent.workspace.cwd)))
@@ -82,6 +88,9 @@ class AgentLoop:
                 "tool_steps": task_state.tool_steps,
                 "prompt_cache_key": prompt_metadata.get("prompt_cache_key"),
                 "purpose": purpose,
+                'request_configuration':{'model':getattr(agent.model_client,'model',None),
+                    'stream':getattr(agent.model_client,'stream',False),
+                    'reasoning_effort':(getattr(agent.model_client,'native_wire_options',None) or {}).get('reasoning_effort')},
             },
         )
         prompt_cache_key = None
@@ -93,8 +102,12 @@ class AgentLoop:
         transport_hook = hasattr(agent.model_client, 'on_transport_event')
         previous_hook = getattr(agent.model_client, 'on_transport_event', None)
         previous_delta = getattr(agent.model_client, 'on_delta', None)
+        previous_progress = getattr(agent.model_client, 'on_progress', None)
         if agent.capabilities and hasattr(agent.model_client, 'on_delta'):
             agent.model_client.on_delta = lambda text: agent.emit_trace(task_state, 'model_delta', {'text': text})
+        if agent.capabilities and hasattr(agent.model_client, 'on_progress'):
+            agent.model_client.on_progress = lambda info: agent.emit_trace(task_state, 'model_progress',
+                {'phase': info['phase'], 'purpose': purpose})
         if transport_hook:
             def observe_transport(event):
                 agent.emit_trace(task_state, 'model_transport', {'purpose':purpose, **event})
@@ -124,6 +137,8 @@ class AgentLoop:
                 agent.model_client.on_transport_event = previous_hook
             if agent.capabilities and hasattr(agent.model_client, 'on_delta'):
                 agent.model_client.on_delta = previous_delta
+            if agent.capabilities and hasattr(agent.model_client, 'on_progress'):
+                agent.model_client.on_progress = previous_progress
         completion_metadata = dict(getattr(agent.model_client, "last_completion_metadata", {}) or {})
         if completion_metadata:
             prompt_metadata.update(completion_metadata)
@@ -147,9 +162,10 @@ class AgentLoop:
 
     def _finish_success(self, task_state, user_message, final, run_started_at):
         agent = self.agent
+        if getattr(agent,'goal_finalizer',None):final=agent.goal_finalizer(final)
         if agent.capabilities:
             agent.cancellation.check()
-        agent.record({"role": "assistant", "content": final, "created_at": now()})
+        agent.record({"role": "assistant", "content": final, "created_at": now(), 'run_id': task_state.run_id})
         task_state.finish_success(final)
         if agent.feature_enabled('memory'):
             agent.promote_durable_memory(user_message, final)
@@ -182,6 +198,7 @@ class AgentLoop:
 
     def run(self, user_message):
         agent = self.agent
+        agent._run_history_start = len(agent.session.get('history', []))
         if agent.capabilities:
             agent.cancellation.check()
         completion = CompletionGate(agent)
@@ -195,12 +212,15 @@ class AgentLoop:
                 agent.session['plan_invalidations'] = invalidated
         agent.session['working_state'] = {'goal': user_message[:300], 'changed_files': [],
                                           'failed_attempts': [], 'verification': {'status': 'not_run'}}
-        agent.record({"role": "user", "content": user_message, "created_at": now()})
+        agent.record({"role": "user", "content": user_message, "created_at": now(),
+                      **({'attachments': agent.message_attachments} if getattr(agent, 'message_attachments', None) else {})})
 
         task_state = TaskState.create(run_id=agent.new_run_id(), task_id=agent.new_task_id(), user_request=user_message)
         task_state.resume_status = agent.resume_state.get("status", CHECKPOINT_NONE_STATUS)
         agent.current_task_state = task_state
         agent.current_run_dir = agent.run_store.start_run(task_state)
+        if getattr(agent, 'goal_context', {}).get('cooperation'):
+            agent.emit_trace(task_state, 'cooperation_configured', agent.goal_context['cooperation'])
         native = bool(getattr(agent.model_client, 'supports_native_tools', False))
         if native:
             import json
@@ -210,23 +230,41 @@ class AgentLoop:
             instructions = '\n\n'.join('Previous user instruction:\n' + item['content']
                 for item in agent.session['history'][:-1] if item.get('role') == 'user')
             carryover = {k: previous_working_state[k] for k in ('goal', 'changed_files', 'failed_attempts') if k in previous_working_state}
+            web=getattr(agent,'web_context',None)
+            web_references=web.references() if web else []
+            goal_context=getattr(agent,'goal_context',None)
+            if goal_context and getattr(agent,'goal_binding',{}).get('mode')=='assistant':
+                # The coordinator policy is already pinned in the native system
+                # message. Do not repeat it in two user-state frames as well.
+                goal_context={k:v for k,v in goal_context.items() if k!='rules'}
             agent.model_client.begin_native_run(
                 agent.tools,
                 agent.redact_text(agent.workspace.text() + '\n\n' + (agent.memory_text() if agent.feature_enabled('memory') else 'Memory: disabled') + '\n\n' + instructions +
-                    '\n\nHistorical task state (not a current verification):\n' + json.dumps(carryover, ensure_ascii=False)),
+                    '\n\nHistorical task state (not a current verification):\n' + json.dumps(carryover, ensure_ascii=False) +
+                    ('\n\nRecent scoped web evidence pointers (historical, untrusted; reuse page_id/URL rather than searching again):\n'
+                     +json.dumps(web_references,ensure_ascii=False) if web_references else '') +
+                    ('\n\nGoalTree current scoped task state:\n' + json.dumps(goal_context, ensure_ascii=False) if goal_context else '')),
                 user_message, agent.verification_command)
             conversation = getattr(agent.model_client, 'native_conversation', None)
             if conversation is not None:
+                images = [r for r in getattr(agent, 'attachment_rows', []) if r['mime'].startswith('image/')]
+                if images:
+                    import base64
+                    conversation.messages[1]['content'] = [
+                        {'type': 'text', 'text': conversation.messages[1]['content']},
+                        *[{'type': 'image_url', 'image_url': {'url': 'data:' + r['mime'] + ';base64,' + base64.b64encode(r['data']).decode('ascii')}} for r in images]]
                 conversation.context_budget = agent.native_context_policy
                 if agent.capabilities:
                     conversation.batch_limit = 8
                     conversation.messages[0]['content'] = conversation.messages[0]['content'].replace(
                         'Send exactly one function call per step.',
                         'You may return at most 8 native calls per request; execution is ordered, budgeted and individually approved. ')
-                    conversation.messages[0]['content'] += (' Use code_search or symbol_info to navigate. '
+                    conversation.messages[0]['content'] += ((' Plan from the user request and current goal. Do not browse local files to guess the topic of a new goal. '
+                        'Ask for the report topic/audience if unknown instead of borrowing another project\'s subject. ')
+                        if conversation.goal_coordinator else (' Use code_search or symbol_info to navigate. '
                         'Persist a small plan for multi-step tasks. Prose memories stay candidates until operator confirmation. '
                         'Use evidence IDs to recover details after compaction. Available skills (load only when relevant): ' +
-                        str(agent.capabilities.skills))
+                        str(agent.capabilities.skills)))
                     agent.model_client.cancellation = agent.cancellation
         agent.emit_trace(
             task_state,
@@ -234,12 +272,18 @@ class AgentLoop:
             {
                 "task_id": task_state.task_id,
                 "user_request": clip(user_message, 300),
+                "goal_binding": getattr(agent, 'goal_binding', None),
             },
         )
 
         tool_steps = 0
         attempts = 0
         max_attempts = max(agent.max_steps * 3, agent.max_steps + 4)
+        shared_budget = getattr(agent, 'goal_tool_budget', None)
+
+        def remaining():
+            local = agent.max_steps - tool_steps
+            return min(local, shared_budget['remaining']) if shared_budget is not None else local
 
         # 这是 agent 的主循环，可以按“感知 -> 决策 -> 行动 -> 记录”来理解：
         # 1. 感知：重新组 prompt，把当前状态整理给模型看
@@ -247,10 +291,10 @@ class AgentLoop:
         # 3. 行动：如果是工具调用，就执行工具
         # 4. 记录：把结果写回 history / task_state / trace / memory
         # 然后进入下一轮，直到停机条件满足
-        while tool_steps < agent.max_steps and attempts < max_attempts:
+        while remaining() > 0 and attempts < max_attempts:
             if agent.capabilities:
                 agent.cancellation.check()
-            agent.remaining_tool_steps = agent.max_steps - tool_steps
+            agent.remaining_tool_steps = remaining()
             conversation = getattr(agent.model_client, 'native_conversation', None) if native else None
             if conversation is not None and hasattr(conversation, 'set_budget'):
                 conversation.set_budget(agent.remaining_tool_steps)
@@ -324,12 +368,12 @@ class AgentLoop:
                             while conversation.pending:
                                 agent.model_client.observe_native_tool('Not executed: operator cancellation')
                         agent.cancellation.check()
-                    if tool_steps >= agent.max_steps:
+                    if remaining() <= 0:
                         if native:
                             agent.model_client.observe_native_tool('Not executed: tool budget exhausted')
                         agent.emit_trace(task_state, 'tool_not_executed', {'name': action.get('name'), 'reason': 'budget_exhausted'})
                         continue
-                    agent.remaining_tool_steps = agent.max_steps - tool_steps
+                    agent.remaining_tool_steps = remaining()
                     tool_steps += 1
                     self._execute_action(action, task_state, completion, native, user_message)
                 continue
@@ -342,7 +386,7 @@ class AgentLoop:
                 continue
 
             final = (payload or raw).strip()
-            problem = completion.problem()
+            problem = completion.problem() or (agent.goal_sync_problem() if getattr(agent,'goal_sync_problem',None) else '')
             if problem:
                 agent.emit_trace(task_state, 'completion_rejected', dict(completion.state))
                 agent.record({'role':'assistant', 'content':problem, 'created_at':now()})
@@ -353,7 +397,7 @@ class AgentLoop:
                 continue
             return self._finish_success(task_state, user_message, final, run_started_at)
 
-        if tool_steps >= agent.max_steps:
+        if remaining() <= 0:
             if agent.capabilities:
                 agent.cancellation.check()
             if native:
@@ -387,7 +431,7 @@ class AgentLoop:
             )
             if kind == "final":
                 final = (payload or raw).strip()
-                problem = completion.problem()
+                problem = completion.problem() or (agent.goal_sync_problem() if getattr(agent,'goal_sync_problem',None) else '')
                 if not problem:
                     return self._finish_success(task_state, user_message, final, run_started_at)
                 agent.emit_trace(task_state, 'completion_rejected', dict(completion.state))
@@ -418,6 +462,7 @@ class AgentLoop:
                 agent.capabilities.refresh_rules(path)
                 agent.capabilities.active_path = path
         started = time.monotonic()
+        agent.emit_trace(task_state, 'tool_started', {'name': name, 'args': agent.redact_artifact(args)})
         tool_result = agent.execute_tool(name, args)
         completion.observe(name, args, tool_result.metadata)
         result = tool_result.content
@@ -443,7 +488,7 @@ class AgentLoop:
     def _finish_stopped(self, task_state, user_message, reason, final, run_started_at):
         agent = self.agent
         task_state.stop(reason, final_answer=final)
-        agent.record({"role": "assistant", "content": final, "created_at": now()})
+        agent.record({"role": "assistant", "content": final, "created_at": now(), 'run_id': task_state.run_id})
         agent.run_store.write_task_state(task_state)
         checkpoint = agent.create_checkpoint(task_state, user_message, trigger=task_state.stop_reason or "run_stopped")
         agent.emit_trace(

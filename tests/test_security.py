@@ -48,3 +48,22 @@ def test_shell_env_uses_allowlist_and_sets_pwd_with_path_fallback(tmp_path):
     filtered = shell_env(env=env, allowlist=("HOME",), root=tmp_path)
 
     assert filtered == {"HOME": "/home/user", "PWD": str(tmp_path), "PATH": "/usr/bin"}
+
+
+def test_large_artifact_scans_environment_once_and_refreshes_keys_between_calls():
+    class CountingEnv(dict):
+        scans=0
+        def items(self):
+            self.scans+=1
+            return super().items()
+    env=CountingEnv({'SERVICE_TOKEN':'long-secret-value','CUSTOM_NAME':'short-secret'})
+    data={'events':[{'text':'long-secret-value and short-secret','nested':('safe',)} for _ in range(2500)],
+          'CUSTOM_NAME':{'even_nontext':'private'},'PASSWORD':['private']}
+    masked=redact_artifact(data,env=env,secret_env_names={'CUSTOM_NAME'})
+    assert env.scans==1
+    assert masked['events'][-1]['text']==f'{REDACTED_VALUE} and {REDACTED_VALUE}'
+    assert masked['CUSTOM_NAME']==masked['PASSWORD']==REDACTED_VALUE
+    assert masked['events'][0]['nested']==['safe'] and isinstance(data['events'][0]['nested'],tuple)
+    env['SERVICE_TOKEN']='rotated-secret'
+    assert redact_artifact(['rotated-secret'],env=env)==[REDACTED_VALUE]
+    assert env.scans==2

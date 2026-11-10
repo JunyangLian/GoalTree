@@ -80,20 +80,24 @@ def redact_text(text, env=None, secret_env_names=None):
 
 
 def redact_artifact(value, key=None, env=None, secret_env_names=None):
-    if key and is_secret_env_name(key, secret_env_names=secret_env_names):
-        return REDACTED_VALUE
-    if isinstance(value, dict):
-        return {
-            str(item_key): redact_artifact(item_value, key=item_key, env=env, secret_env_names=secret_env_names)
-            for item_key, item_value in value.items()
-        }
-    if isinstance(value, list):
-        return [redact_artifact(item, key=key, env=env, secret_env_names=secret_env_names) for item in value]
-    if isinstance(value, tuple):
-        return [redact_artifact(item, key=key, env=env, secret_env_names=secret_env_names) for item in value]
-    if isinstance(value, str):
-        return redact_text(value, env=env, secret_env_names=secret_env_names)
-    return value
+    # One fresh environment snapshot per artifact, not per string in its tree.
+    # Never cache across calls: newly set/rotated keys must be masked immediately.
+    configured = _normalized_secret_names(secret_env_names)
+    secrets = [item[1] for item in sorted(
+        detected_secret_env_items(env=env, secret_env_names=configured),
+        key=lambda item: len(item[1]), reverse=True)]
+
+    def visit(item, item_key=None):
+        if item_key and (str(item_key).upper() in configured or looks_sensitive_env_name(item_key)):
+            return REDACTED_VALUE
+        if isinstance(item, dict):
+            return {str(k):visit(v,k) for k,v in item.items()}
+        if isinstance(item, (list,tuple)):
+            return [visit(v,item_key) for v in item]
+        if isinstance(item,str):
+            for secret in secrets:item=item.replace(secret,REDACTED_VALUE)
+        return item
+    return visit(value,key)
 
 
 def shell_env(env=None, allowlist=(), root="."):

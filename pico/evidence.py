@@ -59,6 +59,8 @@ class EvidenceStore:
         return value
 
     def authorized(self, metadata):
+        if 'web_scope' in metadata and (not isinstance(metadata['web_scope'],dict) or metadata['web_scope'].get('workspace') != str(self.root)):
+            return False
         paths = list(metadata.get('source_paths', []))
         if metadata.get('args', {}).get('path'):
             paths.append(metadata['args']['path'])

@@ -525,7 +525,7 @@ def summarize_read_result(result, limit=180):
     return clip(summary, limit)
 
 
-def retrieval_candidates(state, query, limit=3, workspace_root=None):
+def retrieval_candidates(state, query, limit=3, workspace_root=None, include_durable=True):
     state = normalize_memory_state(state, workspace_root)
     query_tokens = _tokenize(query)
     ranked = []
@@ -544,7 +544,7 @@ def retrieval_candidates(state, query, limit=3, workspace_root=None):
         note_index = int(note.get("note_index", 0))
         ranked.append(((exact_tag_match, keyword_overlap, recency, note_index), note))
 
-    if workspace_root is not None:
+    if workspace_root is not None and include_durable:
         durable_store = DurableMemoryStore(Path(workspace_root) / ".pico" / "memory")
         for note in durable_store.retrieval_candidates(query, limit=limit):
             note_tags = {tag.lower() for tag in note.get("tags", [])}
@@ -656,12 +656,20 @@ class LayeredMemory:
         return invalidated
 
     def retrieval_candidates(self, query, limit=3):
-        notes = retrieval_candidates(self.state, query, limit=limit, workspace_root=self.workspace_root)
+        isolated = getattr(self, 'isolated_session', False)
+        notes = retrieval_candidates(self.state, query, limit=limit, workspace_root=self.workspace_root, include_durable=not isolated)
         verified = self.knowledge.search(query, self.session_id, limit) if self.knowledge else []
+        if isolated:
+            verified = [r for r in self.knowledge.active(self.session_id) if r['scope'] == 'session' and r['session_id'] == self.session_id]
+            query_tokens = _tokenize(query)
+            verified = sorted(verified, key=lambda r: len(query_tokens & _tokenize(r['text'])), reverse=True)
+            verified = [r for r in verified if query_tokens & _tokenize(r['text'])][:limit]
         retriever = getattr(self, 'retriever', None)
         if retriever is not None and self.knowledge:
             notes = [n for n in notes if n.get('kind') != 'durable']
             active = self.knowledge.active(self.session_id)
+            if isolated:
+                active = [r for r in active if r['scope'] == 'session' and r['session_id'] == self.session_id]
             if retriever.path_filter:
                 active = [r for r in active if all(retriever.path_filter(e['path']) for e in r['evidence'])]
                 notes = [n for n in notes if not n.get('source') or retriever.path_filter(n['source'])]
@@ -686,8 +694,12 @@ class LayeredMemory:
             state['file_summaries'] = {p: v for p, v in state.get('file_summaries', {}).items() if retriever.path_filter(p)}
             state['working']['recent_files'] = [p for p in state['working']['recent_files'] if retriever.path_filter(p)]
             state['files'] = list(state['working']['recent_files'])
-            return render_memory_text(state, self.workspace_root)
-        return render_memory_text(self.state, self.workspace_root)
+            rendered = render_memory_text(state, self.workspace_root)
+        else:
+            rendered = render_memory_text(self.state, self.workspace_root)
+        if getattr(self, 'isolated_session', False):
+            rendered = '\n'.join('- durable_topics: scoped to this task session' if line.startswith('- durable_topics:') else line for line in rendered.splitlines())
+        return rendered
 
     def promote_durable(self, promotions):
         if self.durable_store is None:

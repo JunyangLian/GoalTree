@@ -1,6 +1,39 @@
 """Evidence-based run summaries for the local workbench."""
 
 import re
+import json
+
+
+def public_activity(task):
+    """Small allowlisted facts for message history; never copy model internals."""
+    events = []
+    allowed = {'run_started', 'model_requested', 'model_progress', 'model_transport', 'model_parsed',
+               'tool_started', 'tool_executed', 'approval_requested', 'approval_resolved', 'model_failed', 'run_finished'}
+    for original in task.get('events', []):
+        if original.get('event') not in allowed:
+            continue
+        event = {k: original[k] for k in ('event', 'created_at', 'name', 'phase', 'kind', 'purpose',
+            'tool_status', 'tool_error_code', 'ok', 'will_retry', 'stream_reset', 'allowed', 'delegated_run_id') if k in original}
+        args = original.get('args') or {}
+        if not isinstance(args, dict): args = {}
+        if original.get('name') in {'read_file', 'write_file', 'patch_file'} and isinstance(args.get('path'), str):
+            event['target'] = args['path'][:180]
+        if original.get('name') == 'goal_action':
+            try:
+                proposal = json.loads(args.get('proposal', '{}'))
+                event.update(action=proposal.get('action'), target=str(proposal.get('title', ''))[:160])
+            except (ValueError, TypeError, AttributeError):
+                pass
+        if original.get('name') == 'plan_tasks':
+            try:
+                steps = json.loads(args.get('steps', '[]'))
+                if isinstance(steps, list): event['task_count'] = len(steps)
+            except (ValueError, TypeError):
+                pass
+        events.append(event)
+    # Preserve complete event order for delegation and approval state, not text.
+    return {'id': task.get('id', task.get('run_id', '')), 'status': task.get('status', 'completed'),
+            'elapsed_ms': task.get('elapsed_ms', 0), 'events': events[-100:]}
 
 
 def usage_summary(events):
@@ -59,6 +92,9 @@ def verification_summary(events, command):
 
 def model_failure(error, error_type=""):
     text = str(error).lower()
+    if error_type=='IncompleteSSEError' or 'incomplete sse response' in text:
+        return ('model_stream_interrupted','模型回复流中断',
+                '回复未完整结束，残缺工具调用未执行；已完成操作保留，可从原会话继续。断流请求的Token可能未知。')
     if error_type == 'ContextBudgetExceeded':
         return ('context_budget', '上下文预算不足', '必要指令、请求与最新工具记录无法完整保留；请缩小输入或调整上下文预算。')
     if re.search(r"\b(401|403)\b", text):

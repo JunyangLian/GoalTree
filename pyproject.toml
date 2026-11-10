@@ -3,13 +3,19 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pico"
+name = "goaltree-agent"
 version = "0.1.0"
-description = "CodeTrail local coding agent harness and visual evaluation workbench"
+description = "GoalTree: local goal planning, independent task contexts and visual agent execution"
 requires-python = ">=3.10"
 dependencies = []
 
+[project.optional-dependencies]
+attachments = ["Pillow>=10.0", "pypdf>=5.0"]
+web-pdf = ["pypdf>=6.21.1"]
+
 [project.scripts]
+goaltree = "goaltree.cli:main"
+goaltree-web = "goaltree.web:main"
 codetrail = "pico.cli:main"
 codetrail-web = "pico.web:main"
 pico = "pico.cli:main"
@@ -22,10 +28,10 @@ dev = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["pico*"]
+include = ["pico*", "goaltree*"]
 
 [tool.setuptools.package-data]
-pico = ["web_assets/*.html", "web_assets/*.css", "web_assets/*.js"]
+pico = ["web_assets/*.html", "web_assets/*.css", "web_assets/*.js", "web_assets/*.LICENSE.txt"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

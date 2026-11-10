@@ -1,6 +1,69 @@
-# CodeTrail · 代码执行工作台
+# GoalTree · 可视化目标规划与执行 Agent
 
-面向本地代码仓库的 Agent Harness 与网页工作台。把读取代码、执行工具、审批修改、运行测试和查看结果放在同一条可追踪的执行流程中。
+通过统一对话规划、调整和推进目标。每个文件夹是独立 Workspace，可容纳多个 Goal；每个 Task 保留独立执行上下文、实际产出、版本与验收记录。
+
+## 当前版本
+
+- **阶段卡片与关系图**：完成阶段默认收起，当前阶段展开；完整图支持缩放、拖动画布与依赖箭头。点击节点可查看验收条件、产出记录和近期变更。
+- **对话驱动的动态任务**：大纲和草稿可关联到已有任务；需求变化时更新原节点、保留历史，版本冲突需纠正后才能结束同步。
+- **可验证的阶段推进**：父阶段汇总子任务进度；一次审批可核对阶段与已提交子任务。待验收不等于已完成，旧规格产出不会自动满足新要求。
+- **文件夹与上下文隔离**：不同目录独立保存目标、会话、附件和偏好；运行、审批及工具请求绑定原工作区，同一服务串行执行 Agent。
+- **工具与资料读取**：原生 Tool Calling、文件/图片附件、公开网页搜索、Exa Search MCP、PDF文字提取及页码引用。
+- **运行可靠性**：完整流校验、有限重试、取消、中断状态恢复、敏感值脱敏及只读网络边界。写入、Shell与人工验收继续遵守原审批。
+
+## 本地启动
+
+Python 3.10+；GLM网页启动器当前配置 Windows AppContainer。模型凭据仅保存在本地，不使用 Coding Plan 或伪装客户端。
+
+```powershell
+python -m pip install -e ".[attachments,web-pdf]"
+Copy-Item .env.example .env.glm.local
+# 编辑 .env.glm.local，只填写 BIGMODEL_API_KEY（智谱普通 API）。
+python -X utf8 scripts/run_goaltree_glm.py --workspace artifacts/my-goaltree-workspace --port 8773 --open
+```
+
+打开 http://127.0.0.1:8773/ 。左侧选择文件夹/目标，中间对话，右侧查看任务树；任务调整交给 Agent，节点点击只查看详情。规划与实现分别提供逐步确认、适中、自主三档协作方式；自主档不扩大安全权限。
+
+无模型凭据时可以运行明确标注的离线脚本演示：
+
+```powershell
+python -X utf8 scripts/run_goaltree_demo.py --port 8774 --open
+```
+
+该演示验证固定工具与界面接线，不代表模型理解任意目标，也不计入 Agent 能力评测。Windows 也可双击 `start-goaltree.cmd` 或 `start-goaltree-demo.cmd`。
+
+## 架构
+
+```mermaid
+flowchart LR
+    U[统一对话] --> C[Goal 协调器]
+    C --> T[版本化任务树 / 产出 / 验收]
+    T --> V[阶段卡片与关系图]
+    C --> E[独立 Task 执行上下文]
+    E --> A[工具校验与审批]
+    A --> R[文件操作 / 隔离执行 / 只读资料读取]
+    R --> S[状态、证据与运行审计]
+    S --> C
+```
+
+[项目架构](docs/goaltree.md) · [任务树视图](docs/task-tree-views.md) · [动态进度与验收](docs/dynamic-task-progress.md) · [文件夹工作区](docs/folder-workspaces.md)
+
+[附件与协作](docs/conversation-controls.md) · [公开网页读取](docs/public-web-access.md) · [Search MCP](docs/search-mcp.md) · [PDF读取](docs/pdf-reading.md) · [预算单位](docs/context-budgets.md) · [流式恢复](docs/stream-recovery.md)
+
+## 验证与边界
+
+新增界面与集成回归、真实浏览器观察和历史代码修复Benchmark分别记录，不把离线脚本当作在线模型效果，不把同题重复当作独立任务。当前发布检查见[发布说明](docs/releases/goaltree-2026-11-10.md)。私人会话、原始模型轨迹和本机验收目录留在本地；下方已公开的历史实验保留原口径。
+
+PDF目前支持文字层（5MiB、40页、60,000提取字符），不自动OCR或还原表格版式。原生输入预算按JSON字节保守估算，1MiB配置不等于已验证1M Token输入窗口。读取等待与本地回调耗时分别记录，不能直接解释为纯模型速度。
+
+```powershell
+python -X utf8 -m pytest tests -q
+node --test tests/web_tree.test.cjs
+```
+
+## 历史代码修复与系统评测
+
+以下为早期 CodeTrail 代码执行Harness的历史实验。模型、工具协议、运行环境与评测规模以各自报告为准，不作为当前通用目标规划能力的成绩。
 
 ## 系统多维评测 v2（2026-11-07）
 
