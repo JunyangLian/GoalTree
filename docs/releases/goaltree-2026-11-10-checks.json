@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "tested_source_commit": "8c232d753279ea80cc402b2a74dfb97f98feaa3c",
+  "verified_on": "2026-11-10",
+  "scope": "Software release verification; not an LLM benchmark or new agent success-rate claim.",
+  "environment": {
+    "os": "Windows",
+    "python": "3.10.1",
+    "node": "24.14.0",
+    "checkout": "fresh local clone of the committed source; no local credentials or conversations copied"
+  },
+  "python": {
+    "tests": 702,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 702,
+    "runner_reported_duration_seconds": 839.11,
+    "command": "python -X utf8 -m pytest tests -q --junitxml=artifacts/github-release-tests.xml"
+  },
+  "frontend": {
+    "tests": 55,
+    "passed": 55,
+    "failed": 0,
+    "files": [
+      "tests/web_activity.test.cjs",
+      "tests/web_controls.test.cjs",
+      "tests/web_markdown.test.cjs",
+      "tests/web_poll.test.cjs",
+      "tests/web_tree.test.cjs",
+      "tests/web_workspace.test.cjs"
+    ],
+    "command": "node --test <all files listed in frontend.files>"
+  },
+  "wheel": {
+    "filename": "goaltree_agent-0.1.0-py3-none-any.whl",
+    "sha256": "db74b58ac6fce7738d679b360536ad7fe721c87a2c1c8daf4fd9d99c36997191",
+    "checks": {
+      "goaltree/__init__.py": true,
+      "goaltree/cli.py": true,
+      "goaltree/web.py": true,
+      "pico/web_assets/tree.js": true,
+      "pico/web_assets/tree.css": true,
+      "pico/web_assets/markdown-it.min.js": true,
+      "pico/web_assets/markdown-it.LICENSE.txt": true,
+      "pico/web_assets/index.html": true,
+      "goaltree_entrypoint": true,
+      "goaltree_web_entrypoint": true
+    },
+    "passed": true,
+    "python_version": "3.10.1"
+  },
+  "installed_wheel": {
+    "isolated_install": true,
+    "no_project_checkout_on_pythonpath": true,
+    "entrypoint_checks": [
+      {
+        "args": [
+          "-m",
+          "goaltree",
+          "--help"
+        ],
+        "exit_code": 0
+      },
+      {
+        "args": [
+          "-m",
+          "goaltree.web",
+          "--help"
+        ],
+        "exit_code": 0
+      }
+    ]
+  },
+  "clean_configuration": {
+    "entrypoint_checks": [
+      {
+        "args": [
+          "-m",
+          "goaltree",
+          "--help"
+        ],
+        "exit_code": 0,
+        "expected": 0
+      },
+      {
+        "args": [
+          "-m",
+          "goaltree.web",
+          "--help"
+        ],
+        "exit_code": 0,
+        "expected": 0
+      },
+      {
+        "args": [
+          "scripts/run_goaltree_demo.py",
+          "--help"
+        ],
+        "exit_code": 0,
+        "expected": 0
+      },
+      {
+        "args": [
+          "scripts/run_goaltree_glm.py",
+          "--check-config"
+        ],
+        "exit_code": 1,
+        "expected": 1
+      }
+    ],
+    "missing_model_key_rejected": true
+  },
+  "offline_demo": {
+    "source_commit": "8c232d753279ea80cc402b2a74dfb97f98feaa3c",
+    "model_calls": 0,
+    "mode": "scripted-offline",
+    "status": "completed",
+    "tasks": 4,
+    "assets": [
+      {
+        "path": "/tree.js",
+        "status": 200
+      },
+      {
+        "path": "/tree.css",
+        "status": 200
+      }
+    ],
+    "shell_backend": "host",
+    "scope": "Offline clean-clone startup and real HTTP/tool wiring, not model understanding"
+  },
+  "limitations": [
+    "Offline Demo uses scripted responses, not real-model reasoning.",
+    "Browser acceptance was performed separately; private browser artifacts are not part of this public aggregate.",
+    "Historical model experiments keep their original versions and scoring.",
+    "Raw local test reports may contain machine paths and remain local."
+  ]
+}
