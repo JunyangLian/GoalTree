@@ -1,0 +1,135 @@
+{
+  "date": "2026-11-11",
+  "browser": "Tabbit Browser",
+  "browser_instance": "A002AC12F14892EA",
+  "retained_tab_id": 1443660798,
+  "url": "http://127.0.0.1:8786/",
+  "privacy_mode": "enforce",
+  "shell_backend_configured": "appcontainer",
+  "shell_exercised": false,
+  "runs": [
+    {
+      "run_id": "run_20261111-184043-b833d5",
+      "status": "failed",
+      "stop_reason": "privacy_denied",
+      "tool_steps": 0,
+      "provider_model": null,
+      "provider_usage": null,
+      "transport_attempts": null,
+      "final_answer": "Model request failed: Privacy policy blocked operation: core_external_forbidden; no automatic external fallback",
+      "report_sha256": "c214bbb40ef377aa11ae31f954aec961c99a5034c7feaf6a6d4cc4c08b625f22",
+      "trace_event_types": {
+        "learning_feedback_skipped": 2,
+        "cooperation_configured": 1,
+        "run_started": 1,
+        "prompt_built": 1,
+        "model_requested": 1,
+        "model_failed": 1,
+        "run_finished": 1,
+        "learning_recorded": 1
+      }
+    },
+    {
+      "run_id": "run_20261111-221957-ef986e",
+      "status": "failed",
+      "stop_reason": "privacy_denied",
+      "tool_steps": 0,
+      "provider_model": null,
+      "provider_usage": null,
+      "transport_attempts": null,
+      "final_answer": "Model request failed: Privacy policy blocked operation: core_external_forbidden; no automatic external fallback",
+      "report_sha256": "f5b8d13d350b2a9cbe0b409b552563c21ba4e030f748100b0d34b2adefdf50af",
+      "trace_event_types": {
+        "learning_feedback_skipped": 2,
+        "cooperation_configured": 1,
+        "run_started": 1,
+        "prompt_built": 1,
+        "model_requested": 1,
+        "model_failed": 1,
+        "run_finished": 1,
+        "learning_recorded": 1
+      }
+    },
+    {
+      "run_id": "run_20261111-222315-be2c69",
+      "status": "completed",
+      "stop_reason": "final_answer_returned",
+      "tool_steps": 0,
+      "provider_model": "glm-5.3-flash",
+      "provider_usage": {
+        "completion_tokens": 6,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_tokens": 5790,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 5796
+      },
+      "transport_attempts": 1,
+      "final_answer": "浏览器链路正常",
+      "report_sha256": "a01c3c6b4de381892d7df904ed81554343959adba428ccb8f59ba8edd617bb8f",
+      "trace_event_types": {
+        "cooperation_configured": 1,
+        "run_started": 1,
+        "prompt_built": 1,
+        "model_requested": 1,
+        "model_progress": 2,
+        "model_transport": 1,
+        "model_parsed": 1,
+        "checkpoint_created": 1,
+        "run_finished": 1,
+        "learning_recorded": 1
+      }
+    }
+  ],
+  "privacy_audit": [
+    {
+      "purpose": "model",
+      "destination_id": "ee0be713a393ff83aea7",
+      "level": "core",
+      "decision": "deny",
+      "rule": "core_external_forbidden",
+      "bytes": 27826,
+      "elapsed_ms": 29.532,
+      "mode": "enforce"
+    },
+    {
+      "purpose": "model",
+      "destination_id": "ee0be713a393ff83aea7",
+      "level": "core",
+      "decision": "deny",
+      "rule": "core_external_forbidden",
+      "bytes": 28282,
+      "elapsed_ms": 25.53,
+      "mode": "enforce"
+    },
+    {
+      "purpose": "model",
+      "destination_id": "ee0be713a393ff83aea7",
+      "level": "general",
+      "decision": "allow",
+      "rule": "allowed",
+      "bytes": 28046,
+      "elapsed_ms": 27.117,
+      "mode": "enforce"
+    }
+  ],
+  "regression": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "83",
+    "time": "28.050",
+    "timestamp": "2026-11-11T18:39:36.312179+08:00"
+  },
+  "screenshot_status": "not_captured: native screenshot timeout and CDP capture hard deadline; no image fabricated",
+  "notes": [
+    "Two core submissions are repeated integration checks, not independent benchmark tasks.",
+    "The first fixed-core submission receipt was unavailable after environment restart; its persisted run is retained.",
+    "The fixed-v2 badge-only assertion failed because idle UI clears the top badge; actual message was localized. Read-only DOM and reload verified the visible result.",
+    "No benchmark metrics changed; historical full suite 871 predates these follow-up fixes."
+  ]
+}

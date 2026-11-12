@@ -103,6 +103,8 @@ class KnowledgeStore:
                         'candidate', 1, json.dumps(evidence), kind, at,
                         at + ttl_seconds if ttl_seconds is not None else None, ''))
             self.event(db, memory_id, 'proposed', 1)
+        from .privacy import CURRENT
+        if CURRENT.get():CURRENT.get().store.derive('memory:'+memory_id,CURRENT.get().resources)
         return self.get(memory_id)
 
     def event(self, db, memory_id, event, version, reason=''):

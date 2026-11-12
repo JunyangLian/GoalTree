@@ -185,6 +185,8 @@ class ToolExecutor:
         after_snapshot = before_snapshot
         try:
             raw_content = tool['run'](args)
+            from .privacy import CURRENT
+            if CURRENT.get():CURRENT.get().observe(text=raw_content)
             if getattr(agent, 'evidence', None):
                 agent._raw_tool_evidence = agent.redact_text(clip(raw_content, 131072))
             # Web results are already bounded as complete JSON envelopes. A

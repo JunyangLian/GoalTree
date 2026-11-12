@@ -6,7 +6,7 @@ import subprocess
 import pytest
 
 
-@pytest.mark.parametrize('script', ['web_poll.test.cjs', 'web_markdown.test.cjs', 'web_controls.test.cjs', 'web_activity.test.cjs','web_workspace.test.cjs','web_tree.test.cjs'])
+@pytest.mark.parametrize('script', ['web_poll.test.cjs', 'web_markdown.test.cjs', 'web_controls.test.cjs', 'web_activity.test.cjs','web_workspace.test.cjs','web_tree.test.cjs','web_hub.test.cjs','web_sharing.test.cjs'])
 def test_frontend_polling_recovery(script):
     node = shutil.which('node')
     if not node:

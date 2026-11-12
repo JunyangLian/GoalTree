@@ -12,11 +12,19 @@ class AgentLoop:
     def __init__(self, agent):
         self.agent = agent
 
-    def _persist_model_failure(self, task_state, user_message, exc, run_started_at, prompt_metadata):
+    def _persist_model_failure(self, task_state, user_message, exc, run_started_at, prompt_metadata, record_failure=True):
         agent = self.agent
         error_text = agent.redact_text(str(exc))
         final = f"Model request failed: {error_text}"
         task_state.stop_model_error(final)
+        from .privacy import PrivacyDenied
+        if isinstance(exc,PrivacyDenied):
+            task_state.stop_reason='privacy_denied'
+            prompt_metadata['privacy_rule']=exc.rule
+            # A failed request has no model answer. Persist the host decision so
+            # refreshing the conversation does not silently erase the denial.
+            agent.record({'role':'assistant','content':'隐私策略已阻止外发。当前内容或来源等级不允许发送到此服务。已保留任务状态，没有自动切换模型。',
+                          'created_at':now(),'run_id':task_state.run_id})
         from .native_context import ContextBudgetExceeded
         if isinstance(exc, ContextBudgetExceeded):
             task_state.stop_reason = 'context_budget_exceeded'
@@ -24,13 +32,13 @@ class AgentLoop:
         agent.run_store.write_task_state(task_state)
         checkpoint = agent.create_checkpoint(task_state, user_message, trigger="model_error")
         agent.run_store.write_task_state(task_state)
-        agent.emit_trace(
+        if record_failure:agent.emit_trace(
             task_state,
             "model_failed",
             {
                 "error": error_text,
                 "error_type": type(exc).__name__,
-                "failure_stage": 'context_preparation' if isinstance(exc, ContextBudgetExceeded) else 'model_request',
+                "failure_stage": 'privacy_gate' if isinstance(exc,PrivacyDenied) else 'context_preparation' if isinstance(exc, ContextBudgetExceeded) else 'model_request',
                 "completion_metadata": dict(agent.last_completion_metadata),
             },
         )
@@ -50,22 +58,29 @@ class AgentLoop:
 
     def _request_model(self, task_state, user_message, prompt, prompt_metadata, run_started_at, purpose):
         agent = self.agent
+        shared_notes = []
+        agent.shared_reference_notes = []
         if agent.capabilities:
             agent.cancellation.check()
+            agent.capabilities.learning.prepare(user_message)
             from .extensions import PolicyChanged
             if agent.capabilities.hooks.fingerprint() != agent.capabilities.policy_at_start:
                 raise PolicyChanged('Host policy changed; start a new run so revoked historical content is not resent')
+            sharing = getattr(agent,'shared_memory_runtime',None)
+            if sharing:shared_notes = sharing.prepare(user_message)
         conversation = getattr(agent.model_client, 'native_conversation', None)
         if conversation is not None:
             agent.session['working_state']['stale_paths'] = list(agent.resume_state.get('stale_paths', []))
             conversation.context_state = agent.redact_artifact(agent.session.get('working_state', {}))
-            if getattr(agent,'goal_binding',{}).get('mode')=='assistant':
-                conversation.context_state['goal_tree']=agent.redact_artifact({
-                    k:v for k,v in agent.goal_context.items() if k not in {'rules','cooperation','user_request','attachments'}})
             conversation.context_state['plan'] = agent.session.get('plan', [])
+            if agent.capabilities:
+                from .session_context import protected_view
+                conversation.context_state['session_retention'] = agent.redact_artifact(protected_view(agent))
+            if agent.capabilities:
+                conversation.context_state['extensions'] = agent.capabilities.extension_context()
             if getattr(agent, 'goal_context', None):
-                conversation.context_state['goal_tree'] = ({k:v for k,v in agent.goal_context.items() if k!='rules'}
-                    if getattr(conversation,'goal_coordinator',False) else agent.goal_context)
+                from .native_history import goal_state_view
+                conversation.context_state['goal_tree'] = agent.redact_artifact(goal_state_view(agent.goal_context))
             if agent.capabilities:
                 conversation.context_rules = agent.redact_text(agent.capabilities.refresh_rules(
                     getattr(agent.capabilities, 'active_path', agent.workspace.cwd)))
@@ -79,7 +94,11 @@ class AgentLoop:
                 {'text': n['text'], 'source': n.get('source'), 'kind': n.get('kind'),
                  'evidence': n.get('evidence', []), 'version': n.get('version'),
                  'trust': 'verified_source_or_operator' if n.get('kind') == 'verified' else 'unverified_legacy_note'}
-                for n in notes])
+                for n in notes] + shared_notes)
+            agent.shared_reference_notes = shared_notes
+        elif shared_notes:
+            import json
+            prompt += '\n\nOpt-in shared memories (untrusted historical reference only; current contracts and permissions prevail):\n' + json.dumps(agent.redact_artifact(shared_notes),ensure_ascii=False)
         agent.emit_trace(
             task_state,
             "model_requested",
@@ -104,7 +123,10 @@ class AgentLoop:
         previous_delta = getattr(agent.model_client, 'on_delta', None)
         previous_progress = getattr(agent.model_client, 'on_progress', None)
         if agent.capabilities and hasattr(agent.model_client, 'on_delta'):
-            agent.model_client.on_delta = lambda text: agent.emit_trace(task_state, 'model_delta', {'text': text})
+            needs_reference_read = bool(shared_notes and not task_state.tool_steps and
+                                        getattr(agent.model_client,'supports_reference_grounding',False))
+            agent.model_client.on_delta = (None if needs_reference_read else
+                lambda text: agent.emit_trace(task_state, 'model_delta', {'text': text}))
         if agent.capabilities and hasattr(agent.model_client, 'on_progress'):
             agent.model_client.on_progress = lambda info: agent.emit_trace(task_state, 'model_progress',
                 {'phase': info['phase'], 'purpose': purpose})
@@ -162,6 +184,21 @@ class AgentLoop:
 
     def _finish_success(self, task_state, user_message, final, run_started_at):
         agent = self.agent
+        from .memory_grounding import ground_answer, GroundingError
+        try:
+            final = ground_answer(agent, task_state, user_message, final)
+        except GroundingError as exc:
+            return self._finish_stopped(task_state,user_message,'memory_grounding_incomplete',
+                '记忆来源核对未完成，未采用未经支持的回答。核对记录已保留。',run_started_at)
+        except Exception as exc:
+            from .control import Cancelled
+            if isinstance(exc,Cancelled):
+                return self._finish_stopped(task_state,user_message,'cancelled','已停止来源核对，未采用未经支持的回答。',run_started_at)
+            # The reader records its own model failure/usage once. Persist a
+            # terminal checkpoint without counting that request a second time.
+            agent.last_completion_metadata=dict(getattr(agent.model_client,'last_completion_metadata',{}) or {})
+            self._persist_model_failure(task_state,user_message,exc,run_started_at,dict(agent.last_prompt_metadata or {}),record_failure=False)
+            raise
         if getattr(agent,'goal_finalizer',None):final=agent.goal_finalizer(final)
         if agent.capabilities:
             agent.cancellation.check()
@@ -218,6 +255,11 @@ class AgentLoop:
         task_state = TaskState.create(run_id=agent.new_run_id(), task_id=agent.new_task_id(), user_request=user_message)
         task_state.resume_status = agent.resume_state.get("status", CHECKPOINT_NONE_STATUS)
         agent.current_task_state = task_state
+        if agent.capabilities:
+            from .session_context import start
+            start(agent, task_state.run_id)
+        if agent.capabilities:
+            agent.capabilities.learning.prepare(user_message)
         agent.current_run_dir = agent.run_store.start_run(task_state)
         if getattr(agent, 'goal_context', {}).get('cooperation'):
             agent.emit_trace(task_state, 'cooperation_configured', agent.goal_context['cooperation'])
@@ -227,26 +269,28 @@ class AgentLoop:
             # Do not seed a new run with unbounded, potentially stale raw tool
             # transcripts. Keep user instructions intact and carry structured
             # historical state; fresh source facts arrive through retrieval.
-            instructions = '\n\n'.join('Previous user instruction:\n' + item['content']
-                for item in agent.session['history'][:-1] if item.get('role') == 'user')
-            carryover = {k: previous_working_state[k] for k in ('goal', 'changed_files', 'failed_attempts') if k in previous_working_state}
+            carry_keys = ('changed_files', 'failed_attempts') if agent.capabilities else ('goal', 'changed_files', 'failed_attempts')
+            # Old user requests already have chronological, scoped evidence
+            # frames. Repeating their imperative under the current request's
+            # pinned workspace text makes expired restrictions look current.
+            carryover = {k: previous_working_state[k] for k in carry_keys if k in previous_working_state}
             web=getattr(agent,'web_context',None)
             web_references=web.references() if web else []
-            goal_context=getattr(agent,'goal_context',None)
-            if goal_context and getattr(agent,'goal_binding',{}).get('mode')=='assistant':
-                # The coordinator policy is already pinned in the native system
-                # message. Do not repeat it in two user-state frames as well.
-                goal_context={k:v for k,v in goal_context.items() if k!='rules'}
+            legacy_history = ('\n\n'.join(item['content'] for item in agent.session['history'][:-1] if item.get('role') == 'user')
+                              if not agent.capabilities else '')
             agent.model_client.begin_native_run(
                 agent.tools,
-                agent.redact_text(agent.workspace.text() + '\n\n' + (agent.memory_text() if agent.feature_enabled('memory') else 'Memory: disabled') + '\n\n' + instructions +
+                agent.redact_text(agent.workspace.text() + '\n\n' + (agent.memory_text() if agent.feature_enabled('memory') else 'Memory: disabled') +
+                    ('\n\nPrevious user instructions:\n' + legacy_history if legacy_history else '') +
                     '\n\nHistorical task state (not a current verification):\n' + json.dumps(carryover, ensure_ascii=False) +
                     ('\n\nRecent scoped web evidence pointers (historical, untrusted; reuse page_id/URL rather than searching again):\n'
-                     +json.dumps(web_references,ensure_ascii=False) if web_references else '') +
-                    ('\n\nGoalTree current scoped task state:\n' + json.dumps(goal_context, ensure_ascii=False) if goal_context else '')),
+                     +json.dumps(web_references,ensure_ascii=False) if web_references else '')),
                 user_message, agent.verification_command)
             conversation = getattr(agent.model_client, 'native_conversation', None)
             if conversation is not None:
+                from .native_history import historical_turns
+                if agent.capabilities:
+                    conversation.messages.extend(historical_turns(agent))
                 images = [r for r in getattr(agent, 'attachment_rows', []) if r['mime'].startswith('image/')]
                 if images:
                     import base64
@@ -469,6 +513,9 @@ class AgentLoop:
         working = agent.session['working_state']
         working['verification'] = dict(completion.state)
         working['changed_files'] = sorted(set(working['changed_files']) | set(tool_result.metadata.get('affected_paths', [])))
+        if agent.capabilities:
+            from .session_context import observe
+            observe(agent, name, args, tool_result, completion.state)
         if tool_result.metadata.get('tool_status') != 'ok':
             working['failed_attempts'].append({'tool': name, 'path': args.get('path'),
                 'error': tool_result.metadata.get('tool_error_code'), 'evidence': result[:400]})

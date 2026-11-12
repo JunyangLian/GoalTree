@@ -1,0 +1,128 @@
+{
+  "schema": "context-layers-validation-v1",
+  "date": "2026-11-12",
+  "external_model_calls": 0,
+  "historical_live_scores_reused_as_current": false,
+  "implementation": {
+    "handoff_schema": "task-handoff-v1",
+    "handoff_input_max_utf8_bytes": 131072,
+    "handoff_output_max_json_chars": 3400,
+    "default_compaction_trigger_ratio": 0.85,
+    "default_compaction_target_ratio": 0.7,
+    "mandatory_error_excerpt_max_chars": 1800,
+    "state_owner": "host",
+    "compaction_decision_owner": "runtime",
+    "cache_hit_evidence": "provider_usage_only",
+    "concurrency": "serial",
+    "shared_workspace_files": true
+  },
+  "targeted_tests": {
+    "related_regression": {
+      "passed": 87,
+      "failed": 0,
+      "elapsed_seconds": 51.35
+    },
+    "final_handoff_tests": {
+      "passed": 17,
+      "failed": 0,
+      "elapsed_seconds": 3.62
+    },
+    "external_model_calls": 0,
+    "earlier_failures_retained_in_conversation": "Two planner rebind failures, then one None-vs-empty initial task binding failure, fixed without weakening cross-Goal checks"
+  },
+  "offline_demo": {
+    "checks": {
+      "bounded_handoff": true,
+      "coordinator_and_worker_completed": true,
+      "foreign_goal_excluded": true,
+      "independent_sessions": true,
+      "mandatory_frames_preserved": true,
+      "manual_acceptance_pending": true,
+      "soft_compaction_triggered": true
+    },
+    "compaction_audit": {
+      "after_estimate": 28394,
+      "before_estimate": 41640,
+      "budget_unit": "serialized_json_bytes",
+      "cache_hit_source": "provider_usage_only",
+      "compacted_groups": 3,
+      "compaction_target": 30605,
+      "compaction_trigger": 37163,
+      "counting": "utf8_json_bytes_conservative_estimate",
+      "delivered_pinned_count": 3,
+      "evidence_selection": {
+        "input_events": 3,
+        "max_events": 8,
+        "method": "typed_relevance_and_recency_v1",
+        "omitted_events": 0,
+        "selected_call_ids": [],
+        "selected_events": 3
+      },
+      "input_budget": 43722,
+      "output_reserve_tokens_requested": 0,
+      "protected_frames_preserved": true,
+      "protected_frames_sha256": "a78653730d22c36f2bd84cff68d4c14997361df9ccbf3a882498ed159d9bc176",
+      "provider_usage": "reported_separately",
+      "retention_policy": "host_fixed_v1",
+      "retrieved_memory_omitted": false,
+      "stable_prefix_sha256": "4a711fd06662a2b374d82c903876e8379178bcd5dd434c5535c42bf148e02dda",
+      "target_ratio": 0.7,
+      "target_reached": true,
+      "trigger_ratio": 0.85,
+      "wire_bytes_after": 28394,
+      "wire_bytes_before": 41640,
+      "wire_sha256": "05ca1f8b8fb5407b0e00b129c832a1eb59add89e8033f1df7e5ba6b2509ee348"
+    },
+    "external_model_calls": 0,
+    "fixture": "Explicit scripted native responses; no model understanding claim",
+    "native_fixture_requests": 4,
+    "passed": true,
+    "schema": "context-layers-offline-demo-v1"
+  },
+  "demo_audit": {
+    "schema": "context-layers-evidence-audit-v1",
+    "external_model_calls": 0,
+    "parent_session": "gt_chat_e0f771d3117e44ccb525",
+    "child_session": "gt_exec_1e2817693c8e42ccb5e3",
+    "different_sessions": true,
+    "dispatch_events": 1,
+    "receive_events": 1,
+    "actual_worker_reads": 1,
+    "request_protected_frames_checked": 4,
+    "all_requests_protected": true,
+    "disclaimer": "Scripted native responses, not a model success rate or a browser test."
+  },
+  "full_tests": {
+    "status": "finished",
+    "path": "artifacts/context-layers-2026-11-12/full-validation",
+    "exit_code": 0,
+    "elapsed_seconds": 803.78,
+    "source_changes": [],
+    "frozen_files": 322,
+    "total": 915,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 915
+  },
+  "credential_scan": {
+    "scope": "tracked and non-ignored worktree files",
+    "files_checked": 787,
+    "credential_available_for_check": true,
+    "matching_paths": [],
+    "key_not_in_report": true
+  },
+  "limitations": [
+    "No new external-model or browser E2E experiments.",
+    "Scripted native replies validate wiring, not model choices or task quality.",
+    "No measured improvement claim for long-task correctness, duplicate reads, latency or cache hit rate.",
+    "Wire retention checks cover the workbench native path; legacy text-protocol entries retain compatibility behavior.",
+    "Mandatory state may exceed budget and stop explicitly.",
+    "Exact error excerpts may omit relevant detail; original evidence remains recoverable.",
+    "Handoff integrity digest is not an authenticated external signature."
+  ],
+  "final_credential_scan": {
+    "files_checked": 788,
+    "matching_paths": []
+  }
+}

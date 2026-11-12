@@ -1,0 +1,39 @@
+{
+  "date": "2026-11-11",
+  "python_tests": {
+    "passed": 791,
+    "failed": 0,
+    "seconds": 814.46,
+    "frozen_files": 293,
+    "changed_files": []
+  },
+  "node_behavior_checks": {
+    "passed": 59,
+    "overlaps_python_wrapper": true
+  },
+  "live_improver": {
+    "requests": 1,
+    "model": "glm-5.3",
+    "input_tokens": 456,
+    "output_tokens": 3545,
+    "actual_cost": null,
+    "case": "feedback-minimization-v1"
+  },
+  "external_checks": {
+    "baseline": {
+      "test_feedback_source_minimized": "FAIL",
+      "test_opt_out_and_presentation_preference_preserved": "ok",
+      "test_permission_boundary_unchanged": "ok"
+    },
+    "candidate": {
+      "test_feedback_source_minimized": "ok",
+      "test_opt_out_and_presentation_preference_preserved": "ok",
+      "test_permission_boundary_unchanged": "ok"
+    },
+    "candidate_sha256": "ff10bc60839af718f2f1126294a371a189923b318d9ef9509a3be62d0cf3160c",
+    "test_sha256": "c4cce9173afd59a9a164b876c10410a2b9cf9d41a734262caf45c32ab57881ed",
+    "forbidden_changes": []
+  },
+  "decision": null,
+  "implementation_scope": "one known synthetic privacy regression; not a benchmark or model comparison"
+}

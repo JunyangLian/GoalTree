@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "verified_on": "2026-11-10",
+  "scope": "Software and integration acceptance; not a new agent benchmark or causal learning efficacy result",
+  "source": {
+    "base_commit": "8ac141cba1b19d6fcf3ffbb77f8c6b91a592e6f2",
+    "working_tree_feature_changes": true,
+    "source_inventory_files": 171,
+    "inventory_file_sha256": "db477638ec039d517433bb9eaf535b8ea3d62040659fc45db027af234decf0fd",
+    "canonical_inventory_sha256": "add2795845f94e3e13f46246787a20d5261301b568e230812cec9b18c0ab1db9",
+    "runtime_files_changed_during_final_check": false,
+    "feature_file_sha256": {
+      "goaltree/learning.py": "f0776ffd891cf799e23f99229c08e6359d5292eb99bf33e6be58348050456a2a",
+      "pico/agent_loop.py": "72625655a6cf6d03e520a61ce727e04932782e84f06bc854eec7a808d7b9396e",
+      "pico/evolution.py": "a4ceed6fadd81206974d3a02b0df0ef6210bff4298f5d96ca2abc6e99739b82a",
+      "pico/learning_cli.py": "026287c46181db6bfd3718db94261f96e1613b9f70286fcbc8f0d719dc900369",
+      "pico/learning_runtime.py": "df5eb4bfea2ff115e873b9e86d2338beb897f298d52784f5eccf1c8e7409099e",
+      "pico/providers/native_tools.py": "e9024f17d8a742155b9289ee5ad2b75ed3151f39f8212aa5e347393845fb1689",
+      "pico/runtime.py": "8d20017f155ccac1785ea0931ac64335d6aa02b5a00c025ee501535b4550e48e",
+      "pico/web.py": "433c93212f913773d6c96a71d67c0200acc601f49bad5ead6d8806caa53b9adf",
+      "pico/web_assets/app.js": "d44b37ca08ec6c1f78e9cf42ce820b98dcbcb2ad31244ff38a2123b78411f17e",
+      "pico/web_assets/index.html": "9c3e2ca1243c6ce7f0e2358b608f89a4934be77acc821361ee460d54dfb0cf3e",
+      "pico/web_assets/learning.js": "3eaee17bbb0af82397e412eaf3075f8abd59f85e56bcc65179132873a8b4a249",
+      "pico/web_assets/tree.css": "2e78b07289bd3d4314d6fb766dacc4b7575a3c3c6977ea8820bd768fe91e1033",
+      "pico/workbench.py": "f209b767e7322f8539a31ba80526a7b0f5fa0d81940a1aef5f437e18d2261c1f",
+      "scripts/run_learning_demo.py": "2e871dd1fbdb22a865eafd6bcf697d894ef6c8444e9110c6600faa8ce69b003c"
+    }
+  },
+  "python": {
+    "tests": 719,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 719,
+    "pytest_reported_duration_seconds": 730.47,
+    "junit_duration_seconds": 729.758
+  },
+  "frontend": {
+    "tests": 59,
+    "passed": 59,
+    "failures": 0,
+    "skipped": 0,
+    "overlaps_python_runner": true
+  },
+  "targeted_safety": {
+    "tests": 23,
+    "passed": 23,
+    "failures": 0,
+    "duration_seconds": 10.11,
+    "included_in_full_suite": true
+  },
+  "packaging": {
+    "wheel": "goaltree_agent-0.1.0-py3-none-any.whl",
+    "sha256": "9cbd624500c58171071391e27aff1a9cecfa34b2c4886280127f1fbe57e7e594",
+    "files": {
+      "goaltree/learning.py": true,
+      "pico/evolution.py": true,
+      "pico/learning_runtime.py": true,
+      "pico/learning_cli.py": true,
+      "pico/web_assets/learning.js": true,
+      "pico/web_assets/tree.css": true
+    },
+    "passed": true
+  },
+  "isolated_install": {
+    "isolated_wheel_install": true,
+    "outside_repo": true,
+    "checks": [
+      {
+        "module": "goaltree",
+        "exit_code": 0
+      },
+      {
+        "module": "goaltree.web",
+        "exit_code": 0
+      },
+      {
+        "module": "goaltree.learning",
+        "exit_code": 0
+      }
+    ],
+    "passed": true
+  },
+  "offline_demo": {
+    "decision_source": "scripted",
+    "external_model_calls": 0,
+    "checks": {
+      "seed_verification_passed": true,
+      "distinct_trial_task": true,
+      "trial_verification_passed": true,
+      "skill_activation_after_transfer": true,
+      "memory_rollback_restored": true,
+      "memory_recalled_in_new_task": true,
+      "skill_loaded_in_new_task": true,
+      "viewing_not_counted_as_success": true,
+      "audit_valid": true
+    },
+    "run_tool_steps": [
+      3,
+      3,
+      1
+    ],
+    "external_verifier_tests": 2,
+    "external_verifier_exit_code": 0,
+    "audit": {
+      "valid": true,
+      "events": 20,
+      "head_sha256": "b510e9167be272f92942958297c0589a006be1210624216718684c999467702c",
+      "limit": "Local hash-chain consistency; not external tamper-proof storage"
+    },
+    "file_sha256": {
+      "counter.py": "833556db828032d49efc4c58a380411c53465c917da89bf613a607a10cee2ba6",
+      "normalizer.py": "ba41e733aade08724d345ac841856c8a1154581d34bf2db17d88caa2a721a964",
+      "tests/test_counter.py": "e85f5a419fc5b5c5a557a11215f36af0e68ae8ea06e10830a48693a354ea1314",
+      "tests/test_normalizer.py": "acafe73ed33700f3a2d605dfe734edcf9310ad9404ea79a820223479a118b51d"
+    }
+  },
+  "live_glm_smoke": {
+    "model": "glm-5.3-flash",
+    "agent_runs": 3,
+    "conversation_sessions": 2,
+    "provider_requests": 7,
+    "input_tokens": 39603,
+    "output_tokens": 1025,
+    "total_tokens": 40628,
+    "actual_cost": null,
+    "initial_proposal_tool_errors": 3,
+    "post_fix_proposal_tool_errors": 0,
+    "scope": "Memory proposal, operator activation and observed presentation. Skill model transfer efficacy not evaluated.",
+    "selection": "Development diagnosis and retest; original failure retained, not a held-out comparison"
+  },
+  "limitations": [
+    "Presented memory is not demonstrated adoption.",
+    "Loaded skill is not demonstrated full adherence.",
+    "Distinct task IDs do not by themselves prove semantic independence.",
+    "No causal accuracy improvement or generalized skill efficacy claim.",
+    "Offline script uses host shell; live service AppContainer configuration was checked, not an OS isolation retest.",
+    "Local audit hash chain is not externally anchored tamper-proof storage."
+  ]
+}

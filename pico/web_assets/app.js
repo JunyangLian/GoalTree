@@ -3,7 +3,7 @@
 (function(root){
   'use strict';
   const tools={goal_action:'更新目标',plan_tasks:'保存任务树',run_task:'执行子任务',read_file:'读取文件',list_files:'查看工作区',code_search:'检索代码',symbol_info:'查找符号',write_file:'写入文件',patch_file:'修改文件',apply_changes:'应用修改',run_shell:'运行命令',confirm_task:'申请人工验收',recall_evidence:'查回证据',find_evidence:'查找证据',load_skill:'读取技能说明'};
-  const stages={connected:'已连接模型服务',analysis:'模型正在分析',answer:'正在生成回复',tool_arguments:'正在准备工具操作'};
+  const stages={connected:'已连接模型服务',analysis:'模型正在分析',answer:'正在生成回复',tool_arguments:'正在准备工具操作',reference_check:'正在核对记忆来源'};
   function target(e){
     if(e.target)return String(e.target).slice(0,180);
     const args=e.args||{};
@@ -37,7 +37,7 @@
         phase='tool';label=child+(ok?'已完成操作：':'操作未完成：')+toolLabel(e);
         detail=ok?'工具已返回，正在处理结果。':'已保留失败或拒绝记录，后续动作仍需遵守原约束。';push(label,ok?'success':'warning');
         if(e.name==='web_search'&&e.search_sources){
-          const names={exa_mcp:'Exa Search MCP',bing:'Bing',baidu:'百度',wechat:'微信·搜狗索引',crossref:'Crossref',pubmed:'PubMed'};
+          const names={glm:'GLM search_pro',duckduckgo:'DuckDuckGo Lite','bing-intl':'国际版 Bing',exa_mcp:'Exa Search MCP',bing:'Bing',baidu:'百度',wechat:'微信·搜狗索引',crossref:'Crossref',pubmed:'PubMed'};
           label='搜索来源：'+e.search_sources.map(s=>(names[s.source]||s.source)+(s.status==='error'?(s.failure_type==='verification_required'?'需验证':'不可用'):s.status==='empty'?'无结果':' '+s.count+'条')+(s.low_query_overlap?'（关键词匹配不足）':'')).join(' · ');
           detail=e.search_status==='partial'?'部分来源未返回，已保留错误和可用结果。':'各来源结果已记录；检索摘要不等于正文核验。';
           push(label,e.search_status==='ok'||e.search_status==='empty'?'success':'warning');
@@ -57,6 +57,10 @@
     if(job.status==='waiting_approval'){phase='approval';label='等待你确认下一步';detail='确认前不会继续该项操作。';}
     if(job.status==='cancelling'){phase='cancelling';label='正在停止';detail='已完成的操作会保留，尚未执行的操作不会自动重放。';}
     if(done){phase=job.status;label=job.status==='failed'?'本轮发生异常':job.status==='stopped'?'本轮已停止':'本轮回复已结束';detail=errors?'包含'+errors+'项未完成操作，可展开查看；回复结束不等于任务验收通过。':'执行摘要来自真实记录；任务验收状态以右侧任务树为准。';}
+    if(done&&isPrivacyDenied(job)) {
+      label='隐私策略已阻止外发';detail=job.outcome?.action||'已保留任务状态，没有自动切换模型。敏感任务需要符合要求的本地处理环境。';
+      for(const entry of entries)entry.text=entry.text.replace('已发送模型请求','已准备模型请求');
+    }
     return {phase,label,detail,done,elapsedSeconds:Math.max(0,Math.floor((Number(job.elapsed_ms)||0)/1000)),entries:entries.slice(-8)};
   }
   root.GoalTreeProgress=Object.freeze({describe});
@@ -66,8 +70,10 @@ const $ = id => document.getElementById(id);
 const welcome = $('welcome').cloneNode(true);
 const state = {config:null, tree:null, goalId:'', nodeId:'', focusId:'', mode:'assistant', sessionId:'', taskId:'', messages:[], base:[], busy:false, switching:false, initializing:false, scopeEpoch:0, latestJob:null, job:null};
 state.cooperation={planning:'balanced',implementation:'balanced'}; state.drafts=new Map(); state.uploading=0; state.savingCooperation=false;
+state.memorySharing={enabled:false,revision:0};state.savingSharing=false;
 state.activityOpen=new Map();
 state.workspaceId='';state.switchingWorkspace=false;
+const extensionView=globalThis.GoalTreeExtensions?.install({api,scope:()=>({workspaceId:state.workspaceId,goalId:state.goalId,sessionId:state.sessionId,csrf:state.config?.csrf,busy:state.busy||state.initializing||state.switchingWorkspace})});
 function draftKey(session=state.sessionId,workspace=state.workspaceId){return workspace?workspace+'|'+session:session;}
 let toastTimer;
 function node(tag, className='', text) { const e=document.createElement(tag); if(className)e.className=className; if(text!==undefined)e.textContent=text; return e; }
@@ -118,7 +124,11 @@ function renderConnection() {
     welcome.textContent='当前为固定脚本演示；自由对话与目标规划需要接入真实模型。';
     $('prompt').placeholder='离线模式仅支持预设的资料整理演示…';
   }
-  $('connection').textContent=(state.config.shell_backend==='appcontainer'?'本地 · 隔离执行':'本地 · 宿主执行')+(state.config.web_access?' · 可联网':'')+(state.config.search_backend==='exa-mcp'?(state.config.search_mcp?.ready?' · Exa MCP':' · MCP待连接'):'');
+  $('connection').textContent=(state.config.shell_backend==='appcontainer'?'本地 · 隔离执行':'本地 · 宿主执行')+(state.config.web_access?' · 可联网':'')+(state.config.search_backend==='glm-free'?' · GLM + 国际搜索':state.config.search_backend==='exa-mcp'?(state.config.search_mcp?.ready?' · Exa MCP':' · MCP待连接'):'');
+  if(state.config.privacy?.enabled) {
+    $('connection').textContent+=' · 隐私保护';
+    $('connection').title='隐私策略'+(state.config.privacy.mode==='observe'?'观察中':'已启用')+'；核心数据禁止外发，敏感数据按目的地权限检查；无法检查的图片不外发。';
+  }
 }
 async function refreshSessions() { /* Goal conversations replace the old session list. */ }
 async function refreshTree() { state.tree=await api('/api/tree'); renderTree(); }
@@ -133,12 +143,12 @@ function adoptGoal(job) {
   }
 }
 async function send() {
-  if(state.busy||state.switching||state.switchingWorkspace||state.initializing||state.uploading||state.savingCooperation)return;
+  if(state.busy||state.switching||state.switchingWorkspace||state.initializing||state.uploading||state.savingCooperation||state.savingSharing)return;
   const attachments=state.drafts.get(draftKey())||[];
   const prompt=$('prompt').value.trim()||(attachments.length?'请查看这些附件，先概括内容，不自动创建目标或执行任务。':''); if(!prompt)return;
   if(!state.config.configured)return toast('请在本地配置模型接口后重启服务。');
   state.base=[...state.messages,{role:'user',content:prompt,attachments}]; setBusy(true);
-  showMessages([...state.base,{role:'assistant',content:'请求正在提交…',pending:true}]); $('run-error').classList.add('hidden');
+  showMessages([...state.messages,{role:'user',content:state.config.privacy?.enabled?'消息已提交，正在执行隐私检查…':prompt,attachments},{role:'assistant',content:'请求正在提交…',pending:true}]); $('run-error').classList.add('hidden');
   try {
     const job=await api('/api/tasks',{prompt,goal_id:state.goalId,node_id:'',mode:'assistant',session_id:state.sessionId,policy:'ask',cooperation:state.cooperation,attachments:attachments.map(f=>f.id),max_steps:state.config.recommended_steps||20});
     state.drafts.delete(draftKey()); renderComposerTools();
@@ -164,7 +174,11 @@ function pendingAnswer(events) {
   const boundary=events.map(e=>e.event==='model_requested'||(e.event==='model_transport'&&e.stream_reset===true)).lastIndexOf(true);
   return events.slice(boundary+1).filter(e=>e.event==='model_delta').map(e=>e.text||'').join('');
 }
+function isPrivacyDenied(job) {
+  return job.outcome?.code==='privacy_denied'||job.stop_reason==='privacy_denied'||/Privacy policy blocked operation:/.test(job.error||job.answer||'');
+}
 function modelErrorText(job) {
+  if(isPrivacyDenied(job))return '隐私策略已阻止外发\n\n'+(job.outcome?.action||'当前内容或来源等级不允许发送到此服务。已保留任务状态，没有自动切换模型。公开任务可新建对话，敏感任务需要符合要求的本地处理环境。');
   if(!job.error)return '';
   if(job.outcome?.code==='model_stream_interrupted'||/Incomplete SSE response/.test(job.error))
     return '模型回复流中断，未收到完整结果。残缺工具调用未执行，已完成操作已保留，可以继续当前会话。';
@@ -172,10 +186,13 @@ function modelErrorText(job) {
 }
 function renderJob(job) {
   state.job=job; if(job.session_id)state.sessionId=job.session_id;
+  // The host receipt, including its redacted prompt, is authoritative. Never
+  // keep echoing a credential from the optimistic local submission after it.
+  state.base=state.base.map((m,i)=>i===state.base.length-1&&m.role==='user'&&typeof job.prompt==='string'?{...m,content:job.prompt}:m);
   const done=['completed','failed','stopped'].includes(job.status), messages=[...state.base];
-  if(job.answer)messages.push({role:'assistant',content:job.answer,activity:job});
+  if(job.answer&&!isPrivacyDenied(job))messages.push({role:'assistant',content:job.answer,activity:job});
   const errorText=modelErrorText(job);
-  if(errorText)messages.push({role:'assistant',content:errorText,error:true,activity:job.answer?null:job});
+  if(errorText)messages.push({role:'assistant',content:errorText,error:true,activity:job.answer&&!isPrivacyDenied(job)?null:job});
   if(!done) {
     const partial=pendingAnswer(job.events);
     messages.push({role:'assistant',content:partial,pending:true,activity:job});
@@ -252,6 +269,7 @@ function taskStatusLabel(task) {
   return statuses[status]||status;
 }
 function renderTree() {
+  extensionView?.changed();
   if(!state.tree)return;
   const key=JSON.stringify([state.tree.revision,state.goalId,state.nodeId,state.focusId,state.mode,state.busy,state.latestJob?.id,state.latestJob?isViewedJob(state.latestJob):null]);
   if(key===state.treeRenderKey)return; state.treeRenderKey=key; paintTree();
@@ -309,8 +327,10 @@ function paintTree() {
   }
 }
 async function selectNode(goalId,nodeId='',mode='assistant') {
+  if(state.savingSharing)return toast('请等待记忆互联设置保存。');
   const epoch=++state.scopeEpoch; state.switching=true; $('send').disabled=true; $('prompt').disabled=true;
   $('new-session').disabled=true;
+  renderComposerTools();
   try {
     const context=await api(`/api/tree/context?goal_id=${encodeURIComponent(goalId)}&node_id=${encodeURIComponent(nodeId)}&mode=${mode}`);
     if(epoch!==state.scopeEpoch)return;
@@ -318,6 +338,7 @@ async function selectNode(goalId,nodeId='',mode='assistant') {
     state.tree=result.tree; state.goalId=goalId; state.nodeId=nodeId; state.focusId=''; state.mode=mode; state.sessionId=context.session_id;
     state.messages=context.messages; state.base=[...context.messages]; state.job=null;
     state.cooperation=context.cooperation||{planning:'balanced',implementation:'balanced'};
+    state.memorySharing=context.memory_sharing||{enabled:false,revision:0};
     if(state.config?.attachments) { $('cooperation-panel').classList.add('hidden');$('cooperation-toggle').setAttribute('aria-expanded','false'); }
     $('conversation-title').textContent=context.node.title; $('prompt').value=''; $('session-badge').textContent='';
     $('approval').classList.add('hidden'); $('run-error').classList.add('hidden'); showMessages(state.messages); renderTree();
@@ -329,10 +350,12 @@ async function selectNode(goalId,nodeId='',mode='assistant') {
 
 function renderComposerTools() {
   if(!state.config?.attachments)return;
-  const locked=state.busy||state.switching||state.switchingWorkspace||state.initializing||!!state.uploading||state.savingCooperation;
+  const locked=state.busy||state.switching||state.switchingWorkspace||state.initializing||!!state.uploading||state.savingCooperation||state.savingSharing;
   $('workspace-select').disabled=locked||!state.config.workspace_switching;
-  $('goals').inert=state.switchingWorkspace||state.initializing;
-  for(const id of ['add-attachment','cooperation-toggle','save-cooperation','attachment-input'])$(id).disabled=locked;
+  $('goals').inert=state.switchingWorkspace||state.initializing||state.switching||state.savingSharing;
+  for(const id of ['add-attachment','cooperation-toggle','save-cooperation','attachment-input','memory-sharing-toggle'])$(id).disabled=locked;
+  $('memory-sharing-toggle').textContent=state.savingSharing?'正在保存…':`记忆互联 · ${state.memorySharing.enabled?'开启':'关闭'}`;
+  $('memory-sharing-toggle').setAttribute('aria-pressed',String(state.memorySharing.enabled));
   for(const input of $('cooperation-panel').querySelectorAll('input'))input.disabled=locked;
   $('send').disabled=locked; $('new-session').disabled=locked;
   const labels={step:'逐步',balanced:'适中',autonomous:'自主'};
@@ -382,18 +405,32 @@ async function saveCooperation() {
   } catch(error) {toast(error.message);}
   finally {state.savingCooperation=false;renderComposerTools();}
 }
+async function toggleMemorySharing() {
+  if(state.busy||state.switching||state.switchingWorkspace||state.initializing||state.savingSharing||state.uploading||state.savingCooperation)return;
+  const epoch=state.scopeEpoch;
+  const body={goal_id:state.goalId,session_id:state.sessionId,enabled:!state.memorySharing.enabled,revision:state.memorySharing.revision};
+  state.savingSharing=true;renderComposerTools();
+  try {
+    const result=await api('/api/memory-sharing',body);
+    if(epoch!==state.scopeEpoch)return;
+    state.memorySharing=result;
+    toast(result.enabled?'已开启：仅与本工作区其他已开启的对话互相参考安全记忆。':'已关闭：停止后续共享检索，已有回复和产出保留。');
+  } catch(error){toast(error.message);}
+  finally{state.savingSharing=false;renderComposerTools();}
+}
 async function newSession() {
-  if(state.busy||state.switching||state.switchingWorkspace||state.initializing)return;
+  if(state.busy||state.switching||state.switchingWorkspace||state.initializing||state.savingSharing)return;
   const epoch=++state.scopeEpoch;
   let handedOff=false;
   state.switching=true; $('send').disabled=true; $('prompt').disabled=true; $('new-session').disabled=true;
+  renderComposerTools();
   try {
     const data=await api('/api/tree',{action:'new_conversation'});
     if(epoch!==state.scopeEpoch)return;
     state.tree=data.tree;state.taskId='';state.latestJob=null;handedOff=true;await selectNode('');$('prompt').focus();
   }
   catch(e) { toast(e.message); }
-  finally {if(!handedOff&&epoch===state.scopeEpoch){state.switching=false;$('send').disabled=state.busy;$('prompt').disabled=false;$('new-session').disabled=state.busy;}}
+  finally {if(!handedOff&&epoch===state.scopeEpoch){state.switching=false;$('send').disabled=state.busy;$('prompt').disabled=false;$('new-session').disabled=state.busy;renderComposerTools();}}
 }
 function renderWorkspaces() {
   const select=$('workspace-select');select.replaceChildren();
@@ -404,10 +441,10 @@ function renderWorkspaces() {
   select.value=state.workspaceId;select.title=state.config.workspace;
 }
 async function switchWorkspace(id) {
-  if(state.busy||state.initializing||state.switching||state.switchingWorkspace||state.uploading||state.savingCooperation) {
+  if(state.busy||state.initializing||state.switching||state.switchingWorkspace||state.uploading||state.savingCooperation||state.savingSharing) {
     $('workspace-select').value=state.workspaceId;return toast('请先等待当前操作结束，或停止后切换工作区。');
   }
-  const fields=['workspaceId','config','tree','goalId','nodeId','focusId','sessionId','messages','base','latestJob','job','taskId','busy','cooperation','treeRenderKey'];
+  const fields=['workspaceId','config','tree','goalId','nodeId','focusId','sessionId','messages','base','latestJob','job','taskId','busy','cooperation','memorySharing','treeRenderKey'];
   const old=Object.fromEntries(fields.map(k=>[k,state[k]]));
   state.switchingWorkspace=true;state.switching=true;state.scopeEpoch++;renderComposerTools();
   try {
@@ -447,6 +484,7 @@ function installControls() {
     panel.classList.toggle('hidden',!opening);$('cooperation-toggle').setAttribute('aria-expanded',String(opening));
   });
   $('save-cooperation').addEventListener('click',saveCooperation);
+  $('memory-sharing-toggle').addEventListener('click',toggleMemorySharing);
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('cooperation-panel').classList.add('hidden');$('cooperation-toggle').setAttribute('aria-expanded','false');}});
   $('send').addEventListener('click',send); $('new-session').addEventListener('click',newSession);
   $('approve').addEventListener('click',()=>decide(true)); $('deny').addEventListener('click',()=>decide(false));

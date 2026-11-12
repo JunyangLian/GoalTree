@@ -173,6 +173,12 @@ def test_live_glm_factory_uses_explicit_standard_api_without_fallback(tmp_path, 
 def test_live_entry_registers_appcontainer_verifier_without_running_it(tmp_path, monkeypatch):
     from scripts import run_goaltree_glm as entry
     monkeypatch.setenv('BIGMODEL_API_KEY', 'offline-standard-api-fixture')
+    from pico import context_tokens
+    class Counter:
+        counting = 'offline-token-counter'
+        identity = {'test_fixture': True}
+        def count(self, payload): return len(json.dumps(payload))
+    monkeypatch.setattr(context_tokens, 'GLMTokenCounter', Counter)
     captured = {}
 
     def workbench(root, **kwargs):
@@ -195,8 +201,8 @@ def test_live_entry_registers_appcontainer_verifier_without_running_it(tmp_path,
     assert entry.main(['--workspace', str(tmp_path)]) == 0
     assert captured['verification_command'] == 'python -B -m unittest discover -v'
     assert captured['network_route'] == 'direct'
-    assert captured['native_input_budget'] == 983040
-    assert captured['native_context_window'] == 1048576
+    assert captured['native_input_budget'] == 33554432
+    assert captured['native_context_window'] == 67108864
     assert captured['web_output_chars'] == 120000
     assert captured['web_result_chars'] == 12000
     assert captured['web_read_lines'] == 120

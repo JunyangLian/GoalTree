@@ -1,0 +1,3154 @@
+{
+  "schema": "shared-memory-grounding-audit-v1",
+  "date": "2026-11-12",
+  "batches": {
+    "formal-v1": {
+      "known_requests": 67,
+      "unknown_requests": 0,
+      "input_tokens": 479491,
+      "output_tokens": 3468,
+      "unknown_reserved_tokens": 0,
+      "estimated_cny_upper": "0.3933032",
+      "unknown_reserved_cny": "0",
+      "actual_billed_cny": null,
+      "ledger_sha256": "2167e016d9f9333fe157a22b8434c3990e6445981c88f01351edf81a28158958",
+      "evidence_files": 790,
+      "evidence_mismatches": [],
+      "run_summary": {
+        "halted": null,
+        "model_requests": 67,
+        "sources_unchanged": true,
+        "tokens": [
+          482959,
+          0
+        ]
+      },
+      "strict_verification": {
+        "schema": "long-workflows-observation-v1",
+        "planned_cases": 3,
+        "planned_turns": 36,
+        "started_turns": 36,
+        "passed_turns": 36,
+        "rows": [
+          {
+            "case": "fish-report",
+            "turn": "t01",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "task_created": true
+            },
+            "tool_steps": 1,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "fish-report",
+            "turn": "t02",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:file_version": true,
+              "field:registry": true,
+              "field:subject": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "actual_file_read": true
+            },
+            "tool_steps": 1,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "fish-report",
+            "turn": "t03",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:quota": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "fish-report",
+            "turn": "t04",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:goal_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "fish-report",
+            "turn": "t05",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:acceptance": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "acceptance_saved": true
+            },
+            "tool_steps": 1,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "fish-report",
+            "turn": "t06",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:error_code": true,
+              "field:registry": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "actual_file_read": true,
+              "actual_failure_observed": true
+            },
+            "tool_steps": 2,
+            "model_requests": 3,
+            "failure": null
+          },
+          {
+            "case": "fish-report",
+            "turn": "t07",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:shared_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "shared_retrieval": true
+            },
+            "tool_steps": 0,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "fish-report",
+            "turn": "t08",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:count": true,
+              "field:file_version": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "actual_file_read": true
+            },
+            "tool_steps": 1,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "fish-report",
+            "turn": "t09",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "actual_child": true,
+              "independent_child_session": true,
+              "child_actual_read": true,
+              "manual_acceptance_pending": true
+            },
+            "tool_steps": 1,
+            "model_requests": 4,
+            "failure": null
+          },
+          {
+            "case": "fish-report",
+            "turn": "t10",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:shared_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "shared_retrieval": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "fish-report",
+            "turn": "t11",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:count": true,
+              "field:file_version": true,
+              "field:quota": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "fish-report",
+            "turn": "t12",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:constraint": true,
+              "field:goal_code": true,
+              "field:quota": true,
+              "field:task_status": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t01",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "task_created": true
+            },
+            "tool_steps": 1,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t02",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:file_version": true,
+              "field:registry": true,
+              "field:subject": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "actual_file_read": true
+            },
+            "tool_steps": 2,
+            "model_requests": 3,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t03",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:quota": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t04",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:goal_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t05",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:acceptance": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "acceptance_saved": true
+            },
+            "tool_steps": 1,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t06",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:error_code": true,
+              "field:registry": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "actual_file_read": true,
+              "actual_failure_observed": true
+            },
+            "tool_steps": 2,
+            "model_requests": 3,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t07",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:shared_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "shared_retrieval": true
+            },
+            "tool_steps": 0,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t08",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:count": true,
+              "field:file_version": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "actual_file_read": true
+            },
+            "tool_steps": 1,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t09",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "actual_child": true,
+              "independent_child_session": true,
+              "child_actual_read": true,
+              "manual_acceptance_pending": true
+            },
+            "tool_steps": 1,
+            "model_requests": 4,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t10",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:shared_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "shared_retrieval": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t11",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:count": true,
+              "field:file_version": true,
+              "field:quota": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t12",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:constraint": true,
+              "field:goal_code": true,
+              "field:quota": true,
+              "field:task_status": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "code-release",
+            "turn": "t01",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "task_created": true
+            },
+            "tool_steps": 1,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "code-release",
+            "turn": "t02",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:file_version": true,
+              "field:registry": true,
+              "field:subject": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "actual_file_read": true
+            },
+            "tool_steps": 1,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "code-release",
+            "turn": "t03",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:quota": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "code-release",
+            "turn": "t04",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:goal_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "code-release",
+            "turn": "t05",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:acceptance": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "acceptance_saved": true
+            },
+            "tool_steps": 1,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "code-release",
+            "turn": "t06",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:error_code": true,
+              "field:registry": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "actual_file_read": true,
+              "actual_failure_observed": true
+            },
+            "tool_steps": 2,
+            "model_requests": 3,
+            "failure": null
+          },
+          {
+            "case": "code-release",
+            "turn": "t07",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:shared_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "shared_retrieval": true
+            },
+            "tool_steps": 0,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "code-release",
+            "turn": "t08",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:count": true,
+              "field:file_version": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "actual_file_read": true
+            },
+            "tool_steps": 1,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "code-release",
+            "turn": "t09",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "actual_child": true,
+              "independent_child_session": true,
+              "child_actual_read": true,
+              "manual_acceptance_pending": true
+            },
+            "tool_steps": 1,
+            "model_requests": 4,
+            "failure": null
+          },
+          {
+            "case": "code-release",
+            "turn": "t10",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:shared_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "shared_retrieval": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "code-release",
+            "turn": "t11",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:count": true,
+              "field:file_version": true,
+              "field:quota": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "code-release",
+            "turn": "t12",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:constraint": true,
+              "field:goal_code": true,
+              "field:quota": true,
+              "field:task_status": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          }
+        ],
+        "per_case": {
+          "fish-report": {
+            "planned": 12,
+            "started": 12,
+            "passed": 12
+          },
+          "meeting-plan": {
+            "planned": 12,
+            "started": 12,
+            "passed": 12
+          },
+          "code-release": {
+            "planned": 12,
+            "started": 12,
+            "passed": 12
+          }
+        },
+        "limitations": [
+          "Known synthetic development workflows, not held-out benchmark.",
+          "Goal switches are host-selected chat bindings, not autonomous cross-Goal routing.",
+          "Pressure compaction is measured separately; these live conversations do not fill 1M tokens."
+        ]
+      }
+    },
+    "independent-reader-diagnostic": {
+      "known_requests": 3,
+      "unknown_requests": 0,
+      "input_tokens": 1511,
+      "output_tokens": 275,
+      "unknown_reserved_tokens": 0,
+      "estimated_cny_upper": "0.0019788",
+      "unknown_reserved_cny": "0",
+      "actual_billed_cny": null,
+      "ledger_sha256": "49516a1eed5b33af44f14c46de80072c64a55f6ce115363c63c3744311dcddcf"
+    },
+    "minimal-reader-diagnostic": {
+      "known_requests": 3,
+      "unknown_requests": 0,
+      "input_tokens": 945,
+      "output_tokens": 197,
+      "unknown_reserved_tokens": 0,
+      "estimated_cny_upper": "0.0013076",
+      "unknown_reserved_cny": "0",
+      "actual_billed_cny": null,
+      "ledger_sha256": "98b8120af0927ccef2e13b3fcc6cb3eceaf55945a9a791ee74255be40c3fc78c"
+    },
+    "packing-diagnostic-v2": {
+      "known_requests": 6,
+      "unknown_requests": 0,
+      "input_tokens": 38204,
+      "output_tokens": 512,
+      "unknown_reserved_tokens": 0,
+      "estimated_cny_upper": "0.0319968",
+      "unknown_reserved_cny": "0",
+      "actual_billed_cny": null,
+      "ledger_sha256": "97edac1684534606656be3af2c9452224acd4c512ea43e144c92d7380f72195c"
+    },
+    "reader-contract-diagnostic": {
+      "known_requests": 3,
+      "unknown_requests": 0,
+      "input_tokens": 1685,
+      "output_tokens": 281,
+      "unknown_reserved_tokens": 0,
+      "estimated_cny_upper": "0.0021348",
+      "unknown_reserved_cny": "0",
+      "actual_billed_cny": null,
+      "ledger_sha256": "8a26657c5408dc3e0b72a16841778239b36814a14840e5fec79863c981cc1533"
+    },
+    "review-diagnostic": {
+      "known_requests": 3,
+      "unknown_requests": 0,
+      "input_tokens": 1651,
+      "output_tokens": 515,
+      "unknown_reserved_tokens": 0,
+      "estimated_cny_upper": "0.0027628",
+      "unknown_reserved_cny": "0",
+      "actual_billed_cny": null,
+      "ledger_sha256": "83c736082fb4d00721d3da7ef1be7f479da97621808f5db6f848171fd13362f7"
+    },
+    "runtime-probe": {
+      "known_requests": 7,
+      "unknown_requests": 0,
+      "input_tokens": 31543,
+      "output_tokens": 788,
+      "unknown_reserved_tokens": 0,
+      "estimated_cny_upper": "0.0274408",
+      "unknown_reserved_cny": "0",
+      "actual_billed_cny": null,
+      "ledger_sha256": "9861018ebf4ed16b00c8a6680e475f68ec2c0ce03ee2968c95ae8786e6993e07",
+      "evidence_files": 427,
+      "evidence_mismatches": [],
+      "run_summary": {
+        "halted": "Frozen source changed",
+        "model_requests": 7,
+        "sources_unchanged": false,
+        "tokens": [
+          32331,
+          0
+        ]
+      },
+      "strict_verification": {
+        "schema": "long-workflows-observation-v1",
+        "planned_cases": 3,
+        "planned_turns": 9,
+        "started_turns": 6,
+        "passed_turns": 5,
+        "rows": [
+          {
+            "case": "fish-report",
+            "turn": "t04",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:goal_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "fish-report",
+            "turn": "t07",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:shared_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "shared_retrieval": true
+            },
+            "tool_steps": 0,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "fish-report",
+            "turn": "t10",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:shared_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "shared_retrieval": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t04",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:goal_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true
+            },
+            "tool_steps": 0,
+            "model_requests": 1,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t07",
+            "status": "completed",
+            "passed": true,
+            "checks": {
+              "completed": true,
+              "field:shared_code": true,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": true,
+              "no_protocol_errors": true,
+              "shared_retrieval": true
+            },
+            "tool_steps": 0,
+            "model_requests": 2,
+            "failure": null
+          },
+          {
+            "case": "meeting-plan",
+            "turn": "t10",
+            "status": "failed",
+            "passed": false,
+            "checks": {
+              "completed": false,
+              "field:shared_code": false,
+              "foreign_goals_unchanged": true,
+              "foreign_tasks_unchanged": true,
+              "returned_model": false,
+              "no_protocol_errors": true,
+              "shared_retrieval": true
+            },
+            "tool_steps": 0,
+            "model_requests": 0,
+            "failure": "Frozen source changed"
+          },
+          {
+            "case": "code-release",
+            "turn": "t04",
+            "status": "unstarted",
+            "passed": false,
+            "checks": {},
+            "failure": "unstarted"
+          },
+          {
+            "case": "code-release",
+            "turn": "t07",
+            "status": "unstarted",
+            "passed": false,
+            "checks": {},
+            "failure": "unstarted"
+          },
+          {
+            "case": "code-release",
+            "turn": "t10",
+            "status": "unstarted",
+            "passed": false,
+            "checks": {},
+            "failure": "unstarted"
+          }
+        ],
+        "per_case": {
+          "fish-report": {
+            "planned": 3,
+            "started": 3,
+            "passed": 3
+          },
+          "meeting-plan": {
+            "planned": 3,
+            "started": 3,
+            "passed": 2
+          },
+          "code-release": {
+            "planned": 3,
+            "started": 0,
+            "passed": 0
+          }
+        },
+        "limitations": [
+          "Known synthetic development workflows, not held-out benchmark.",
+          "Goal switches are host-selected chat bindings, not autonomous cross-Goal routing.",
+          "Pressure compaction is measured separately; these live conversations do not fill 1M tokens."
+        ]
+      }
+    },
+    "typed-reader-diagnostic": {
+      "known_requests": 3,
+      "unknown_requests": 0,
+      "input_tokens": 1068,
+      "output_tokens": 196,
+      "unknown_reserved_tokens": 0,
+      "estimated_cny_upper": "0.0014032",
+      "unknown_reserved_cny": "0",
+      "actual_billed_cny": null,
+      "ledger_sha256": "b138fa0a326964be854948aad20198618041ee007d9d44449eefa86a229f5a27"
+    },
+    "use-contract-diagnostic": {
+      "known_requests": 3,
+      "unknown_requests": 0,
+      "input_tokens": 19192,
+      "output_tokens": 280,
+      "unknown_reserved_tokens": 0,
+      "estimated_cny_upper": "0.0161376",
+      "unknown_reserved_cny": "0",
+      "actual_billed_cny": null,
+      "ledger_sha256": "5e825acca006d6eab355cc3af7681ee64e719c6d658076977719afc8e48a70dd"
+    }
+  },
+  "formal": {
+    "strict_verification": {
+      "schema": "long-workflows-observation-v1",
+      "planned_cases": 3,
+      "planned_turns": 36,
+      "started_turns": 36,
+      "passed_turns": 36,
+      "rows": [
+        {
+          "case": "fish-report",
+          "turn": "t01",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "task_created": true
+          },
+          "tool_steps": 1,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "fish-report",
+          "turn": "t02",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:file_version": true,
+            "field:registry": true,
+            "field:subject": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "actual_file_read": true
+          },
+          "tool_steps": 1,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "fish-report",
+          "turn": "t03",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:quota": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "fish-report",
+          "turn": "t04",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:goal_code": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "fish-report",
+          "turn": "t05",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:acceptance": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "acceptance_saved": true
+          },
+          "tool_steps": 1,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "fish-report",
+          "turn": "t06",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:error_code": true,
+            "field:registry": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "actual_file_read": true,
+            "actual_failure_observed": true
+          },
+          "tool_steps": 2,
+          "model_requests": 3,
+          "failure": null
+        },
+        {
+          "case": "fish-report",
+          "turn": "t07",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:shared_code": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "shared_retrieval": true
+          },
+          "tool_steps": 0,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "fish-report",
+          "turn": "t08",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:count": true,
+            "field:file_version": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "actual_file_read": true
+          },
+          "tool_steps": 1,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "fish-report",
+          "turn": "t09",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "actual_child": true,
+            "independent_child_session": true,
+            "child_actual_read": true,
+            "manual_acceptance_pending": true
+          },
+          "tool_steps": 1,
+          "model_requests": 4,
+          "failure": null
+        },
+        {
+          "case": "fish-report",
+          "turn": "t10",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:shared_code": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "shared_retrieval": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "fish-report",
+          "turn": "t11",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:count": true,
+            "field:file_version": true,
+            "field:quota": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "fish-report",
+          "turn": "t12",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:constraint": true,
+            "field:goal_code": true,
+            "field:quota": true,
+            "field:task_status": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "meeting-plan",
+          "turn": "t01",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "task_created": true
+          },
+          "tool_steps": 1,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "meeting-plan",
+          "turn": "t02",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:file_version": true,
+            "field:registry": true,
+            "field:subject": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "actual_file_read": true
+          },
+          "tool_steps": 2,
+          "model_requests": 3,
+          "failure": null
+        },
+        {
+          "case": "meeting-plan",
+          "turn": "t03",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:quota": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "meeting-plan",
+          "turn": "t04",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:goal_code": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "meeting-plan",
+          "turn": "t05",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:acceptance": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "acceptance_saved": true
+          },
+          "tool_steps": 1,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "meeting-plan",
+          "turn": "t06",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:error_code": true,
+            "field:registry": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "actual_file_read": true,
+            "actual_failure_observed": true
+          },
+          "tool_steps": 2,
+          "model_requests": 3,
+          "failure": null
+        },
+        {
+          "case": "meeting-plan",
+          "turn": "t07",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:shared_code": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "shared_retrieval": true
+          },
+          "tool_steps": 0,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "meeting-plan",
+          "turn": "t08",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:count": true,
+            "field:file_version": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "actual_file_read": true
+          },
+          "tool_steps": 1,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "meeting-plan",
+          "turn": "t09",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "actual_child": true,
+            "independent_child_session": true,
+            "child_actual_read": true,
+            "manual_acceptance_pending": true
+          },
+          "tool_steps": 1,
+          "model_requests": 4,
+          "failure": null
+        },
+        {
+          "case": "meeting-plan",
+          "turn": "t10",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:shared_code": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "shared_retrieval": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "meeting-plan",
+          "turn": "t11",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:count": true,
+            "field:file_version": true,
+            "field:quota": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "meeting-plan",
+          "turn": "t12",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:constraint": true,
+            "field:goal_code": true,
+            "field:quota": true,
+            "field:task_status": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "code-release",
+          "turn": "t01",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "task_created": true
+          },
+          "tool_steps": 1,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "code-release",
+          "turn": "t02",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:file_version": true,
+            "field:registry": true,
+            "field:subject": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "actual_file_read": true
+          },
+          "tool_steps": 1,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "code-release",
+          "turn": "t03",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:quota": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "code-release",
+          "turn": "t04",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:goal_code": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "code-release",
+          "turn": "t05",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:acceptance": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "acceptance_saved": true
+          },
+          "tool_steps": 1,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "code-release",
+          "turn": "t06",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:error_code": true,
+            "field:registry": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "actual_file_read": true,
+            "actual_failure_observed": true
+          },
+          "tool_steps": 2,
+          "model_requests": 3,
+          "failure": null
+        },
+        {
+          "case": "code-release",
+          "turn": "t07",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:shared_code": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "shared_retrieval": true
+          },
+          "tool_steps": 0,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "code-release",
+          "turn": "t08",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:count": true,
+            "field:file_version": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "actual_file_read": true
+          },
+          "tool_steps": 1,
+          "model_requests": 2,
+          "failure": null
+        },
+        {
+          "case": "code-release",
+          "turn": "t09",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "actual_child": true,
+            "independent_child_session": true,
+            "child_actual_read": true,
+            "manual_acceptance_pending": true
+          },
+          "tool_steps": 1,
+          "model_requests": 4,
+          "failure": null
+        },
+        {
+          "case": "code-release",
+          "turn": "t10",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:shared_code": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true,
+            "shared_retrieval": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "code-release",
+          "turn": "t11",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:count": true,
+            "field:file_version": true,
+            "field:quota": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        },
+        {
+          "case": "code-release",
+          "turn": "t12",
+          "status": "completed",
+          "passed": true,
+          "checks": {
+            "completed": true,
+            "field:constraint": true,
+            "field:goal_code": true,
+            "field:quota": true,
+            "field:task_status": true,
+            "foreign_goals_unchanged": true,
+            "foreign_tasks_unchanged": true,
+            "returned_model": true,
+            "no_protocol_errors": true
+          },
+          "tool_steps": 0,
+          "model_requests": 1,
+          "failure": null
+        }
+      ],
+      "per_case": {
+        "fish-report": {
+          "planned": 12,
+          "started": 12,
+          "passed": 12
+        },
+        "meeting-plan": {
+          "planned": 12,
+          "started": 12,
+          "passed": 12
+        },
+        "code-release": {
+          "planned": 12,
+          "started": 12,
+          "passed": 12
+        }
+      },
+      "limitations": [
+        "Known synthetic development workflows, not held-out benchmark.",
+        "Goal switches are host-selected chat bindings, not autonomous cross-Goal routing.",
+        "Pressure compaction is measured separately; these live conversations do not fill 1M tokens."
+      ]
+    },
+    "source_files_frozen": 334,
+    "source_snapshot_mismatches": [],
+    "current_source_mismatches": [],
+    "wire_checks": [
+      {
+        "path": "code-release\\t01\\requests\\0046.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t01\\requests\\0047.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t02\\requests\\0048.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t02\\requests\\0049.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t03\\requests\\0050.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t04\\requests\\0051.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t05\\requests\\0052.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t05\\requests\\0053.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t06\\requests\\0054.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t06\\requests\\0055.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t06\\requests\\0056.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t07\\requests\\0057.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t07\\requests\\0058.json",
+        "reader": true,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t08\\requests\\0059.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t08\\requests\\0060.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t09\\requests\\0061.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t09\\requests\\0062.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t09\\requests\\0063.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t09\\requests\\0064.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t10\\requests\\0065.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t11\\requests\\0066.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "code-release\\t12\\requests\\0067.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t01\\requests\\0001.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t01\\requests\\0002.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t02\\requests\\0003.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t02\\requests\\0004.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t03\\requests\\0005.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t04\\requests\\0006.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t05\\requests\\0007.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t05\\requests\\0008.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t06\\requests\\0009.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t06\\requests\\0010.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t06\\requests\\0011.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t07\\requests\\0012.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t07\\requests\\0013.json",
+        "reader": true,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t08\\requests\\0014.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t08\\requests\\0015.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t09\\requests\\0016.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t09\\requests\\0017.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t09\\requests\\0018.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t09\\requests\\0019.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t10\\requests\\0020.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t11\\requests\\0021.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "fish-report\\t12\\requests\\0022.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t01\\requests\\0023.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t01\\requests\\0024.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t02\\requests\\0025.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t02\\requests\\0026.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t02\\requests\\0027.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t03\\requests\\0028.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t04\\requests\\0029.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t05\\requests\\0030.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t05\\requests\\0031.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t06\\requests\\0032.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t06\\requests\\0033.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t06\\requests\\0034.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t07\\requests\\0035.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t07\\requests\\0036.json",
+        "reader": true,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t08\\requests\\0037.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t08\\requests\\0038.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t09\\requests\\0039.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t09\\requests\\0040.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t09\\requests\\0041.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t09\\requests\\0042.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t10\\requests\\0043.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t11\\requests\\0044.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      },
+      {
+        "path": "meeting-plan\\t12\\requests\\0045.json",
+        "reader": false,
+        "protected_hash_matches": true,
+        "within_budget": true,
+        "reader_has_no_tools": true,
+        "reader_has_no_candidate": true,
+        "reader_json_mode": true
+      }
+    ],
+    "reference_checks": [
+      {
+        "case": "code-release",
+        "turn": "t07",
+        "receipt": {
+          "decision": "supported",
+          "citations": [
+            {
+              "source": "goal-notes:goal_b3b31ad3eb4c4126b8ae",
+              "quote": "公开协作代号 shared_code=CHECKLIST-S94。只适用于本批公开合成协作。"
+            }
+          ],
+          "candidate_sha256": "f021fe693a86e6310264dd7c4b6b797ca92935191162aa540c74535d1841a87c",
+          "answer_sha256": "03b5ca901634adee1af926e482d9d6d74658198ada1335959a3e681ba0c50b26",
+          "source_versions": {
+            "goal-notes:goal_b3b31ad3eb4c4126b8ae": 4
+          },
+          "trust": "Quoted source claims, not verified facts, permissions or acceptance"
+        },
+        "model_requests": 2,
+        "source_quotes_literal": true,
+        "receipt_owned_by_session": true,
+        "semantic_answer_changed": false,
+        "changed_wrong_values_absent_from_reader_input": true,
+        "original_candidate": "{\"shared_code\":\"CHECKLIST-S94\"}",
+        "final_answer": "{\"shared_code\": \"CHECKLIST-S94\"}",
+        "max_one_review": true,
+        "reader_usage": [
+          {
+            "completion_tokens": 65,
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "prompt_tokens": 401,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 466
+          }
+        ],
+        "no_tool_steps": true,
+        "no_unreviewed_deltas": true
+      },
+      {
+        "case": "fish-report",
+        "turn": "t07",
+        "receipt": {
+          "decision": "supported",
+          "citations": [
+            {
+              "source": "goal-notes:goal_8fdaea10509d4adeae9e",
+              "quote": "公开协作代号 shared_code=CORAL-S72。只适用于本批公开合成协作。"
+            }
+          ],
+          "candidate_sha256": "0a58b3b6004de11e26fd1520e5fb7284f0fa01dfcd7a2f973e8cabaa3117d580",
+          "answer_sha256": "b9326a9553642bd3bc34f1ae13a1b74920553cea8e2840245122a5d91b787b33",
+          "source_versions": {
+            "goal-notes:goal_8fdaea10509d4adeae9e": 4
+          },
+          "trust": "Quoted source claims, not verified facts, permissions or acceptance"
+        },
+        "model_requests": 2,
+        "source_quotes_literal": true,
+        "receipt_owned_by_session": true,
+        "semantic_answer_changed": false,
+        "changed_wrong_values_absent_from_reader_input": true,
+        "original_candidate": "{\"shared_code\":\"CORAL-S72\"}",
+        "final_answer": "{\"shared_code\": \"CORAL-S72\"}",
+        "max_one_review": true,
+        "reader_usage": [
+          {
+            "completion_tokens": 63,
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "prompt_tokens": 401,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 464
+          }
+        ],
+        "no_tool_steps": true,
+        "no_unreviewed_deltas": true
+      },
+      {
+        "case": "meeting-plan",
+        "turn": "t07",
+        "receipt": {
+          "decision": "supported",
+          "citations": [
+            {
+              "source": "goal-notes:goal_3c2b132b1d8d4ced95b9",
+              "quote": "公开协作代号 shared_code=SLIDES-S83。"
+            }
+          ],
+          "candidate_sha256": "a813e49bbacb280a1e8d14cabf2629724be5df2915ab17e0ca0eeea95a64c14f",
+          "answer_sha256": "d1c08c4d6ca64aad02b57fa8cb42bf673f7b57b470489f3f85cd9557ad35c1af",
+          "source_versions": {
+            "goal-notes:goal_3c2b132b1d8d4ced95b9": 4
+          },
+          "trust": "Quoted source claims, not verified facts, permissions or acceptance"
+        },
+        "model_requests": 2,
+        "source_quotes_literal": true,
+        "receipt_owned_by_session": true,
+        "semantic_answer_changed": true,
+        "changed_wrong_values_absent_from_reader_input": true,
+        "original_candidate": "{\"shared_code\":\"TRAVEL-M62\"}",
+        "final_answer": "{\"shared_code\": \"SLIDES-S83\"}",
+        "max_one_review": true,
+        "reader_usage": [
+          {
+            "completion_tokens": 58,
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "prompt_tokens": 402,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "total_tokens": 460
+          }
+        ],
+        "no_tool_steps": true,
+        "no_unreviewed_deltas": true
+      }
+    ],
+    "parent_tool_calls": 22,
+    "child_tool_calls": 3,
+    "source_and_acceptance_checks_unchanged": true
+  },
+  "automated_tests": {
+    "exit_code": 0,
+    "elapsed_seconds": 1265.62,
+    "source_changes": [],
+    "frozen_files": 334,
+    "junit": {
+      "tests": 985,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "known_requests_total": 98,
+  "known_tokens_total": 581802,
+  "unknown_reserved_tokens_total": 0,
+  "estimated_cny_upper_total": "0.4784656",
+  "round_cap_tokens": 800000,
+  "round_cap_estimated_cny": "2",
+  "within_round_caps": true,
+  "previous_strict_result": {
+    "schema": "long-workflows-observation-v1",
+    "planned_cases": 3,
+    "planned_turns": 36,
+    "started_turns": 36,
+    "passed_turns": 30,
+    "rows": [
+      {
+        "case": "fish-report",
+        "turn": "t01",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "task_created": true
+        },
+        "tool_steps": 1,
+        "model_requests": 2,
+        "failure": null
+      },
+      {
+        "case": "fish-report",
+        "turn": "t02",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:file_version": true,
+          "field:registry": true,
+          "field:subject": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "actual_file_read": true
+        },
+        "tool_steps": 1,
+        "model_requests": 2,
+        "failure": null
+      },
+      {
+        "case": "fish-report",
+        "turn": "t03",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:quota": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": null
+      },
+      {
+        "case": "fish-report",
+        "turn": "t04",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:goal_code": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": null
+      },
+      {
+        "case": "fish-report",
+        "turn": "t05",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:acceptance": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "acceptance_saved": true
+        },
+        "tool_steps": 1,
+        "model_requests": 2,
+        "failure": null
+      },
+      {
+        "case": "fish-report",
+        "turn": "t06",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:error_code": true,
+          "field:registry": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "actual_file_read": true,
+          "actual_failure_observed": true
+        },
+        "tool_steps": 2,
+        "model_requests": 3,
+        "failure": null
+      },
+      {
+        "case": "fish-report",
+        "turn": "t07",
+        "status": "completed",
+        "passed": false,
+        "checks": {
+          "completed": true,
+          "field:shared_code": false,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "shared_retrieval": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": "answer_or_process_contract"
+      },
+      {
+        "case": "fish-report",
+        "turn": "t08",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:count": true,
+          "field:file_version": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "actual_file_read": true
+        },
+        "tool_steps": 1,
+        "model_requests": 2,
+        "failure": null
+      },
+      {
+        "case": "fish-report",
+        "turn": "t09",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "actual_child": true,
+          "independent_child_session": true,
+          "child_actual_read": true,
+          "manual_acceptance_pending": true
+        },
+        "tool_steps": 1,
+        "model_requests": 4,
+        "failure": null
+      },
+      {
+        "case": "fish-report",
+        "turn": "t10",
+        "status": "completed",
+        "passed": false,
+        "checks": {
+          "completed": true,
+          "field:shared_code": false,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "shared_retrieval": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": "answer_or_process_contract"
+      },
+      {
+        "case": "fish-report",
+        "turn": "t11",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:count": true,
+          "field:file_version": true,
+          "field:quota": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": null
+      },
+      {
+        "case": "fish-report",
+        "turn": "t12",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:constraint": true,
+          "field:goal_code": true,
+          "field:quota": true,
+          "field:task_status": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": null
+      },
+      {
+        "case": "meeting-plan",
+        "turn": "t01",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "task_created": true
+        },
+        "tool_steps": 1,
+        "model_requests": 2,
+        "failure": null
+      },
+      {
+        "case": "meeting-plan",
+        "turn": "t02",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:file_version": true,
+          "field:registry": true,
+          "field:subject": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "actual_file_read": true
+        },
+        "tool_steps": 1,
+        "model_requests": 2,
+        "failure": null
+      },
+      {
+        "case": "meeting-plan",
+        "turn": "t03",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:quota": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": null
+      },
+      {
+        "case": "meeting-plan",
+        "turn": "t04",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:goal_code": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": null
+      },
+      {
+        "case": "meeting-plan",
+        "turn": "t05",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:acceptance": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "acceptance_saved": true
+        },
+        "tool_steps": 1,
+        "model_requests": 2,
+        "failure": null
+      },
+      {
+        "case": "meeting-plan",
+        "turn": "t06",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:error_code": true,
+          "field:registry": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "actual_file_read": true,
+          "actual_failure_observed": true
+        },
+        "tool_steps": 2,
+        "model_requests": 3,
+        "failure": null
+      },
+      {
+        "case": "meeting-plan",
+        "turn": "t07",
+        "status": "completed",
+        "passed": false,
+        "checks": {
+          "completed": true,
+          "field:shared_code": false,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "shared_retrieval": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": "answer_or_process_contract"
+      },
+      {
+        "case": "meeting-plan",
+        "turn": "t08",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:count": true,
+          "field:file_version": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "actual_file_read": true
+        },
+        "tool_steps": 1,
+        "model_requests": 2,
+        "failure": null
+      },
+      {
+        "case": "meeting-plan",
+        "turn": "t09",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "actual_child": true,
+          "independent_child_session": true,
+          "child_actual_read": true,
+          "manual_acceptance_pending": true
+        },
+        "tool_steps": 1,
+        "model_requests": 4,
+        "failure": null
+      },
+      {
+        "case": "meeting-plan",
+        "turn": "t10",
+        "status": "completed",
+        "passed": false,
+        "checks": {
+          "completed": true,
+          "field:shared_code": false,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "shared_retrieval": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": "answer_or_process_contract"
+      },
+      {
+        "case": "meeting-plan",
+        "turn": "t11",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:count": true,
+          "field:file_version": true,
+          "field:quota": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": null
+      },
+      {
+        "case": "meeting-plan",
+        "turn": "t12",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:constraint": true,
+          "field:goal_code": true,
+          "field:quota": true,
+          "field:task_status": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": null
+      },
+      {
+        "case": "code-release",
+        "turn": "t01",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "task_created": true
+        },
+        "tool_steps": 1,
+        "model_requests": 2,
+        "failure": null
+      },
+      {
+        "case": "code-release",
+        "turn": "t02",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:file_version": true,
+          "field:registry": true,
+          "field:subject": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "actual_file_read": true
+        },
+        "tool_steps": 1,
+        "model_requests": 2,
+        "failure": null
+      },
+      {
+        "case": "code-release",
+        "turn": "t03",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:quota": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": null
+      },
+      {
+        "case": "code-release",
+        "turn": "t04",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:goal_code": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": null
+      },
+      {
+        "case": "code-release",
+        "turn": "t05",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:acceptance": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "acceptance_saved": true
+        },
+        "tool_steps": 1,
+        "model_requests": 2,
+        "failure": null
+      },
+      {
+        "case": "code-release",
+        "turn": "t06",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:error_code": true,
+          "field:registry": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "actual_file_read": true,
+          "actual_failure_observed": true
+        },
+        "tool_steps": 2,
+        "model_requests": 3,
+        "failure": null
+      },
+      {
+        "case": "code-release",
+        "turn": "t07",
+        "status": "completed",
+        "passed": false,
+        "checks": {
+          "completed": true,
+          "field:shared_code": false,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "shared_retrieval": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": "answer_or_process_contract"
+      },
+      {
+        "case": "code-release",
+        "turn": "t08",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:count": true,
+          "field:file_version": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "actual_file_read": true
+        },
+        "tool_steps": 1,
+        "model_requests": 2,
+        "failure": null
+      },
+      {
+        "case": "code-release",
+        "turn": "t09",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "actual_child": true,
+          "independent_child_session": true,
+          "child_actual_read": true,
+          "manual_acceptance_pending": true
+        },
+        "tool_steps": 1,
+        "model_requests": 5,
+        "failure": null
+      },
+      {
+        "case": "code-release",
+        "turn": "t10",
+        "status": "completed",
+        "passed": false,
+        "checks": {
+          "completed": true,
+          "field:shared_code": false,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true,
+          "shared_retrieval": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": "answer_or_process_contract"
+      },
+      {
+        "case": "code-release",
+        "turn": "t11",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:count": true,
+          "field:file_version": true,
+          "field:quota": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": null
+      },
+      {
+        "case": "code-release",
+        "turn": "t12",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "completed": true,
+          "field:constraint": true,
+          "field:goal_code": true,
+          "field:quota": true,
+          "field:task_status": true,
+          "foreign_goals_unchanged": true,
+          "foreign_tasks_unchanged": true,
+          "returned_model": true,
+          "no_protocol_errors": true
+        },
+        "tool_steps": 0,
+        "model_requests": 1,
+        "failure": null
+      }
+    ],
+    "per_case": {
+      "fish-report": {
+        "planned": 12,
+        "started": 12,
+        "passed": 10
+      },
+      "meeting-plan": {
+        "planned": 12,
+        "started": 12,
+        "passed": 10
+      },
+      "code-release": {
+        "planned": 12,
+        "started": 12,
+        "passed": 10
+      }
+    },
+    "limitations": [
+      "Known synthetic development workflows, not held-out benchmark.",
+      "Goal switches are host-selected chat bindings, not autonomous cross-Goal routing.",
+      "Pressure compaction is measured separately; these live conversations do not fill 1M tokens."
+    ]
+  },
+  "same_frozen_task_definitions": true,
+  "same_frozen_prompts_and_gold": true,
+  "credential_scan": {
+    "actual_key_available_for_exact_comparison": true,
+    "matching_files": []
+  }
+}

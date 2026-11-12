@@ -7,18 +7,24 @@
   <title>GoalTree · 目标规划与执行</title>
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/tree.css">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%23edf3eb'/%3E%3Ctext x='10' y='35' font-family='Georgia' font-weight='bold' font-size='34' fill='%234b765e'%3EG%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/hub.css">
+  <link rel="stylesheet" href="/brand.css">
+  <link rel="shortcut icon" href="/icons/goaltree.ico?v=tree-20261111">
+  <link rel="icon" type="image/png" sizes="256x256" href="/icons/goaltree.png?v=tree-20261111">
+  <link rel="apple-touch-icon" href="/icons/goaltree.png?v=tree-20261111">
   <script src="/markdown-it.min.js" defer></script>
   <script src="/markdown.js" defer></script>
   <script src="/tree.js" defer></script>
+  <script src="/hub.js" defer></script>
   <script src="/app.js" defer></script>
 </head>
 <body>
   <aside class="sidebar">
-    <a class="brand" href="/" aria-label="GoalTree"><span class="brand-mark">G</span><strong>GoalTree</strong></a>
+    <a class="brand" href="/" aria-label="GoalTree"><img class="brand-mark" src="/icons/goaltree.svg" alt="" width="38" height="38"><strong>GoalTree</strong></a>
     <label class="sidebar-label" for="workspace-select">工作区</label>
     <select id="workspace-select" aria-label="工作区选择" disabled><option>读取工作区…</option></select>
     <button id="new-session" class="new-session" disabled>＋ 新对话</button>
+    <button id="open-extensions" class="extensions-entry" aria-expanded="false" aria-controls="extensions-dialog"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 3h5a2 2 0 1 1 4 0h5v5a2 2 0 1 0 0 4v5h-5a2 2 0 1 0-4 0H3v-5a2 2 0 1 1 0-4Z"/></svg>插件</button>
     <nav id="goals" aria-label="目标对话"><p class="muted small">正在读取…</p></nav>
     <div class="sidebar-bottom"><span id="model-name"></span><small id="connection">连接中</small></div>
   </aside>
@@ -34,6 +40,8 @@
         <button id="add-attachment" class="composer-icon" aria-label="添加文件或图片" title="添加文件或图片（单个最多5MB）" disabled>＋</button>
         <input id="attachment-input" type="file" multiple hidden accept=".txt,.md,.csv,.tsv,.json,.yaml,.yml,.py,.r,.js,.ts,.html,.css,.toml,.log,.xml,.fasta,.fa,.vcf,.pdf,.docx,.png,.jpg,.jpeg,.webp">
         <button id="cooperation-toggle" class="cooperation-toggle" aria-expanded="false" aria-controls="cooperation-panel" disabled>协作方式 · 适中</button>
+        <button id="memory-sharing-toggle" class="memory-sharing-toggle" aria-pressed="false" aria-describedby="memory-sharing-hint" title="与本工作区其他已开启的对话互相参考安全记忆；不共享原始聊天、附件或文件。关闭停止后续检索，既有产出保留。" disabled>记忆互联 · 关闭</button>
+        <span id="memory-sharing-hint" class="sr-only">默认关闭。开启后，与本工作区其他已开启的对话互相参考安全记忆；不共享原始聊天、附件或文件。关闭停止后续检索，既有产出保留。</span>
       </div><span id="composer-state">Enter 发送 · Shift + Enter 换行</span><button id="send" class="primary-button" aria-label="发送消息" disabled>发送 ↑</button></div>
       <section id="cooperation-panel" class="cooperation-panel hidden" aria-label="协作与权限">
         <strong>协作与权限</strong>
@@ -65,6 +73,12 @@
     <div class="map-body"><div id="map-viewport" class="map-viewport" tabindex="0" aria-label="任务关系图，可滚动查看"><div id="map-space"><div id="map-stage"></div></div></div><aside id="map-detail" class="map-detail hidden" aria-label="关系图任务详情"></aside></div>
   </dialog>
   <div id="toast" class="toast hidden" role="alert"></div>
+  <dialog id="extensions-dialog" class="extension-hub" aria-labelledby="extensions-title">
+    <header class="hub-header"><div><h1 id="extensions-title">插件</h1><small id="hub-workspace"></small></div><button id="close-extensions" aria-label="关闭插件">×</button></header>
+    <div class="hub-navigation"><nav class="hub-tabs" role="tablist" aria-label="扩展分类"><button role="tab" data-hub-tab="plugins" aria-selected="true">插件</button><button role="tab" data-hub-tab="skills" aria-selected="false">技能</button><button role="tab" data-hub-tab="mcp" aria-selected="false">MCP</button></nav><div class="hub-search-wrap"><label for="hub-search" class="sr-only">搜索扩展</label><input id="hub-search" type="search" placeholder="搜索插件、技能或 MCP"><button id="hub-refresh">刷新</button></div></div>
+    <div class="hub-status-line"><span id="hub-status" aria-live="polite"></span><div class="hub-summary"><button id="hub-enabled-only" aria-pressed="false">仅看已启用</button><span id="hub-count"></span></div></div>
+    <div class="hub-scroll"><div id="hub-list" class="hub-grid"></div><section id="hub-detail" class="hub-detail hidden" aria-label="扩展详情"></section></div>
+  </dialog>
   <dialog id="workspace-dialog" class="workspace-dialog" aria-labelledby="workspace-dialog-title">
     <strong id="workspace-dialog-title">打开工作区文件夹</strong>
     <p>目标、对话、附件与设置将保存在所选文件夹中。</p>

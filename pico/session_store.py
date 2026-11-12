@@ -14,8 +14,9 @@ class SessionStore:
         return self.root / f"{session_id}.json"
 
     def save(self, session):
+        from .privacy import scrub
         path = self.path(session["id"])
-        write_json_atomic(path, session)
+        write_json_atomic(path, scrub(session))
         return path
 
     def load(self, session_id):

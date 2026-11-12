@@ -87,6 +87,16 @@ class GoalStore:
             delta = {name: {key: value for key, value in state[name].items() if before[name].get(key) != value}
                      for name in ('goals', 'tasks')}
             delta.update(selection=state['selection'], revision=state['revision'], assistant_session_id=state.get('assistant_session_id'))
+            from .privacy import CURRENT,PrivacyStore
+            privacy=PrivacyStore(self.root)
+            if privacy.enabled:
+                for key,item in state['tasks'].items():
+                    privacy.derive('task:'+key,['goal:'+item['goal_id']]+
+                        ['task:'+ref for ref in ([item['parent_id']] if item['parent_id'] else [])+item['depends_on']])
+                guard=CURRENT.get()
+                if guard:
+                    for collection,kind in (('goals','goal'),('tasks','task')):
+                        for key in delta[collection]:privacy.derive(kind+':'+key,guard.resources)
             db.execute('INSERT INTO goal_events(at,kind,payload,state_sha256) VALUES (?,?,?,?)',
                        (now(), kind, json.dumps(redact_artifact({'input': payload, 'changes': delta}), ensure_ascii=False), hashlib.sha256(body.encode()).hexdigest()))
         return copy.deepcopy(result)
@@ -99,7 +109,10 @@ class GoalStore:
 
     @staticmethod
     def version(item, value):
-        if type(value) is not int or value != item['revision']:
+        if type(value) is not int:
+            raise GoalError('revision必须是JSON整数，不能加引号，例如1而不是"1"；布尔值也不合法。'
+                            f'当前revision={item["revision"]}，旧修改未应用。', 400)
+        if value != item['revision']:
             raise GoalError('节点已更新，请刷新后重试，旧修改未应用。', 409)
 
     @staticmethod
@@ -163,7 +176,7 @@ class GoalStore:
             for key in tasks:
                 visit(key)
 
-    def invalidate(self, state, changed):
+    def invalidate(self, state, changed, reason='task_contract_changed'):
         affected = set(changed)
         while True:
             more = {t['id'] for t in state['tasks'].values() if t['id'] not in affected and
@@ -174,6 +187,8 @@ class GoalStore:
         for key in affected:
             task = state['tasks'][key]
             self.rotate(task)
+            task['invalidated_reason'] = reason
+            task['invalidated_by'] = sorted(changed)
             if task['status']=='review':
                 # A draft for the old specification is historical evidence, not
                 # a newly submitted deliverable for the changed requirements.
@@ -229,6 +244,7 @@ class GoalStore:
                 if not is_goal and 'verification_mode' in data:
                     value = self.verification(data['verification_mode'])
                     changed |= item['verification_mode'] != value
+                    if item['verification_mode'] != value:changed_fields.add('verification_mode')
                     item['verification_mode'] = value
                 for name, limit in [('title', 160), ('description', 6000), ('acceptance', 2000), ('constraints', 4000), ('context_notes', 4000)]:
                     if name in data:
@@ -243,6 +259,7 @@ class GoalStore:
                                 raise GoalError('父任务ID必须是文本。')
                             value = self.dependencies(data[name]) if name == 'depends_on' else data[name] or ''
                             changed |= value != item[name]
+                            if value != item[name]:changed_fields.add(name)
                             item[name] = value
                 if changed:
                     if is_goal:
@@ -256,10 +273,15 @@ class GoalStore:
                         self.bump(item, specification=True)
                         self.invalidate(state, [t['id'] for t in state['tasks'].values() if t['goal_id'] == goal['id']])
                     else:
-                        self.invalidate(state, [item['id']])
+                        if changed_fields <= {'title','context_notes'}:
+                            self.bump(item)
+                        else:
+                            self.invalidate(state, [item['id']])
             elif action == 'archive_task':
                 item['context_status'] = 'archived'
                 self.bump(item)
+                downstream=[t['id'] for t in state['tasks'].values() if item['id'] in t['depends_on']]
+                if downstream:self.invalidate(state,downstream,'dependency_archived')
             elif action == 'reopen_task':
                 self.invalidate(state, [item['id']])
                 item['status'], item['context_status'] = 'planned', 'live'
@@ -268,6 +290,9 @@ class GoalStore:
                     raise GoalError('完成状态需要运行验收或显式人工验收。')
                 item['status'] = data['status']
                 self.bump(item)
+                if item['status'] in {'planned','blocked','cancelled'}:
+                    downstream=[t['id'] for t in state['tasks'].values() if item['id'] in t['depends_on']]
+                    if downstream:self.invalidate(state,downstream,'dependency_no_longer_accepted')
             elif action == 'accept_task':
                 if any(t.get('parent_id')==item['id'] for t in state['tasks'].values()):
                     aggregate=task_progress(state)[item['id']]
@@ -301,7 +326,7 @@ class GoalStore:
         def apply(state):
             goal = self.get(state, 'goals', goal_id)
             self.version(goal, revision)
-            aliases, result = {}, []
+            aliases, result, previous = {}, [], {}
             for index, step in enumerate(steps):
                 if not isinstance(step, dict) or set(step) - {'id', 'title', 'description', 'acceptance', 'parent_id', 'depends_on', 'verification_mode'}:
                     raise GoalError('规划包含无效字段。')
@@ -312,12 +337,12 @@ class GoalStore:
                     raise GoalError('规划任务ID必须唯一。')
                 if alias in state['tasks']:
                     task = self.get(state, 'tasks', alias)
-                    if task['goal_id'] != goal_id or task['runs'] or task['status'] != 'planned':
+                    if task['goal_id'] != goal_id or task['runs'] or task.get('deliverables') or task['status'] != 'planned':
                         raise GoalError('只能用plan_tasks更新本目标内尚未执行的任务；历史任务请用goal_action update_task显式修改，保留历史。', 409)
+                    previous[alias]=copy.deepcopy(task)
                     for name, limit in [('title', 160), ('description', 6000), ('acceptance', 2000)]:
                         if name in step:
                             task[name] = text(step[name], name, limit, name == 'title')
-                    self.bump(task, specification=True)
                 else:
                     task = self.node(step.get('title'), step.get('description', ''), goal_id,
                                      acceptance=step.get('acceptance', ''))
@@ -331,6 +356,14 @@ class GoalStore:
                     task['parent_id'] = aliases.get(step['parent_id'], step['parent_id']) or ''
                 if 'depends_on' in step:
                     task['depends_on'] = [aliases.get(key, key) for key in self.dependencies(step['depends_on'])]
+            # Resolve the whole proposal before invalidating once. Updating an
+            # unexecuted prerequisite can still invalidate downstream results.
+            self.validate(state)
+            contracts={'description','acceptance','parent_id','depends_on','verification_mode'}
+            changed=[key for key,old in previous.items() if any(old[k]!=state['tasks'][key][k] for k in contracts)]
+            affected=set(self.invalidate(state,changed,'plan_contract_changed')) if changed else set()
+            for key,old in previous.items():
+                if key not in affected and old!=state['tasks'][key]:self.bump(state['tasks'][key])
             self.bump(goal)
             return result
         return self.transaction('agent_plan', {'goal_id': goal_id, 'steps': steps}, apply)
@@ -358,7 +391,7 @@ class GoalStore:
             aggregate=task_progress(state)
             for key in task['depends_on']:
                 dependency = state['tasks'][key]
-                if dependency['status'] != 'completed' or dependency['validity'] != 'fresh' or not aggregate[key]['accepted']:
+                if dependency['context_status']=='archived' or dependency['status'] != 'completed' or dependency['validity'] != 'fresh' or not aggregate[key]['accepted']:
                     raise GoalError('前置任务尚未完成有效验收，请先核对依赖。', 409)
             if task['status'] == 'cancelled':
                 raise GoalError('请先重新打开已取消任务。', 409)
@@ -415,6 +448,8 @@ class GoalStore:
             context['rules'] = GOAL_COORDINATOR_INSTRUCTIONS
             context['status_rule'] = 'display_status and rollup summarize child progress. They do not grant acceptance. A parent stage requires valid child acceptance and its own verification/operator confirmation before completion.'
             context['goal_revision'] = goal['revision']
+        from .continuity import goal_capsule
+        context['continuity']=goal_capsule(state,goal['id'],task['id'] if task else '')
         return context
 
     def record_progress(self,goal_id,task_id,revision,status,note,evidence=None):
@@ -483,8 +518,15 @@ class GoalStore:
                 raise GoalError('目标版本已变更。', 409)
             if binding['mode'] == 'execute':
                 task = self.get(state, 'tasks', binding['task_id'])
+                if task['goal_id']!=goal['id']:
+                    raise GoalError('任务与目标不匹配。',409)
                 if task['spec_version'] != binding['task_spec_version']:
                     raise GoalError('任务版本已变更。', 409)
+                if task['context_status']=='archived' or task['status']=='cancelled':
+                    raise GoalError('归档或取消任务不能启动。',409)
+                aggregate=task_progress(state)
+                if any(state['tasks'][key]['context_status']=='archived' or not aggregate[key]['accepted'] for key in task['depends_on']):
+                    raise GoalError('前置任务在启动前失效，请重新核对依赖。',409)
                 task.update(status='active', active_run=run_id, context_status='live')
                 task['validity'] = 'unknown'
                 self.bump(task)
@@ -500,9 +542,13 @@ class GoalStore:
             task['runs'].append({**binding, **redact_artifact(run)})
             current = (task['spec_version'] == binding['task_spec_version'] and
                        state['goals'][binding['goal_id']]['spec_version'] == binding['goal_spec_version'])
+            aggregate=task_progress(state)
+            dependencies_current=all(state['tasks'][key]['context_status']!='archived' and aggregate[key]['accepted']
+                                     for key in task['depends_on'])
+            current = current and dependencies_current
             if not current or task.get('active_run') != run['id']:
                 if task.get('active_run') == run['id']:
-                    task.update(status='blocked', active_run='', invalidated_reason='run_spec_version_changed')
+                    task.update(status='blocked', active_run='', invalidated_reason='run_spec_version_changed' if dependencies_current else 'dependency_changed_during_run')
                     self.bump(task)
                 return False
             task['active_run'] = ''

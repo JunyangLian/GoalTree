@@ -372,8 +372,9 @@ def test_native_protocol_receives_scoped_context_and_plan_tool(tmp_path):
     assert result['status'] == 'completed', result['error']
     agent = app.task(result['id']).agent
     conversation = agent.model_client.native_conversation
-    content = json.dumps(conversation.messages, ensure_ascii=False)
+    content = json.dumps(conversation.payload()['messages'], ensure_ascii=False)
     assert 'PINNED_GOAL_CONSTRAINT' in content and 'FOREIGN_CONSTRAINT' not in content
+    assert content.count('PINNED_GOAL_CONSTRAINT') == 1
     assert conversation.pending is None
     assert any(m.get('tool_call_id') == 'native-plan-1' for m in conversation.messages)
     assert len(app.goals.read()['tasks']) == 1

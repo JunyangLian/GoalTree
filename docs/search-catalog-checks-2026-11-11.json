@@ -1,0 +1,59 @@
+{
+  "date": "2026-11-11",
+  "full_suite": {
+    "cases": 816,
+    "passed": 816
+  },
+  "post_fix_launcher_regression": {
+    "cases": 1,
+    "passed": 1,
+    "additional_unique_cases": 1
+  },
+  "all_current_test_cases_covered": {
+    "cases": 817,
+    "passed": 817,
+    "collection_count": 817
+  },
+  "node_behavior_checks": {
+    "passed": 61,
+    "failed": 0,
+    "overlaps_python_wrapper": true
+  },
+  "package": {
+    "wheel": "goaltree_agent-0.1.0-py3-none-any.whl",
+    "setuptools": "75.8.2",
+    "verified_assets": 51,
+    "all_asset_bytes_match": true
+  },
+  "source_audit": {
+    "checked_tracked_and_unignored_files": 725,
+    "local_secret_leak_files": [],
+    "source_manifest_files": 321,
+    "changed_during_first_full_run": [
+      "pyproject.toml",
+      "scripts/run_goaltree_glm.py",
+      "tests/test_search_hybrid.py"
+    ],
+    "expected_changes": [
+      "pyproject.toml",
+      "scripts/run_goaltree_glm.py",
+      "tests/test_search_hybrid.py"
+    ]
+  },
+  "browser": {
+    "real_tabbit": true,
+    "screenshots_obtained": false,
+    "reason": "native screenshot timeout",
+    "corrected_search_sources": [
+      "glm",
+      "duckduckgo"
+    ],
+    "preview_url": "http://127.0.0.1:8778/"
+  },
+  "limitations": [
+    "Legacy 8773 service restart rejected by automatic approval; isolated preview used.",
+    "Partial first UI search preserved; fixed explicit launcher dotenv precedence.",
+    "Free public search availability is not guaranteed; no latency benchmark claim.",
+    "Playwright remains a configuration template; no runtime capability claimed."
+  ]
+}

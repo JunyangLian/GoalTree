@@ -106,7 +106,9 @@ class WorkspaceContext:
     def text(self):
         if getattr(self,'planning_only',False):
             return ('Selected workspace: '+self.cwd+'\nFolder contents are not automatically included. '
-                    'Use only the current goal, conversation and supplied attachments. '
+                    'Use the current goal, conversation, supplied attachments and explicitly authorized retrieved background. '
+                    'Retrieved background may come from another opted-in Goal; using it as attributed background '
+                    'does not authorize modifying that Goal, adopting its constraints or treating it as verified evidence. '
                     'Do not infer a new goal\'s topic from files in this folder. Inspect files only when requested or necessary for an established task.')
         # 这段文本会被塞进 prompt prefix，作为相对稳定的基线上下文。
         commits = "\n".join(f"- {line}" for line in self.recent_commits) or "- none"

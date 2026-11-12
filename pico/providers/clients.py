@@ -16,6 +16,9 @@ from urllib.parse import urlparse
 from .deepseek_protocol import normalize_dsml_call
 from .native_tools import NativeToolConversation
 from .streaming import IncompleteSSEError
+from ..privacy import CURRENT, outbound, incoming
+from ..privacy_transport import open_checked
+from ..privacy_runtime import private_client
 
 OPENAI_COMPATIBLE_USER_AGENT = "pico/0.1"
 
@@ -57,6 +60,7 @@ class OllamaModelClient:
         self.supports_prompt_cache = False
         self.last_completion_metadata = {}
 
+    @private_client
     def complete(self, prompt, max_new_tokens, **kwargs):
         # Ollama 当前不支持我们这里接入的 prompt cache 语义，
         # 所以 runtime 传下来的缓存参数会被忽略。
@@ -80,10 +84,10 @@ class OllamaModelClient:
             method="POST",
         )
         try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                data = json.loads(response.read().decode("utf-8"))
+            with open_checked(request, timeout=self.timeout) as response:
+                data = json.loads(incoming(response.read().decode("utf-8")))
         except urllib.error.HTTPError as exc:
-            body = exc.read().decode("utf-8", errors="replace")
+            body = incoming(exc.read().decode("utf-8", errors="replace"))
             raise RuntimeError(f"Ollama request failed with HTTP {exc.code}: {body}") from exc
         except urllib.error.URLError as exc:
             raise RuntimeError(
@@ -234,12 +238,15 @@ def _extract_usage_cache_details(data):
     output_tokens = usage.get("output_tokens", usage.get("completion_tokens"))
     input_details = usage.get("input_tokens_details") or usage.get("prompt_tokens_details") or {}
     cached_tokens = int(input_details.get("cached_tokens") or 0)
+    reported = type(input_details.get('cached_tokens')) is int and input_details['cached_tokens'] >= 0
     return {
         "input_tokens": input_tokens,
         "output_tokens": output_tokens,
         "total_tokens": usage.get("total_tokens"),
         "cached_tokens": cached_tokens,
         "cache_hit": cached_tokens > 0,
+        "cache_usage_reported": reported,
+        "observed_cache_hit": cached_tokens > 0 if reported else None,
     }
 
 
@@ -266,11 +273,13 @@ class OpenAICompatibleModelClient:
         self.siliconflow_deepseek = host == 'api.siliconflow.cn' and model == 'deepseek-ai/DeepSeek-V4.1-Flash'
         self.bigmodel_glm = host == 'open.bigmodel.cn' and model == 'glm-5.3-flash'
         self.supports_native_tools = api_format == 'chat_completions' and (host == 'api.deepseek.com' or self.siliconflow_deepseek or self.bigmodel_glm)
+        self.supports_reference_grounding = self.supports_native_tools
         self.native_wire_options = {'enable_thinking': True, 'thinking_budget': 4096} if self.siliconflow_deepseek else None
         if self.bigmodel_glm:
             self.native_wire_options = {'thinking': {'type': 'enabled', 'clear_thinking': False},
                                         'reasoning_effort': 'max'}
         self.top_p = None
+        self.request_options = None
         self.native_conversation = None
         self.stream = False
         self.cancellation = None
@@ -313,6 +322,7 @@ class OpenAICompatibleModelClient:
         if self.on_transport_event:
             self.on_transport_event(dict(event))
 
+    @private_client
     def complete(self, prompt, max_new_tokens, prompt_cache_key=None, prompt_cache_retention=None):
         """向配置的 Responses 或 Chat Completions 接口发起一次模型调用。
 
@@ -357,6 +367,10 @@ class OpenAICompatibleModelClient:
             payload["temperature"] = self.temperature
         if self.top_p is not None:
             payload['top_p'] = self.top_p
+        if self.request_options:
+            if set(self.request_options) - {'thinking', 'reasoning_effort', 'response_format'}:
+                raise ValueError('Unsupported explicit provider request option')
+            payload.update(self.request_options)
         if self.native_conversation is not None:
             payload.update(self.native_conversation.payload())
         if self.stream and self.api_format == 'chat_completions':
@@ -388,7 +402,7 @@ class OpenAICompatibleModelClient:
             headers=headers,
             method="POST",
         )
-        if self.on_wire_event:
+        if self.on_wire_event and not CURRENT.get():
             self.on_wire_event({'event':'request','body':request.data.decode('utf-8'),
                                 'sha256':hashlib.sha256(request.data).hexdigest()})
         attempts = self.max_transport_attempts
@@ -407,7 +421,7 @@ class OpenAICompatibleModelClient:
                 if self.network_route not in {'environment', 'direct'}:
                     raise ValueError('Unknown explicit network route')
                 opener = urllib.request.urlopen if self.network_route == 'environment' else urllib.request.build_opener(urllib.request.ProxyHandler({})).open
-                with opener(request, timeout=min(self.timeout, remaining)) as response:
+                with open_checked(request, timeout=min(self.timeout, remaining),route=self.network_route) as response:
                     self.active_response = response
                     if self.on_progress:
                         self.on_progress({'phase': 'connected'})
@@ -416,7 +430,7 @@ class OpenAICompatibleModelClient:
                     content_type = headers.get("Content-Type", "")
                     if self.stream and self.api_format == 'chat_completions' and content_type.startswith('text/event-stream'):
                         from .streaming import read_chat_stream
-                        body_text = json.dumps(read_chat_stream(response, self.cancellation, self.on_delta, self.on_progress,
+                        body_text = json.dumps(read_chat_stream(response, self.cancellation, None if CURRENT.get() else self.on_delta, self.on_progress,
                             lambda audit:self.last_completion_metadata.update(stream_diagnostics=audit),
                             max_seconds=max(0,min(self.timeout,remaining)-(time.monotonic()-started))))
                         content_type = 'application/json'
@@ -426,7 +440,8 @@ class OpenAICompatibleModelClient:
                     self.active_response = None
                     if self.cancellation:
                         self.cancellation.check()
-                if self.on_wire_event:
+                body_text = incoming(body_text)
+                if self.on_wire_event and not CURRENT.get():
                     self.on_wire_event({'event':'response','body':body_text,
                                         'sha256':hashlib.sha256(body_text.encode('utf-8')).hexdigest()})
                 self._transport_event({'attempt':attempt+1, 'ok':True,
@@ -455,8 +470,8 @@ class OpenAICompatibleModelClient:
             except urllib.error.HTTPError as exc:
                 if self.cancellation:
                     self.cancellation.check()
-                body = exc.read().decode("utf-8", errors="replace")
-                if self.on_wire_event:
+                body = incoming(exc.read().decode("utf-8", errors="replace"))
+                if self.on_wire_event and not CURRENT.get():
                     self.on_wire_event({'event':'http_error','status_code':exc.code,'body':body,
                                         'sha256':hashlib.sha256(body.encode('utf-8')).hexdigest()})
                 delay = 0.5 * (attempt + 1)
@@ -584,6 +599,7 @@ class AnthropicCompatibleModelClient:
         self.supports_prompt_cache = False
         self.last_completion_metadata = {}
 
+    @private_client
     def complete(self, prompt, max_new_tokens, prompt_cache_key=None, prompt_cache_retention=None):
         # 为了保持统一接口，runtime 仍然会传缓存参数进来；
         # 这里只是显式丢弃，因为当前 Anthropic-compatible 路径没有接缓存复用。
@@ -625,11 +641,11 @@ class AnthropicCompatibleModelClient:
         attempts = 3
         for attempt in range(attempts):
             try:
-                with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                    body_text = response.read().decode("utf-8")
+                with open_checked(request, timeout=self.timeout) as response:
+                    body_text = incoming(response.read().decode("utf-8"))
                 break
             except urllib.error.HTTPError as exc:
-                body = exc.read().decode("utf-8", errors="replace")
+                body = incoming(exc.read().decode("utf-8", errors="replace"))
                 if exc.code >= 500 and attempt < attempts - 1:
                     time.sleep(0.5 * (attempt + 1))
                     continue

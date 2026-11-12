@@ -1,0 +1,347 @@
+{
+  "schema": "glm-context-sharing-live-report-v1",
+  "date": "2026-11-12",
+  "model": "glm-5.3-flash",
+  "provider": "BigModel ordinary API",
+  "protocol": {
+    "base_url": "https://open.bigmodel.cn/api/paas/v4",
+    "concurrency": 1,
+    "estimated_cny_limit": "0.5",
+    "input_token_budget": 1032192,
+    "known_token_limit": 123403,
+    "max_output_tokens": 1536,
+    "max_tool_steps_per_turn": 7,
+    "maximum_requests": 16,
+    "model": "glm-5.3-flash",
+    "native_wire_options": {
+      "reasoning_effort": "low",
+      "thinking": {
+        "clear_thinking": false,
+        "type": "enabled"
+      }
+    },
+    "pressure_byte_ceiling": 48000,
+    "pressure_byte_limit": 22000,
+    "pricing_checked_date": "2026-11-12",
+    "provider_weight_revision": "unavailable; alias only",
+    "schema": "context-sharing-real-glm-v1",
+    "temperature": 1,
+    "timeout_seconds": 120,
+    "token_context_window": 1048576,
+    "top_p": 0.95,
+    "transport_attempts": 1,
+    "turn_deadline_seconds": 300,
+    "verification_command": "python -B -m unittest discover -v",
+    "wire_byte_limit": 33554432
+  },
+  "strict_verification": {
+    "schema": "context-sharing-live-verification-v1",
+    "planned_cases": 7,
+    "started_cases": 7,
+    "passed_cases": 4,
+    "rows": [
+      {
+        "id": "sharing-default-off",
+        "kind": "sharing",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "field:project_code": true,
+          "run_completed": true,
+          "all_provider_models_correct": true,
+          "no_observed_protocol_errors": true,
+          "recipient_is_off": true,
+          "shared_retrieval_matches_setting": true,
+          "actual_shared_frame_matches_setting": true,
+          "no_tool_execution": true,
+          "source_and_conditions_retained": true,
+          "no_foreign_goal_mutation": true,
+          "source_value_not_in_request": true
+        },
+        "model_requests": 1,
+        "tool_steps": 0,
+        "failure": null
+      },
+      {
+        "id": "sharing-on",
+        "kind": "sharing",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "field:project_code": true,
+          "run_completed": true,
+          "all_provider_models_correct": true,
+          "no_observed_protocol_errors": true,
+          "both_consents_enabled": true,
+          "shared_retrieval_matches_setting": true,
+          "actual_shared_frame_matches_setting": true,
+          "no_tool_execution": true,
+          "source_and_conditions_retained": true,
+          "no_foreign_goal_mutation": true
+        },
+        "model_requests": 1,
+        "tool_steps": 0,
+        "failure": null
+      },
+      {
+        "id": "task-handoff",
+        "kind": "handoff",
+        "status": "completed",
+        "passed": false,
+        "checks": {
+          "field:acceptance_status": false,
+          "field:analysis_order": false,
+          "field:ancestor_constraint": false,
+          "field:dependency_status": false,
+          "field:registry": false,
+          "field:species": false,
+          "run_completed": true,
+          "all_provider_models_correct": true,
+          "no_observed_protocol_errors": true,
+          "one_actual_child": true,
+          "one_handoff_received": true,
+          "separate_sessions": true,
+          "child_actual_read": true,
+          "manual_acceptance_pending": true,
+          "no_file_changes": true,
+          "verification_not_self_certified": true,
+          "bounded_structured_return": true
+        },
+        "model_requests": 4,
+        "tool_steps": 1,
+        "failure": "model_decision_or_contract_check"
+      },
+      {
+        "id": "pressure-retention",
+        "kind": "pressure",
+        "status": "completed",
+        "passed": false,
+        "checks": {
+          "field:acceptance": false,
+          "field:ancestor_constraint": false,
+          "field:full_files_read": false,
+          "field:unresolved_error_code": false,
+          "field:verification_status": false,
+          "run_completed": true,
+          "all_provider_models_correct": true,
+          "no_observed_protocol_errors": true,
+          "actual_compaction": true,
+          "mandatory_preserved": true,
+          "under_original_pressure_budget": true,
+          "no_executable_model_tool": true,
+          "real_host_reads": true
+        },
+        "model_requests": 1,
+        "tool_steps": null,
+        "failure": "model_decision_or_contract_check"
+      },
+      {
+        "id": "sharing-close-existing",
+        "kind": "sharing",
+        "status": "completed",
+        "passed": false,
+        "checks": {
+          "field:project_code": false,
+          "run_completed": true,
+          "all_provider_models_correct": true,
+          "no_observed_protocol_errors": true,
+          "recipient_is_off": true,
+          "shared_retrieval_matches_setting": true,
+          "actual_shared_frame_matches_setting": true,
+          "no_tool_execution": true,
+          "source_and_conditions_retained": true,
+          "no_foreign_goal_mutation": true
+        },
+        "model_requests": 1,
+        "tool_steps": 0,
+        "failure": "model_decision_or_contract_check"
+      },
+      {
+        "id": "sharing-source-revoked",
+        "kind": "sharing",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "field:project_code": true,
+          "run_completed": true,
+          "all_provider_models_correct": true,
+          "no_observed_protocol_errors": true,
+          "source_is_off": true,
+          "shared_retrieval_matches_setting": true,
+          "actual_shared_frame_matches_setting": true,
+          "no_tool_execution": true,
+          "source_and_conditions_retained": true,
+          "no_foreign_goal_mutation": true,
+          "source_value_not_in_request": true
+        },
+        "model_requests": 1,
+        "tool_steps": 0,
+        "failure": null
+      },
+      {
+        "id": "sharing-core-source",
+        "kind": "sharing",
+        "status": "completed",
+        "passed": true,
+        "checks": {
+          "field:project_code": true,
+          "run_completed": true,
+          "all_provider_models_correct": true,
+          "no_observed_protocol_errors": true,
+          "source_is_core": true,
+          "shared_retrieval_matches_setting": true,
+          "actual_shared_frame_matches_setting": true,
+          "no_tool_execution": true,
+          "source_and_conditions_retained": true,
+          "no_foreign_goal_mutation": true,
+          "source_value_not_in_request": true
+        },
+        "model_requests": 1,
+        "tool_steps": 0,
+        "failure": null
+      }
+    ],
+    "known_requests": 10,
+    "unknown_requests": 0,
+    "known_input_tokens": 58230,
+    "known_output_tokens": 851,
+    "unknown_reserved_tokens": 0,
+    "actual_billed_cost": null,
+    "gold_and_plan_sha256": "f9dfda94fb22cec77c565aa89cb67194fafd42c5393b3000c20b4e1123220787",
+    "limitations": [
+      "Known synthetic feature diagnostics, not held-out benchmark.",
+      "Pressure history is controlled host-generated tool execution, not an autonomous long-model trajectory.",
+      "Closed existing conversation may recall previously generated content; revocation checks fresh retrieval, not semantic erasure.",
+      "No causal comparison or repeated-run stability claim."
+    ]
+  },
+  "audit": {
+    "live-v1": {
+      "manifest_files": 371,
+      "manifest_mismatches": []
+    },
+    "live-v2": {
+      "manifest_files": 456,
+      "manifest_mismatches": []
+    },
+    "frozen_source_mismatches": [],
+    "budget_within_authorization": true,
+    "responses": {
+      "count": 10,
+      "elapsed_seconds_sum": 54.064,
+      "native_tool_calls": 2,
+      "reasoning_present_responses": 2,
+      "reasoning_tokens": 275,
+      "cached_tokens": 8064
+    },
+    "handoff_diagnostic": {
+      "original_verdict_preserved": true,
+      "strict_passed": false,
+      "exact_fields_in_embedded_json": {
+        "acceptance_status": true,
+        "analysis_order": true,
+        "ancestor_constraint": true,
+        "dependency_status": false,
+        "registry": true,
+        "species": true
+      },
+      "failure": "extra prose and dependency_status expanded with source task ID/title"
+    },
+    "pressure_diagnostic": {
+      "original_verdict_preserved": true,
+      "strict_passed": false,
+      "frozen_expected_error_code": "tool_failed",
+      "actual_tool_error_code": "invalid_arguments",
+      "model_reported_error_code": "invalid_arguments",
+      "gold_error_code_matches_receipt": false,
+      "model_error_code_matches_receipt": true,
+      "other_embedded_fields_match_frozen_gold": true,
+      "eligibility": "invalid error-code gold and non-JSON-only response; no corrected score assigned"
+    },
+    "closed_history_diagnostic": {
+      "prior_answer_present_in_prepared_request": true,
+      "retrieval_stopped": true,
+      "model_answer": "```json\n{\"project_code\": \"unknown\"}\n```",
+      "failure": "Model answered unknown despite prior conversation deliverable remaining available."
+    },
+    "credential_scan": {
+      "local_key_loaded_for_exact_match": true,
+      "matching_files": []
+    }
+  },
+  "budget": {
+    "schema": "context-sharing-round-budget-v1",
+    "historical_budget": {
+      "schema": "round-budget-closed-v1",
+      "global_token_cap": 2000000,
+      "global_cny_cap": 5,
+      "batches": [
+        {
+          "batch": "pressure-v3",
+          "known_tokens": 364557,
+          "unknown_reserved_tokens": 0,
+          "tariff_upper_estimate_cny": "0.3043356",
+          "unknown_reserved_cny": "0",
+          "ledger_sha256": "ddc7d5ed147179a6b03fe1732380d0f26974051b20c0a959aaa13397df0801af"
+        },
+        {
+          "batch": "pressure-v4",
+          "known_tokens": 196373,
+          "unknown_reserved_tokens": 53139,
+          "tariff_upper_estimate_cny": "0.1624464",
+          "unknown_reserved_cny": "0.0466072",
+          "ledger_sha256": "a660419cda745c25c1ccf8b3140b4e9e6837c056c33d8b55be5081d785d0fb16"
+        },
+        {
+          "batch": "pressure-v5",
+          "known_tokens": 200789,
+          "unknown_reserved_tokens": 56270,
+          "tariff_upper_estimate_cny": "0.1649952",
+          "unknown_reserved_cny": "0.049112",
+          "ledger_sha256": "1bcbf4e77376b5abf55dbbdb024277b0ab4820ebd190104a7ba3de27ebf360f3"
+        },
+        {
+          "batch": "capacity-live",
+          "known_tokens": 1005469,
+          "unknown_reserved_tokens": 0,
+          "tariff_upper_estimate_cny": "0.8044472",
+          "unknown_reserved_cny": "0",
+          "result_sha256": "effdc19cafb9dd7ca9f8b9062a102605f655027fb22cee21b21fc499c554e27f"
+        }
+      ],
+      "known_tokens": 1767188,
+      "unknown_reserved_tokens": 109409,
+      "tariff_upper_estimate_cny": "1.4362244",
+      "unknown_reserved_cny": "0.0957192",
+      "actual_billed_cost": null,
+      "further_dispatch": false,
+      "reason": "Unknown requests remain reserved; another whole 12-turn experiment cannot be budgeted inside remaining round ceiling; final callback fix validated offline only.",
+      "remaining_tokens_after_reservations": 123403
+    },
+    "new_known_tokens": 59081,
+    "new_unknown_reserved_tokens": 0,
+    "new_tariff_upper_estimate_cny": "0.0489668",
+    "actual_billed_cost": null,
+    "further_dispatch": false,
+    "reason": "Planned diagnostics completed; no replacement runs.",
+    "cumulative_known_tokens": 1826269,
+    "cumulative_unknown_reserved_tokens": 109409,
+    "remaining_tokens_after_reservations": 64322,
+    "cumulative_known_tariff_upper_estimate_cny": "1.4851912"
+  },
+  "original_records_preserved": true,
+  "runtime_changed_this_test_round": false,
+  "previous_full_suite_passed": 930,
+  "new_offline_tests_passed": 7,
+  "new_full_suite_run": false,
+  "raw_evidence_root": "artifacts\\glm-context-sharing-2026-11-12",
+  "limitations": [
+    "Known synthetic feature diagnostics, not held-out benchmark.",
+    "Pressure history is controlled host-generated tool execution, not an autonomous long-model trajectory.",
+    "Closed existing conversation may recall previously generated content; revocation checks fresh retrieval, not semantic erasure.",
+    "No causal comparison or repeated-run stability claim.",
+    "Pressure error-code gold disagrees with actual tool receipt; original verdict retained and not rescored.",
+    "Model-side history use failed despite prior answer remaining in actual prepared request.",
+    "Previous full suite and new oracle tests are separate runs, not a combined full-suite count."
+  ]
+}

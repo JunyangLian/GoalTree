@@ -1,12 +1,13 @@
 """Public search adapters with explicit provenance and bounded multi-source fusion."""
 from concurrent.futures import ThreadPoolExecutor
+from .privacy import inherited_worker
 from html.parser import HTMLParser
 import json
 import re
 import threading
 import time
 import unicodedata
-from urllib.parse import quote, urljoin, urlsplit
+from urllib.parse import quote, urljoin, urlsplit,parse_qs
 import xml.etree.ElementTree as ET
 
 from .web_tools import NOTICE, TOTAL_TIMEOUT, WebAccessError, plain_text, public_url, render
@@ -15,6 +16,7 @@ SOURCES = {
     'bing': 'Bing public RSS', 'baidu': 'Baidu public search',
     'wechat': 'WeChat articles via Sogou public index (not full WeChat search)',
     'crossref': 'Crossref bibliographic metadata API', 'pubmed': 'NCBI PubMed E-utilities',
+    'duckduckgo':'DuckDuckGo Lite public search (no API Key)', 'bing-intl':'Bing public RSS, international region',
 }
 GROUPS = {'auto': ('bing', 'baidu', 'wechat'), 'compare': ('bing','baidu','wechat'),
           'research': ('crossref', 'pubmed'), 'all': tuple(SOURCES)}
@@ -98,6 +100,44 @@ def bing(get, query, limit):
         if len(results) >= limit:
             break
     return results, [metadata]
+
+
+def bing_international(get,query,limit):
+    def international(url,accepted):return get(url+'&mkt=en-US&setlang=en-US',accepted)
+    return bing(international,query,limit)
+
+
+class DuckLite(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True);self.hits=[];self.link=None;self.title=[];self.snippet=None;self.parts=[]
+    def handle_starttag(self,tag,attrs):
+        attrs=dict(attrs);classes=attrs.get('class','').split()
+        if tag=='a' and 'result-link' in classes:self.link=attrs.get('href','');self.title=[]
+        if tag=='td' and 'result-snippet' in classes:self.snippet=True;self.parts=[]
+    def handle_data(self,text):
+        if self.link is not None:self.title.append(text)
+        if self.snippet:self.parts.append(text)
+    def handle_endtag(self,tag):
+        if tag=='a' and self.link is not None:
+            link=urljoin('https://lite.duckduckgo.com/',self.link)
+            if (urlsplit(link).hostname or '').endswith('duckduckgo.com'):
+                link=parse_qs(urlsplit(link).query).get('uddg',[''])[0]
+            try:self.hits.append(record(''.join(self.title),link))
+            except WebAccessError:pass
+            self.link=None
+        if tag=='td' and self.snippet:
+            if self.hits:self.hits[-1]['snippet']=' '.join(''.join(self.parts).split())[:350]
+            self.snippet=None
+
+
+def duckduckgo(get,query,limit):
+    metadata,text=get('https://lite.duckduckgo.com/lite/?q='+quote(query,safe='')+'&kl=us-en',{'text/html'})
+    if any(x in text.lower() for x in ('challenge-form','anomaly.js','verify you are human')):
+        raise SourceUnavailable('DuckDuckGo requires verification; no challenge is submitted','verification_required')
+    parser=DuckLite();parser.feed(text)
+    if not parser.hits and 'no results found' not in text.lower():
+        raise SourceUnavailable('DuckDuckGo returned an unrecognized page, not confirmed empty','unrecognized_response')
+    return parser.hits[:limit],[metadata]
 
 
 class PublicSearchHTML(HTMLParser):
@@ -252,7 +292,8 @@ def pubmed(get, query, limit):
     return hits, [metadata, meta2]
 
 
-ADAPTERS = {'bing': bing, 'baidu': baidu, 'wechat': wechat, 'crossref': crossref, 'pubmed': pubmed}
+ADAPTERS = {'bing': bing, 'baidu': baidu, 'wechat': wechat, 'crossref': crossref, 'pubmed': pubmed,
+            'duckduckgo':duckduckgo,'bing-intl':bing_international}
 
 
 def search(client, query, limit=5, source='auto', *, rendered=True):
@@ -294,10 +335,10 @@ def search(client, query, limit=5, source='auto', *, rendered=True):
         first = collected[0]
         if not first[1] or first[0].get('low_query_overlap'):
             with ThreadPoolExecutor(max_workers=2) as pool:
-                collected.extend(pool.map(run, ('baidu','wechat')))
+                collected.extend(pool.map(inherited_worker(run), ('baidu','wechat')))
     else:
         with ThreadPoolExecutor(max_workers=min(3,len(sources))) as pool:
-            collected = list(pool.map(run, sources))
+            collected = list(pool.map(inherited_worker(run), sources))
     attempts = [attempt for attempt, _ in collected]
     fused = {}
     for attempt, hits in collected:

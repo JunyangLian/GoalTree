@@ -1,0 +1,44 @@
+{
+  "schema": "goal-stress-pilot-v2",
+  "cases": 2,
+  "repetitions_per_case": 1,
+  "purpose": "Multi-turn synthetic development diagnostic with real tools; no held-out or ranking claim",
+  "model": "glm-5.3-flash",
+  "base_url": "https://open.bigmodel.cn/api/paas/v4",
+  "temperature": 1,
+  "top_p": 0.95,
+  "native_wire_options": {
+    "thinking": {
+      "type": "enabled",
+      "clear_thinking": false
+    },
+    "reasoning_effort": "low"
+  },
+  "max_output_tokens": 2048,
+  "input_json_byte_budget": 60000,
+  "context_byte_ceiling": 98304,
+  "timeout_seconds": 90,
+  "transport_attempts": 1,
+  "concurrency": 1,
+  "maximum_requests": 70,
+  "max_tool_steps_per_turn": 8,
+  "turn_deadline_seconds": 300,
+  "known_token_limit": 600000,
+  "estimated_cny_limit": "1",
+  "tariff_note": "Frozen conservative Nov 6 rate snapshot reused; provider debit unknown, not a guaranteed current tariff",
+  "minimum_compacted_requests": 2,
+  "minimum_distinct_reads": 10,
+  "privacy": "enforce; ordinary local credential only; no raw protected wire callbacks",
+  "approvals": "Existing ask policy; only fixture-scoped plan/goal mutations preauthorized. No acceptance, Shell, delegation, network, or added permissions.",
+  "goal_switch_policy": "Same original A conversation and host binding throughout; runner cannot route on behalf of the Agent. Switching failures are reported, not adapted away.",
+  "gold": "External verifier only; not copied to workspace, prompt, files or tools. Facts legitimately introduced by the user or source files are not hidden.",
+  "pressure": "Smaller fixed byte budget; actual compaction/read qualification mandatory. Not natural 1M-token saturation.",
+  "rules": [
+    "Freeze runner, verifier, tasks, gold, fixture files and Harness before first request",
+    "No gold changes, source changes, task replacement or success-triggered selective expansion",
+    "Every reservation persisted before dispatch; unknown usage halts following requests",
+    "Every turn preserves original prompt, outcome, task tree, requests sans reasoning, responses, approvals and run trace",
+    "First sequence is mechanism diagnosis; fix and retest only in a new version/batch, retaining all failures"
+  ],
+  "budget_revision": "v1 was stopped after a 300-second task deadline and unknown cancelled-request usage. v2 preserves all v1 escrow and failures with --carry-budget. Cumulative estimated CNY remains 1; tasks, gold, corpus, model parameters and turn deadline unchanged."
+}

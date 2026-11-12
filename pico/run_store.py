@@ -47,6 +47,8 @@ class RunStore:
         return path
 
     def append_trace(self, task_state, event):
+        from .privacy import scrub
+        event = scrub(event)
         path = self.trace_path(task_state)
         path.parent.mkdir(parents=True, exist_ok=True)
         # trace 采用 jsonl 追加写入，原因是 agent 运行过程是流式事件序列，
@@ -71,4 +73,5 @@ class RunStore:
     def _write_json_atomic(self, path, payload):
         # 原子写：先写临时文件，再 replace。
         # 这样即使中途异常，也不容易留下半截 JSON。
-        return write_json_atomic(path, payload)
+        from .privacy import scrub
+        return write_json_atomic(path, scrub(payload))

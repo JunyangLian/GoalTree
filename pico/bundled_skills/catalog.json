@@ -1,0 +1,185 @@
+[
+  {
+    "id": "goal-planning",
+    "title": "目标规划",
+    "description": "将目标拆成可执行阶段、依赖与验收条件。",
+    "plugin": "goals",
+    "sha256": "379efdc098b6471421ec5b7167c4f5dadeb7e5e1bdcd57e0e8e537be607786bc",
+    "source": {
+      "author": "GoalTree",
+      "license": "MIT",
+      "adapted": false,
+      "url": "https://github.com/JunyangLian/CodeTrail"
+    }
+  },
+  {
+    "id": "report-outline",
+    "title": "报告提纲",
+    "description": "从主题、受众与时长生成可交付的报告结构。",
+    "plugin": "goals",
+    "sha256": "f45c1f089ffa0148a3681a4935fa5120a61105320799a34d7bb49d940761102f",
+    "source": {
+      "author": "GoalTree",
+      "license": "MIT",
+      "adapted": false,
+      "url": "https://github.com/JunyangLian/CodeTrail"
+    }
+  },
+  {
+    "id": "web-research",
+    "title": "资料研究",
+    "description": "高效查找一手来源并保存可核对的引用。",
+    "plugin": "research",
+    "sha256": "034002b1129a8e6a64ddf8fa2120cfae1a822676183f14c21f5a9fc4eb287603",
+    "source": {
+      "author": "GoalTree",
+      "license": "MIT",
+      "adapted": false,
+      "url": "https://github.com/JunyangLian/CodeTrail"
+    }
+  },
+  {
+    "id": "document-review",
+    "title": "文档整理",
+    "description": "核读PDF与附件，提取结构、事实和待核实项。",
+    "plugin": "research",
+    "sha256": "8ac30da1de84ba158dbc1159df7c574c4f0056f6b2a8cd2f8e4a21e8fb532038",
+    "source": {
+      "author": "GoalTree",
+      "license": "MIT",
+      "adapted": false,
+      "url": "https://github.com/JunyangLian/CodeTrail"
+    }
+  },
+  {
+    "id": "writing-plans",
+    "title": "实现计划",
+    "description": "按Superpowers方法形成小步、可验证的实现计划。",
+    "plugin": "development",
+    "sha256": "de34660abcfe2770b91bace770abef2f13734338358a041aabb2d93ab766d6e8",
+    "source": {
+      "author": "obra/superpowers",
+      "license": "MIT",
+      "adapted": true,
+      "url": "https://github.com/obra/superpowers/blob/22f0b463e7a5e579904dd6211a520321035526f7/skills/writing-plans/SKILL.md",
+      "commit": "22f0b463e7a5e579904dd6211a520321035526f7",
+      "upstream_sha256": "a6c67c1900064347c2a329990dd3c555657c51c3ec53b259a08aa01a2c26139a"
+    }
+  },
+  {
+    "id": "systematic-debugging",
+    "title": "系统排障",
+    "description": "按Superpowers方法先定位根因，再验证最小修复。",
+    "plugin": "development",
+    "sha256": "1bc3ca0a9526a52a668941d2658475d5249a90fb6400dc868ed41c0cb9b0fb21",
+    "source": {
+      "author": "obra/superpowers",
+      "license": "MIT",
+      "adapted": true,
+      "url": "https://github.com/obra/superpowers/blob/22f0b463e7a5e579904dd6211a520321035526f7/skills/systematic-debugging/SKILL.md",
+      "commit": "22f0b463e7a5e579904dd6211a520321035526f7",
+      "upstream_sha256": "51c6435d98c83c42c96ba7c35725a0b2c376cd487fb1a4e6bd0ddbe7e33ef202"
+    }
+  },
+  {
+    "id": "verification-before-completion",
+    "title": "完成前验证",
+    "description": "按Superpowers方法用当前证据支撑完成声明。",
+    "plugin": "development",
+    "sha256": "1f9f9e8853ac068401e521bd0ae6650e779b17bc96297e2ecbfd06138678f12d",
+    "source": {
+      "author": "obra/superpowers",
+      "license": "MIT",
+      "adapted": true,
+      "url": "https://github.com/obra/superpowers/blob/22f0b463e7a5e579904dd6211a520321035526f7/skills/verification-before-completion/SKILL.md",
+      "commit": "22f0b463e7a5e579904dd6211a520321035526f7",
+      "upstream_sha256": "2befe7fc55bcadaa3d97dd9e8efeb633d2561c0ebe74c5a8b17c4d9e7e4520b3"
+    }
+  },
+  {
+    "id": "brainstorming",
+    "title": "需求澄清",
+    "description": "梳理目标、约束、方案与验收条件。",
+    "plugin": "ideation",
+    "sha256": "6ef15cf481487df4397591b9a0dcfd0e6c7d0e459165ac68559693a66a7fd4bd",
+    "source": {
+      "author": "obra/superpowers",
+      "license": "MIT",
+      "adapted": true,
+      "commit": "22f0b463e7a5e579904dd6211a520321035526f7",
+      "url": "https://github.com/obra/superpowers/blob/22f0b463e7a5e579904dd6211a520321035526f7/skills/brainstorming/SKILL.md",
+      "upstream_sha256": "2c9ca71f94886f9ca9f4aef055f7cafb3e1a9bdf3aeebf8f4cb547c69405d207"
+    }
+  },
+  {
+    "id": "test-driven-development",
+    "title": "测试驱动开发",
+    "description": "用可复现失败驱动最小实现与回归。",
+    "plugin": "testing",
+    "sha256": "3a5ffcd7a913d6d6c5a2b50d3caa31d9871e0c1ffe7345aea0a101daf7c8356a",
+    "source": {
+      "author": "obra/superpowers",
+      "license": "MIT",
+      "adapted": true,
+      "commit": "22f0b463e7a5e579904dd6211a520321035526f7",
+      "url": "https://github.com/obra/superpowers/blob/22f0b463e7a5e579904dd6211a520321035526f7/skills/test-driven-development/SKILL.md",
+      "upstream_sha256": "64b03fce4aee5a97a93160cea8111f3ba13a17b7c001db4bd5836d67fd10705d"
+    }
+  },
+  {
+    "id": "requesting-code-review",
+    "title": "准备代码审查",
+    "description": "整理变更证据、风险和审查重点。",
+    "plugin": "review",
+    "sha256": "49e64afc15c4239a9ce14517b2f047a9f0e0c90f4d13d28daffc68730d5f4082",
+    "source": {
+      "author": "obra/superpowers",
+      "license": "MIT",
+      "adapted": true,
+      "commit": "22f0b463e7a5e579904dd6211a520321035526f7",
+      "url": "https://github.com/obra/superpowers/blob/22f0b463e7a5e579904dd6211a520321035526f7/skills/requesting-code-review/SKILL.md",
+      "upstream_sha256": "2180e14a448e9410bec88e6646a2d1f0ce7fdd58de27388c1e052e929679d2bc"
+    }
+  },
+  {
+    "id": "receiving-code-review",
+    "title": "处理审查反馈",
+    "description": "核实反馈后逐项修复，保留验证证据。",
+    "plugin": "review",
+    "sha256": "481deb5a55e3f0cf3d7db6fb0c58c8502945e7518495116916e5aafb7ec78ff8",
+    "source": {
+      "author": "obra/superpowers",
+      "license": "MIT",
+      "adapted": true,
+      "commit": "22f0b463e7a5e579904dd6211a520321035526f7",
+      "url": "https://github.com/obra/superpowers/blob/22f0b463e7a5e579904dd6211a520321035526f7/skills/receiving-code-review/SKILL.md",
+      "upstream_sha256": "091df1629510af1b92fc4abd6f96732ebedb4cb2c0f3457e8f2740b0504a2438"
+    }
+  },
+  {
+    "id": "meeting-agenda",
+    "title": "会议议程",
+    "description": "将会议目标整理为议程和准备事项。",
+    "plugin": "meetings",
+    "sha256": "4c304cc5aa5629b3b63089f40a3c9edfceb49e7e11c7bcc9a87ba4e974f32f32",
+    "source": {
+      "author": "GoalTree",
+      "license": "MIT",
+      "adapted": false,
+      "url": "https://github.com/JunyangLian/CodeTrail"
+    }
+  },
+  {
+    "id": "meeting-actions",
+    "title": "纪要与行动项",
+    "description": "从已有会议材料提炼决定、待办和待核实项。",
+    "plugin": "meetings",
+    "sha256": "fd593abf4480e0c8ca23333e08c443fadb7eaa7ed6e4aed9a7930334609cad13",
+    "source": {
+      "author": "GoalTree",
+      "license": "MIT",
+      "adapted": false,
+      "url": "https://github.com/JunyangLian/CodeTrail"
+    }
+  }
+]

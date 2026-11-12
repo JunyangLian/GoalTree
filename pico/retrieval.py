@@ -17,6 +17,8 @@ import time
 import urllib.request
 
 from .security import redact_text, sensitive_workspace_path
+from .privacy import CURRENT, incoming, PrivacyDenied
+from .privacy_transport import open_checked
 from .workspace import IGNORED_PATH_NAMES
 
 SKIP = IGNORED_PATH_NAMES | {'node_modules', 'artifacts', 'benchmarks', 'validation', 'vendor', 'dist', 'build', '.codetrail'}
@@ -68,8 +70,8 @@ class SiliconFlowEmbedding:
             'encoding_format': 'float'}).encode(), headers={'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key})
         self.requests += 1
         opener = urllib.request.urlopen if self.network_route == 'environment' else urllib.request.build_opener(urllib.request.ProxyHandler({})).open
-        with opener(request, timeout=self.timeout) as response:
-            data = json.loads(response.read(4_000_000))
+        with open_checked(request, timeout=self.timeout, route=self.network_route,purpose='embedding') as response:
+            data = json.loads(incoming(response.read(4_000_000).decode('utf-8')))
         if data.get('model') and data['model'] != self.model:
             raise ValueError('Embedding response model differs from requested ID')
         rows = data.get('data', [])
@@ -129,9 +131,11 @@ class RepositoryIndex:
             db.execute('CREATE TABLE IF NOT EXISTS vectors (identity TEXT, hash TEXT, dimensions INTEGER, value TEXT, PRIMARY KEY(identity,hash))')
         self.chunks = []
         self.index_audit = {}
+        self._file_cache = {}
 
     def refresh(self):
         chunks, count, total, omitted = [], 0, 0, 0
+        current, parsed, reused = {}, 0, 0
         for base, dirs, files in os.walk(self.root, followlinks=False):
             dirs[:] = sorted(d for d in dirs if d not in SKIP and not (Path(base)/d).is_symlink() and not d.startswith('.')
                              and (not self.path_filter or self.path_filter(Path(base)/d))
@@ -147,7 +151,8 @@ class RepositoryIndex:
                     continue
                 try:
                     path.resolve().relative_to(self.root)
-                    if path.stat().st_size > 131072:
+                    stat_result=path.stat()
+                    if stat_result.st_size > 131072:
                         omitted += 1
                         continue
                     text = path.read_bytes().decode('utf-8')
@@ -158,15 +163,27 @@ class RepositoryIndex:
                     continue
                 total += len(text.encode())
                 count += 1
-                chunks.extend(chunk_file(relative.as_posix(), text))
+                # Always re-check contents and authorization. Stat-only caches
+                # miss same-size replacements and restored timestamps.
+                key=relative.as_posix();fingerprint=hashlib.sha256(text.encode()).hexdigest()
+                cached=self._file_cache.get(key)
+                if cached and cached[0]==fingerprint:
+                    file_chunks=cached[1];reused+=1
+                else:
+                    file_chunks=chunk_file(key,text);parsed+=1
+                current[key]=(fingerprint,file_chunks)
+                chunks.extend(file_chunks)
+        self._file_cache=current
         self.chunks = chunks[:800]
         self.index_audit = {'files': count, 'chunks': len(self.chunks), 'omitted_files': omitted,
-                            'source_bytes': total, 'recipe': 'code-chunks-v1'}
+                            'source_bytes': total, 'recipe': 'code-chunks-v1',
+                            'parsed_files':parsed,'reused_files':reused,'cache_validation':'content_hash_and_current_policy'}
         return self.index_audit
 
     def _bm25(self, texts, query):
         documents = [Counter(tokens(t)) for t in texts]
         terms = set(tokens(query))
+        document_frequency=Counter(term for document in documents for term in document)
         average = sum(sum(d.values()) for d in documents) / max(1, len(documents)) or 1
         scores = []
         for index, document in enumerate(documents):
@@ -174,7 +191,7 @@ class RepositoryIndex:
             length = sum(document.values())
             for term in terms:
                 frequency = document.get(term, 0)
-                df = sum(term in d for d in documents)
+                df = document_frequency[term]
                 idf = math.log(1 + (len(documents)-df+.5)/(df+.5))
                 score += idf * frequency * 2.2 / (frequency + 1.2*(.25+.75*length/average))
             if score:
@@ -212,7 +229,10 @@ class RepositoryIndex:
         return sorted([(i, sum(a*b for a, b in zip(vectors[key], query_vector)))
                        for i, key in enumerate(keys[:-1])], key=lambda x: (-x[1], x[0]))
 
-    def rank(self, records, query, limit=5):
+    def rank(self, records, query, limit=5, *, allow_dense=True):
+        guard = CURRENT.get()
+        if guard and allow_dense and any(guard.store.level('file:' + r['path']) in {'sensitive','core'} for r in records if r.get('path')):
+            allow_dense = False  # Do not send a classified corpus to a remote embedding service.
         started = time.monotonic()
         if not isinstance(query, str) or not query.strip() or len(query) > 6000 or not 1 <= limit <= 20:
             raise ValueError('Bounded non-empty query and limit 1..20 required')
@@ -223,7 +243,7 @@ class RepositoryIndex:
         ranks = [exact, lexical]
         degradation = None
         dense = []
-        if self.embedding and records:
+        if self.embedding and records and allow_dense:
             try:
                 dense = self._dense(texts, query)
                 ranks.append(dense)
@@ -241,6 +261,7 @@ class RepositoryIndex:
             'embedding': self.embedding.identity if self.embedding else None,
             'mode': 'hybrid' if dense else 'lexical', 'degradation': degradation,
             'dense_configured': self.embedding is not None, 'duration_ms': round((time.monotonic()-started)*1000),
+            'dense_allowed':bool(allow_dense),
             'network_route': getattr(self.embedding, 'network_route', None),
             'provider_usage': getattr(self.embedding, 'last_usage', None)}
         return result

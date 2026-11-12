@@ -33,6 +33,7 @@ def public_activity(task):
         events.append(event)
     # Preserve complete event order for delegation and approval state, not text.
     return {'id': task.get('id', task.get('run_id', '')), 'status': task.get('status', 'completed'),
+            **({'stop_reason':'privacy_denied'} if task.get('stop_reason')=='privacy_denied' else {}),
             'elapsed_ms': task.get('elapsed_ms', 0), 'events': events[-100:]}
 
 
@@ -92,6 +93,9 @@ def verification_summary(events, command):
 
 def model_failure(error, error_type=""):
     text = str(error).lower()
+    if error_type=='PrivacyDenied' or 'privacy policy blocked operation' in text:
+        return ('privacy_denied','隐私策略已阻止外发',
+                '当前内容或来源等级不允许发往此服务；已保留任务状态，没有自动切换外部模型。请使用符合要求的本地处理环境。')
     if error_type=='IncompleteSSEError' or 'incomplete sse response' in text:
         return ('model_stream_interrupted','模型回复流中断',
                 '回复未完整结束，残缺工具调用未执行；已完成操作保留，可从原会话继续。断流请求的Token可能未知。')

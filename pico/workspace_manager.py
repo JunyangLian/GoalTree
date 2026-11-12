@@ -43,6 +43,7 @@ class WorkspaceManager:
             embedding_mode=original.embedding_mode,model_factory=original.make_model,
             network_route=original.network_route,load_env=False,web_access=original.web_access,
             search_backend=original.search_backend,search_mcp=original.search_mcp,
+            privacy_protection=original.privacy_protection,
             web_output_chars=original.web_budget_options['output_chars'],
             web_result_chars=original.web_budget_options['result_chars'],
             web_read_lines=original.web_budget_options['read_lines'])

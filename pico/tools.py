@@ -172,6 +172,7 @@ def tool_list_files(context, args):
     for entry in entries[:200]:
         kind = "[D]" if entry.is_dir() else "[F]"
         lines.append(f"{kind} {entry.relative_to(context.root)}")
+    if context.source_sink:context.source_sink([e.relative_to(context.root).as_posix() for e in entries[:200]])
     return "\n".join(lines) or "(empty)"
 
 

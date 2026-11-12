@@ -169,6 +169,8 @@ class DurableMemoryStore:
         self.index_path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
 
     def _write_topic(self, topic, notes):
+        from ..privacy import CURRENT
+        if CURRENT.get():CURRENT.get().store.derive('artifact:legacy-durable-memory',CURRENT.get().resources)
         self.topics_dir.mkdir(parents=True, exist_ok=True)
         meta = DURABLE_TOPIC_DEFAULTS[topic]
         lines = [
@@ -674,11 +676,17 @@ class LayeredMemory:
                 active = [r for r in active if all(retriever.path_filter(e['path']) for e in r['evidence'])]
                 notes = [n for n in notes if not n.get('source') or retriever.path_filter(n['source'])]
             records = [{**r, 'memory_record': r} for r in active]
-            ranked = retriever.rank(records, query, limit) if records else []
+            from ..privacy import CURRENT
+            ranked = retriever.rank(records, query, limit,allow_dense=False) if records and CURRENT.get() else retriever.rank(records,query,limit) if records else []
             verified = [r['memory_record'] for r in ranked]
         facts = [{'text': record['text'], 'source': record['fact_key'], 'kind': 'verified',
                   'memory_id': record['id'], 'version': record['version'], 'evidence': record['evidence'], 'scope': record['scope']}
                  for record in verified]
+        from ..privacy import CURRENT
+        if CURRENT.get():
+            CURRENT.get().observe(sources=['memory:'+r['id'] for r in verified]+
+                ['file:'+e['path'] for r in verified for e in r['evidence']]+
+                (['artifact:legacy-durable-memory'] if any(n.get('kind')=='durable' for n in notes) else []))
         # Legacy notes remain supported but do not displace verified evidence.
         return (facts + notes)[:limit]
 

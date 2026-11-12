@@ -4,6 +4,9 @@
 !.env.example
 *.pem
 *.key
+# Intentionally public, localhost-only TLS fixtures; no production credentials.
+!tests/fixtures/privacy/receiver-cert.pem
+!tests/fixtures/privacy/receiver-key.pem
 
 # Python and development state
 __pycache__/

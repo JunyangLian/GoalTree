@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "scope": "Synthetic disclosure-policy regression, not semantic detection or real-model capability evaluation",
+  "cases": [
+    {"id":"public_text","payload":"Summarize the public fish ecology report.","allow":true},
+    {"id":"chinese_text","payload":"请规划一份公开文献汇报，不编造实验数据。","allow":true},
+    {"id":"code_identifier","payload":"def count_tokens(items): return len(items)","allow":true},
+    {"id":"security_discussion","payload":"Explain why passwords should never enter logs.","allow":true},
+    {"id":"masked_value","payload":"API credential was <redacted> before processing.","allow":true},
+    {"id":"ordinary_numbers","payload":"In 2026, compare 12 tasks with 36 independent runs.","allow":true},
+    {"id":"public_json","payload":"{\"topic\":\"public research\",\"count\":3}","allow":true},
+    {"id":"general_label","payload":"Prepare an outline.","label":"general","allow":true},
+    {"id":"core_label","payload":"A report summary with no obvious secret pattern.","label":"core","allow":false},
+    {"id":"sensitive_label","payload":"An internal discussion summary.","label":"sensitive","allow":false},
+    {"id":"shaped_key","payload":"sk-TESTONLY1234567890123456","allow":false},
+    {"id":"canary","payload":"GT_CORE_1234567890123456","allow":false},
+    {"id":"assignment","payload":"password=synthetic12345","allow":false},
+    {"id":"email","payload":"person@example.org","allow":false},
+    {"id":"percent_encoding","payload":"%73%6b%2dTESTONLY1234567890123456","allow":false},
+    {"id":"double_encoding","payload":"%2573%256b%252dTESTONLY1234567890123456","allow":false},
+    {"id":"json_unicode","payload":"{\"text\":\"\\u0073\\u006b-TESTONLY1234567890123456\"}","allow":false},
+    {"id":"custom_header","payload":"Public query","header":"GT_CORE_1234567890123456","allow":false},
+    {"id":"url_query","payload":"Public query","query":"GT_CORE_1234567890123456","allow":false},
+    {"id":"opaque_image","payload":"data:image/png;base64,YWJj","allow":false},
+    {"id":"unknown_destination","payload":"Public query","unlisted":true,"allow":false},
+    {"id":"mcp_core_argument","payload":"GT_CORE_1234567890123456","purpose":"mcp","allow":false},
+    {"id":"embedding_core_input","payload":"GT_CORE_1234567890123456","purpose":"embedding","allow":false},
+    {"id":"derived_summary","payload":"A compact summary that does not repeat the original file.","derived":true,"allow":false}
+  ]
+}

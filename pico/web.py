@@ -119,6 +119,8 @@ class Task:
         self.binding = None
         self.attachments = []
         self.cooperation = None
+        self.learning_trial = None
+        self.privacy_enabled=False
 
     def view(self):
         with self.condition:
@@ -133,19 +135,21 @@ class Task:
                 "elapsed_ms": int(((self.finished or time.monotonic()) - self.started) * 1000),
                 "binding": self.binding,
                 "attachments": self.attachments, "cooperation": self.cooperation,
+                "learning_trial": self.learning_trial,
             }
             stop_reason,verification_command=self.stop_reason,self.verification_command
         # Snapshot the append-only event list under the lock, then release it
         # before scanning/redacting history. Polling must not block SSE readers.
         snapshot['usage']=usage_summary(snapshot['events'])
         snapshot.update(run_summary(snapshot['status'],snapshot['events'],stop_reason,snapshot['error'],verification_command))
-        return redact_artifact(snapshot)
+        from .privacy import scrub
+        return scrub(redact_artifact(snapshot),force=self.privacy_enabled)
 
 
 class Workbench:
     def __init__(self, workspace, factory=None, verification_command=None, model_timeout=180, max_new_tokens=None, shell_backend='host',
                  native_input_budget=32768, native_context_window=65536, harness_profile='classic', embedding_mode='off', model_factory=None, network_route='environment',load_env=True,web_access=False,search_backend='public',search_mcp=None,
-                 web_output_chars=10000,web_result_chars=3800,web_read_lines=20):
+                 web_output_chars=10000,web_result_chars=3800,web_read_lines=20,privacy_protection=False):
         from .native_context import NativeContextBudget
         self.native_context_policy = NativeContextBudget(native_input_budget, native_context_window)
         from .web_context import WebBudget
@@ -160,11 +164,14 @@ class Workbench:
         if web_access and harness_profile != 'workbench':
             raise ValueError('Public web tools require the workbench profile')
         self.web_access = bool(web_access)
-        if search_backend not in {'public','exa-mcp'}:raise ValueError('Unknown search backend')
+        if search_backend not in {'public','exa-mcp','glm-free'}:raise ValueError('Unknown search backend')
         if search_backend!='public' and not self.web_access:raise ValueError('Search MCP requires web access')
         self.search_backend=search_backend
         from .search_mcp import SearchMCP
         self.search_mcp=(search_mcp or SearchMCP()) if search_backend=='exa-mcp' else None
+        if search_backend=='glm-free':
+            from .search_hybrid import HybridSearch
+            self.search_mcp=search_mcp or HybridSearch()
         self.network_route = network_route
         self.verification_command = verification_command
         if verification_command is None and self.root == (Path(__file__).resolve().parent.parent / "examples/interview-demo"):
@@ -187,6 +194,14 @@ class Workbench:
         ])
         self.make_model = model_factory or (lambda: _build_model_client(self.args))
         self.model = self.make_model()
+        from .context_tokens import policy_for_client
+        self.native_context_policy = policy_for_client(self.model, native_input_budget, native_context_window)
+        self.model.privacy_root=self.root
+        from .privacy import PrivacyStore
+        self.privacy_protection = bool(privacy_protection)
+        self.privacy_store = PrivacyStore(self.root)
+        if self.privacy_protection:
+            self.privacy_store.initialize(getattr(self.model,'base_url',getattr(self.model,'host',None)),self.web_access)
         self.factory = factory or self._build_agent
         self.csrf = secrets.token_urlsafe(32)
         self.tasks = {}
@@ -194,6 +209,10 @@ class Workbench:
         self.lock = threading.Lock()
         self.goals = GoalStore(self.root)
         self.assets = ConversationAssets(self.root)
+        from .shared_memory import SharedMemoryStore
+        self.shared_memory = SharedMemoryStore(self.root)
+        from .extension_hub import ExtensionHub
+        self.extension_hub = ExtensionHub(self)
         self.goals.recover()
         self.recoverable_ids = []
         directory = self.root / '.pico/web/tasks'
@@ -208,8 +227,13 @@ class Workbench:
         return {
             "workspace": str(self.root), "workspace_name": self.root.name,
             "product": "GoalTree", "goal_tree": True,
+            "privacy": {"enabled": self.privacy_store.enabled,
+                        "mode": self.privacy_store.policy()['mode'] if self.privacy_store.enabled else 'unconfigured',
+                        "external_fallback": False,"uninspected_images": 'blocked'},
+            "learning": self.harness_profile == 'workbench',
             'web_access': self.web_access,
-            'search_backend':self.search_backend,'search_mcp':self.search_mcp.config() if self.search_mcp else None,
+            'search_backend':self.search_backend,'search_mcp':self.search_mcp.config() if self.search_backend=='exa-mcp' and self.search_mcp else None,
+            'search_provider':self.search_mcp.config() if self.search_mcp else None,
             'planning_reasoning_effort':'low' if getattr(self.model,'bigmodel_glm',False) else None,
             "attachments": {'max_files': 4, 'max_bytes': 5 * 1024 * 1024,
                             'image_input': bool(getattr(self.model, 'bigmodel_glm', False))},
@@ -225,7 +249,12 @@ class Workbench:
             'recoverable_tasks': list(self.recoverable_ids),
             "native_input_budget": self.native_context_policy.input_budget,
             "native_context_window": self.native_context_policy.context_window,
-            "native_counting": "utf8_json_bytes_conservative_estimate",
+            "native_counting": self.native_context_policy.counting,
+            "input_token_budget": self.native_context_policy.input_token_budget,
+            "token_context_window": self.native_context_policy.token_context_window,
+            "context_compaction": {'trigger_ratio':self.native_context_policy.compact_trigger,
+                                   'target_ratio':self.native_context_policy.compact_target,
+                                   'retention_policy':'host_fixed_v1'},
             "web_output_limits":self.web_budget_options,
             "demo": self.root == (Path(__file__).resolve().parent.parent / "examples/interview-demo"),
         }
@@ -257,6 +286,7 @@ class Workbench:
             from .web_tools import registry
             agent.tools.update(registry(agent,self.search_mcp,budget_options=self.web_budget_options))
             agent.refresh_prefix(force=True)
+        agent.mcp_network_allowed = self.web_access
         return agent
 
     def submit(self, data):
@@ -286,6 +316,18 @@ class Workbench:
                 policy = 'never'
         elif session_id.startswith('gt_'):
             raise RequestError('GoalTree会话必须显式绑定所属目标和任务。', 409)
+        learning_trial = data.get('learning_trial')
+        if learning_trial is not None:
+            if not isinstance(learning_trial, dict) or set(learning_trial) != {'id', 'version'} or type(learning_trial['version']) is not int:
+                raise RequestError('试用需要候选ID和整数版本。')
+            from .evolution import EvolutionStore
+            from .extensions import PolicyHooks
+            store = EvolutionStore(self.root)
+            item = store.get(learning_trial['id'])
+            if (item['status'] != 'candidate' or item['version'] != learning_trial['version'] or
+                    not EvolutionStore.visible(item, (binding or {}).get('goal_id', ''), session_id) or
+                    not store.fresh(item, PolicyHooks(self.root).allows_path)):
+                raise RequestError('候选已更新或不属于此对话。', 409)
         attachment_ids = data.get('attachments', [])
         if attachment_ids and (not binding or binding['mode'] != 'assistant'):
             raise RequestError('附件需要绑定GoalTree对话。')
@@ -305,6 +347,7 @@ class Workbench:
                 raise RequestError("已有任务正在执行，请等待完成。", 409)
             task = Task(prompt.strip(), session_id, policy, steps, self.verification_command)
             task.binding = binding
+            task.learning_trial = learning_trial
             task.attachments = [self.assets.metadata(r) for r in assets]
             task.cooperation = settings
             if binding:
@@ -333,6 +376,8 @@ class Workbench:
                 if data.get('action') == 'accept_task':
                     data = {**data, 'workspace_sha256': self._workspace_digest()}
                 result = self.goals.action(data)
+                if data.get('action') == 'accept_task':
+                    self.record_learning_acceptance([result['id']])
             except GoalError as exc:
                 raise RequestError(str(exc), exc.status) from exc
         return {'result': result, 'tree': redact_artifact({**tree_view(self.goals.read()),'events':self.goals.events(40)})}
@@ -366,6 +411,17 @@ class Workbench:
             except ValueError as exc:
                 raise RequestError(str(exc)) from exc
 
+    def set_memory_sharing(self, data):
+        owner=self.conversation_owner(data)
+        if type(data.get('enabled')) is not bool:
+            raise RequestError('记忆互联设置需要开启或关闭。')
+        with self.lock:
+            if self.active_id:raise RequestError('请等待运行结束或停止后，再更改记忆互联。',409)
+            try:
+                return self.shared_memory.preference(owner,data['enabled'],data.get('revision'))
+            except ValueError as exc:
+                raise RequestError(str(exc),409 if 'conflict' in str(exc) else 400) from exc
+
     def tree(self):
         self._refresh_goal_validity()
         return redact_artifact({**tree_view(self.goals.read()), 'events': self.goals.events(40), 'active_id': self.active_id})
@@ -389,6 +445,7 @@ class Workbench:
             history = self.session(session_id) if (self.root / '.pico/sessions' / (session_id + '.json')).exists() else {'messages': []}
             item = self.goals.read()['goals'].get(goal_id, {'title': '新对话'})
             return {'session_id': session_id, 'messages': history['messages'], 'node': item,
+                    'memory_sharing':self.shared_memory.preference(session_id),
                     'cooperation': self.assets.preferences(session_id)}
         state = self.goals.read()
         try:
@@ -413,6 +470,10 @@ class Workbench:
             raise RequestError('执行器返回了错误的任务会话，已停止。', 409)
         agent.goal_binding = dict(binding)
         agent.goal_context = self.goals.context(binding)
+        if getattr(task, 'handoff', None):
+            from .handoff import validate
+            validate(self.goals, task.handoff, binding, agent.capabilities.hooks.fingerprint())
+            agent.handoff_id = task.handoff['id']
         if not task.attachments and binding['mode'] == 'assistant':
             previous = next((m.get('attachments', []) for m in reversed(agent.session.get('history', [])) if m.get('role') == 'user' and m.get('attachments')), [])
             if previous:
@@ -429,6 +490,9 @@ class Workbench:
         agent.session['goal_binding'] = dict(binding)
         agent.memory.isolated_session = True
         agent.memory.durable_store = None
+        from .shared_memory import SharedMemoryRuntime
+        agent.shared_memory_runtime = SharedMemoryRuntime(agent,self.shared_memory,self.goals)
+        agent.learning_trial = getattr(task, 'learning_trial', None)
         if getattr(task, 'scope_budget', None) is not None:
             agent.goal_tool_budget = task.scope_budget
         if binding['mode'] == 'assistant':
@@ -438,7 +502,7 @@ class Workbench:
             agent.goal_tool_budget = task.scope_budget
             agent.read_only = task.policy == 'never'
             agent.verification_command = task.verification_command = None
-            allowed = {'list_files', 'read_file', 'code_search', 'symbol_info', 'recall_evidence', 'find_evidence', 'load_skill', 'web_search', 'web_read', 'web_find'}
+            allowed = {'list_files', 'read_file', 'code_search', 'symbol_info', 'recall_evidence', 'find_evidence', 'load_skill', 'learning_propose', 'mcp_call', 'web_search', 'web_read', 'web_find'}
             agent.tools = {k: v for k, v in agent.tools.items() if k in allowed}
 
             def refresh():
@@ -446,6 +510,8 @@ class Workbench:
                     binding['goal_spec_version'] = self.goals.read()['goals'][binding['goal_id']]['spec_version']
                 agent.goal_binding = dict(binding)
                 agent.goal_context = self.goals.context(binding)
+                from .session_context import rebind
+                rebind(agent)
                 # Only prior finalized conversation outputs, never failed partial
                 # drafts/tool transcripts; these are deliverables, not validation.
                 outputs=[]
@@ -547,8 +613,16 @@ class Workbench:
                     raise GoalError('本轮工具预算已用尽。')
                 self.goals.reconcile(self._workspace_digest())
                 child_binding = self.goals.binding(binding['goal_id'], task_id, 'execute')
+                from .handoff import dispatch, validate, response
+                handoff = dispatch(self.goals, child_binding, instruction, agent.capabilities.hooks.fingerprint())
                 child = Task(instruction, child_binding['session_id'], task.policy, min(remaining, task.max_steps), self.verification_command)
                 child.binding, child.parent_task, child.scope_budget = child_binding, task, task.scope_budget
+                child.handoff = handoff
+                handoff_ref = agent.evidence.put(agent.session['id'], agent.current_task_state.run_id,
+                    'task_handoff', json.dumps(handoff, ensure_ascii=False),
+                    {'goal_id':binding['goal_id'], 'task_id':task_id, 'child_session_id':child_binding['session_id']})
+                agent.emit_trace(agent.current_task_state, 'handoff_dispatched',
+                                 {'handoff_id':handoff['id'], 'task_id':task_id, 'evidence_id':handoff_ref})
                 child.cooperation = task.cooperation
                 child.attachments = list(task.attachments)
                 child.attachment_owner = binding['session_id']
@@ -568,18 +642,17 @@ class Workbench:
                 evidence_id = agent.evidence.put(agent.session['id'], agent.current_task_state.run_id,
                     'delegated_task_result', json.dumps(details, ensure_ascii=False),
                     {'goal_id': binding['goal_id'], 'task_id': task_id, 'child_run_id': child.id, 'source_paths': sources})
-                # Put acceptance before prose and keep the whole response valid
-                # JSON under the ordinary tool preview limit. Full details stay
-                # recoverable in the coordinator's authorized evidence scope.
-                summary = {**details, 'verification': {**view['verification'], 'command': view['verification'].get('command', '')[:400],
-                                                       'command_truncated': len(view['verification'].get('command', '')) > 400},
-                           'error': view['error'][:600], 'answer': view['answer'][:1200],
-                           'answer_truncated': len(view['answer']) > 1200, 'detail_evidence_id': evidence_id}
-                while len(json.dumps(summary, ensure_ascii=False)) > 3400 and (summary['answer'] or summary['error']):
-                    key = 'answer' if summary['answer'] else 'error'
-                    summary[key] = summary[key][:len(summary[key])//2]
-                    summary['answer_truncated'] = len(summary['answer']) < len(view['answer'])
-                summary['error_truncated'] = len(summary['error']) < len(view['error'])
+                try:
+                    validate(self.goals, handoff, child_binding, agent.capabilities.hooks.fingerprint())
+                    node = self.goals.read()['tasks'][task_id]
+                    summary = response(handoff, details, node, evidence_id)
+                except ValueError as exc:
+                    agent.emit_trace(agent.current_task_state, 'handoff_rejected',
+                        {'handoff_id':handoff['id'], 'evidence_id':evidence_id, 'reason':str(exc)})
+                    raise
+                agent.emit_trace(agent.current_task_state, 'handoff_received',
+                    {'handoff_id':handoff['id'], 'evidence_id':evidence_id, 'status':view['status'],
+                     'acceptance':summary['acceptance']})
                 return summary
 
             conversational_outputs=[]
@@ -613,6 +686,7 @@ class Workbench:
                     raise GoalError('验收缺少已核对的范围快照。',409)
                 result = self.goals.accept_tree(binding['goal_id'],task_id,include_children,
                     acceptance_intent['revisions'],reason,self._workspace_digest())
+                self.record_learning_acceptance(result['accepted_ids'])
                 acceptance_intent.clear()
                 refresh()
                 return result
@@ -628,7 +702,7 @@ class Workbench:
             agent.read_only = True
             agent.verification_command = None
             task.verification_command = None
-            allowed = {'list_files', 'read_file', 'code_search', 'symbol_info', 'recall_evidence', 'find_evidence', 'load_skill', 'web_search', 'web_read', 'web_find'}
+            allowed = {'list_files', 'read_file', 'code_search', 'symbol_info', 'recall_evidence', 'find_evidence', 'load_skill', 'mcp_call', 'web_search', 'web_read', 'web_find'}
             agent.tools = {k: v for k, v in agent.tools.items() if k in allowed}
         if binding['mode'] == 'plan':
             if not agent.capabilities:
@@ -672,6 +746,17 @@ class Workbench:
 
     def _persist_task(self, task):
         from .persistence import write_json_atomic
+        from .privacy import inspect_text
+        task.privacy_enabled=self.privacy_store.enabled
+        if task.privacy_enabled:
+            resource='artifact:web-task-'+task.id
+            level,_=inspect_text(task.prompt)
+            current=self.privacy_store.level(resource)
+            from .privacy import maximum
+            self.privacy_store.label(resource,maximum(level,current))
+            if task.session_id:self.privacy_store.derive('session:'+task.session_id,[resource])
+            if task.binding and task.binding.get('goal_id'):
+                self.privacy_store.derive('goal:'+task.binding['goal_id'],[resource])
         write_json_atomic(self.root / '.pico/web/tasks' / (checked_id(task.id) + '.json'),
                           {**task.view(), 'policy': task.policy, 'max_steps': task.max_steps,
                            'attachment_owner': getattr(task, 'attachment_owner', task.session_id),
@@ -737,6 +822,104 @@ class Workbench:
             'rules': agent.session.get('rule_sources', []), 'skills': agent.capabilities.skills,
             'evidence': agent.evidence.events(agent.session['id'], 30)})
 
+    def learning_scope(self, data):
+        goal_id, session_id = data.get('goal_id', ''), data.get('session_id', '')
+        if goal_id:
+            binding = self.goals.binding(goal_id, '', 'assistant')
+            if session_id and session_id != binding['session_id']:
+                raise RequestError('经验与所选目标会话不匹配。', 409)
+            session_id = binding['session_id']
+        elif not session_id:
+            session_id = self.goals.binding('', '', 'assistant')['session_id']
+        else:
+            checked_id(session_id)
+            if session_id.startswith('gt_') and session_id != self.goals.binding('', '', 'assistant')['session_id']:
+                raise RequestError('请显式选择此会话所属目标。', 409)
+        return {'goal_id': goal_id, 'session_id': session_id}
+
+    def extensions_action(self, data):
+        scope = self.learning_scope(data)
+        with self.lock:
+            if self.active_id:
+                raise RequestError('请等待当前运行结束后调整扩展配置。', 409)
+            try:
+                self.extension_hub.settings.change(data.get('group'), data.get('id'), data.get('enabled'), data.get('revision'))
+            except ValueError as exc:
+                raise RequestError(str(exc), 409 if 'conflict' in str(exc) else 400) from exc
+        return redact_artifact(self.extension_hub.view(scope))
+
+    def learning_view(self, data):
+        from .evolution import EvolutionStore
+        from .extensions import PolicyHooks
+        store = EvolutionStore(self.root)
+        scope = self.learning_scope(data)
+        allowed = PolicyHooks(self.root).allows_path
+        items = store.list(**scope, path_filter=allowed, limit=40)
+        for item in items:
+            item['usage'] = store.usages(item['id'])
+            item['transfer_passed'] = store.transfer_passed(item, allowed) if item['kind'] == 'skill' else False
+        sources = store.sources(**scope)
+        sources = [r for r in sources if all(allowed(e['path']) for e in r['evidence'])]
+        return redact_artifact({'items': items, 'sources': sources, 'audit': store.audit(), **scope})
+
+    def learn(self, data):
+        from .evolution import EvolutionStore
+        from .extensions import PolicyHooks
+        scope = self.learning_scope(data)
+        with self.lock:
+            if self.active_id:
+                raise RequestError('请在运行结束后确认或修订经验。', 409)
+            store = EvolutionStore(self.root)
+            action = data.get('action')
+            if action == 'feedback':
+                store.observe('operator:' + secrets.token_hex(12), category='feedback', **scope,
+                              outcome='corrected', observation=data.get('text', ''))
+            else:
+                item = store.get(data.get('id'))
+                if not store.visible(item, **scope):
+                    raise RequestError('不能修改其他目标的经验。', 403)
+                version = data.get('version')
+                if type(version) is not int:
+                    raise RequestError('经验版本必须是整数。')
+                if action in {'activate', 'rollback'}:
+                    store.activate(item['id'], version, reviewer='operator_web', rollback=action == 'rollback',
+                                   path_filter=PolicyHooks(self.root).allows_path)
+                elif action == 'retract':
+                    store.transition(item['id'], version, 'retracted', data.get('reason', 'Operator rejected this guidance'))
+                else:
+                    raise RequestError('未知经验操作。')
+        return self.learning_view(scope)
+
+    def record_learning_acceptance(self, task_ids):
+        from .evolution import EvolutionStore
+        from .evidence import EvidenceStore
+        store, evidence = EvolutionStore(self.root), EvidenceStore(self.root)
+        state = self.goals.read()
+        for task_id in task_ids:
+            item = state['tasks'][task_id]
+            if item['status'] != 'completed' or item['validity'] != 'fresh':
+                continue
+            session_id, run_id, ref = '', '', ''
+            if item.get('deliverables'):
+                ref = item['deliverables'][-1]['evidence_id']
+                with evidence.connect() as db:
+                    row = db.execute('SELECT session,run FROM objects WHERE id=?', (ref,)).fetchone()
+                if row:
+                    session_id, run_id = row['session'], row['run']
+            elif item.get('runs'):
+                session_id, run_id = item['runs'][-1].get('session_id', ''), item['runs'][-1].get('run_id', '')
+            if not session_id or not run_id:
+                continue
+            receipt = store.observe('accepted:' + task_id + ':' + str(item['revision']), category='acceptance',
+                session_id=session_id, goal_id=item['goal_id'], task_id=task_id, run_id=run_id,
+                outcome='passed', observation='Operator accepted task: ' + item['title'],
+                detail={'task_spec_version': item['spec_version'], 'evidence_id': ref,
+                        'goal_spec_version': state['goals'][item['goal_id']]['spec_version']})
+            store.settle(receipt)
+            if not self.active_id:
+                from .extensions import PolicyHooks
+                store.automatic(goal_id=item['goal_id'], session_id=session_id, path_filter=PolicyHooks(self.root).allows_path)
+
     def govern(self, data):
         if self.active_id:
             raise RequestError('请在任务结束后处理记忆确认或恢复核对。', 409)
@@ -775,6 +958,8 @@ class Workbench:
         try:
             agent = (self._build_agent(task.session_id, task.policy, task.max_steps,coordinator=bool(task.binding and task.binding['mode']=='assistant'))
                      if self.factory==self._build_agent else self.factory(task.session_id, task.policy, task.max_steps))
+            agent.learning_trial = getattr(task, 'learning_trial', None)
+            agent.defer_learning_activation = bool(parent)
             if parent and getattr(getattr(parent,'agent',None),'web_budget',None) and hasattr(agent,'web_context'):
                 agent.web_budget = parent.agent.web_budget
             if task.binding:
@@ -796,13 +981,16 @@ class Workbench:
                     task.attempts = state.attempts
                     task.tool_steps = state.tool_steps
                     task.condition.notify_all()
-                if event != 'model_delta':
+                # Progress is already appended to the durable run trace above.
+                # Rewriting the entire task on each SSE phase/heartbeat made
+                # growing histories block the reader and trigger its deadline.
+                if event not in {'model_delta', 'model_progress'}:
                     self._persist_task(task)
                 if parent:
                     with parent.condition:
                         parent.events.append({**saved, 'delegated_task_id': task.binding['task_id'], 'delegated_run_id': task.id})
                         parent.condition.notify_all()
-                    if event != 'model_delta':
+                    if event not in {'model_delta', 'model_progress'}:
                         self._persist_task(parent)
                 return saved
 
@@ -840,6 +1028,8 @@ class Workbench:
             with task.condition:
                 task.session_id = agent.session["id"]
                 task.status = "running"
+            if self.privacy_store.enabled:
+                self.privacy_store.derive('session:'+task.session_id,['artifact:web-task-'+task.id])
             answer = agent.ask(task.prompt)
             with task.condition:
                 task.answer = agent.redact_text(answer)
@@ -857,6 +1047,8 @@ class Workbench:
             if agent:
                 try:
                     diffs = redact_artifact(make_diffs(before, text_snapshot(self.root)))
+                    from .privacy import scrub
+                    diffs=scrub(diffs,force=self.privacy_store.enabled)
                     with task.condition:
                         task.diffs = diffs
                     if task.run_id:
@@ -1014,7 +1206,17 @@ def make_server(workbench, port=8765, workspace_manager=None):
                 self.validate_host()
                 workbench=self.selected_workbench()
                 path = urlsplit(self.path).path
-                if path in {"/", "/app.js", "/style.css", "/markdown.js", "/markdown-it.min.js", "/tree.js", "/tree.css"}:
+                if path == '/favicon.ico':
+                    path = '/icons/goaltree.ico'
+                if path.startswith('/icons/'):
+                    import re
+                    name=path[len('/icons/'):]
+                    if not re.fullmatch(r'[a-z0-9-]+\.(?:svg|png|ico)',name):raise RequestError('图标不存在。',404)
+                    target=ASSETS/'icons'/name
+                    if not target.is_file() or target.is_symlink() or target.stat().st_size>262144:raise RequestError('图标不存在。',404)
+                    kind={'.svg':'image/svg+xml','.png':'image/png','.ico':'image/x-icon'}[target.suffix]
+                    return self.reply(200,target.read_bytes(),kind)
+                if path in {"/", "/app.js", "/style.css", "/markdown.js", "/markdown-it.min.js", "/tree.js", "/tree.css", "/hub.js", "/hub.css", "/brand.css"}:
                     name = "index.html" if path == "/" else path[1:]
                     kind = "text/html" if name == 'index.html' else "text/javascript" if name.endswith('.js') else "text/css"
                     return self.reply(200, (ASSETS / name).read_bytes(), kind + "; charset=utf-8")
@@ -1022,12 +1224,21 @@ def make_server(workbench, port=8765, workspace_manager=None):
                     return self.reply(200, {**workbench.config(),**(workspace_manager.config(workbench) if workspace_manager else {})})
                 if path == '/api/tree':
                     return self.reply(200, workbench.tree())
+                if path in {'/api/extensions', '/api/extensions/detail'}:
+                    query = parse_qs(urlsplit(self.path).query)
+                    scope = workbench.learning_scope({k: query.get(k, [''])[0] for k in ('goal_id', 'session_id')})
+                    if path.endswith('/detail'):
+                        return self.reply(200, redact_artifact(workbench.extension_hub.preview(query.get('kind', [''])[0], query.get('id', [''])[0], scope)))
+                    return self.reply(200, redact_artifact(workbench.extension_hub.view(scope)))
                 if path == '/api/tree/context':
                     query = parse_qs(urlsplit(self.path).query)
                     return self.reply(200, workbench.tree_context(query.get('goal_id', [''])[0], query.get('node_id', [''])[0], query.get('mode', ['chat'])[0]))
                 if path == '/api/governance':
                     query = parse_qs(urlsplit(self.path).query)
                     return self.reply(200, workbench.governance(query.get('session_id', [None])[0]))
+                if path == '/api/learning':
+                    query = parse_qs(urlsplit(self.path).query)
+                    return self.reply(200, workbench.learning_view({k: query.get(k, [''])[0] for k in ('goal_id', 'session_id')}))
                 if path == "/api/sessions":
                     return self.reply(200, workbench.sessions())
                 if path.startswith("/api/sessions/"):
@@ -1092,10 +1303,23 @@ def make_server(workbench, port=8765, workspace_manager=None):
                     return self.reply(201, workbench.upload_attachment(data))
                 if path == '/api/cooperation':
                     return self.reply(200, workbench.set_cooperation(data))
+                if path == '/api/memory-sharing':
+                    return self.reply(200, workbench.set_memory_sharing(data))
+                if path == '/api/extensions':
+                    return self.reply(200, workbench.extensions_action(data))
+                if path == '/api/extensions/probe':
+                    return self.reply(200, redact_artifact(workbench.extension_hub.probe(data.get('id'))))
                 if path == '/api/tree':
                     return self.reply(200, workbench.tree_action(data))
                 if path == '/api/governance':
                     return self.reply(200, workbench.govern(data))
+                if path == '/api/learning':
+                    try:
+                        result = workbench.learn(data)
+                    except ValueError as exc:
+                        raise RequestError(str(redact_artifact(str(exc))),
+                                           409 if 'conflict' in str(exc) or 'changed' in str(exc) else 400) from exc
+                    return self.reply(200, result)
                 parts = path.strip("/").split("/")
                 if len(parts) == 4 and parts[:2] == ['api', 'tasks']:
                     if parts[3] == 'cancel':
@@ -1133,14 +1357,14 @@ def main(argv=None):
     parser.add_argument('--embedding', choices=('off', 'siliconflow'), default='off')
     parser.add_argument('--network-route', choices=('environment', 'direct'), default='environment')
     parser.add_argument('--web-access', action='store_true', help='Enable bounded public webpage search/read tools; Shell permissions are unchanged')
-    parser.add_argument('--search-backend',choices=('public','exa-mcp'),default='public',help='Public search pages or allowlisted Exa hosted Search MCP')
+    parser.add_argument('--search-backend',choices=('public','exa-mcp','glm-free'),default='glm-free',help='Default: GLM search_pro + free international search')
     args = parser.parse_args(argv)
     if not 1 <= args.model_timeout <= 300:
         parser.error("--model-timeout must be between 1 and 300 seconds")
     app = Workbench(args.cwd, verification_command=args.verify_command, model_timeout=args.model_timeout, max_new_tokens=args.max_new_tokens,
                     shell_backend=args.shell_backend, native_input_budget=args.native_input_budget, native_context_window=args.native_context_window,
-                    harness_profile=args.harness_profile, embedding_mode=args.embedding, network_route=args.network_route, web_access=args.web_access,search_backend=args.search_backend)
-    if app.search_mcp:
+                    harness_profile=args.harness_profile, embedding_mode=args.embedding, network_route=args.network_route, web_access=args.web_access,search_backend=args.search_backend if args.web_access else 'public')
+    if app.search_backend=='exa-mcp' and app.search_mcp:
         from .search_mcp import MCPError
         try:app.search_mcp.prepare(time.monotonic()+15)
         except MCPError as exc:print('Search MCP warm-up failed (no fallback): '+str(exc),flush=True)

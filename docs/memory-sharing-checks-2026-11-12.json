@@ -1,0 +1,169 @@
+{
+  "schema": "workspace-memory-sharing-validation-v1",
+  "date": "2026-11-12",
+  "external_model_calls": 0,
+  "behavior": {
+    "default": "off",
+    "consent": "source and recipient must both opt in",
+    "scope": "same workspace only",
+    "source_types": [
+      "goal_notes_unverified",
+      "active_goal_or_session_learning_memory",
+      "active_verified_session_memory"
+    ],
+    "raw_transcript_pool": false,
+    "file_or_attachment_bulk_pool": false,
+    "remote_embeddings": false,
+    "retrieval": "local BM25",
+    "max_items": 3,
+    "entry_body_and_conditions_max_chars": 2400,
+    "advisory_json_total_max_chars": 3600,
+    "existing_outputs_erased_on_opt_out": false,
+    "permissions_changed": false
+  },
+  "targeted_tests": {
+    "passed": 60,
+    "failed": 0,
+    "elapsed_seconds": 37.48,
+    "external_model_calls": 0,
+    "command": "python -X utf8 -m pytest tests/test_shared_memory.py tests/test_privacy.py tests/test_web_frontend.py -q --tb=short"
+  },
+  "post_browser_race_regression": {
+    "passed": 58,
+    "failed": 0,
+    "elapsed_seconds": 52.08,
+    "external_model_calls": 0,
+    "command": "python -X utf8 -m pytest tests/test_shared_memory.py tests/test_web_frontend.py tests/test_conversation_controls.py tests/test_context_layers.py -q --tb=short"
+  },
+  "browser": {
+    "schema": "shared-memory-browser-final-v2",
+    "browser": "Tabbit",
+    "external_model_calls": 0,
+    "checks": [
+      "source_remains_enabled",
+      "target_disabled_before_opt_in",
+      "enable_save",
+      "ui_request_one_new_shared_result",
+      "disable_save",
+      "ui_request_one_new_zero_result",
+      "new_conversation_exact_title",
+      "new_conversation_private",
+      "return_exact_target_title",
+      "target_setting_retained",
+      "reload_exact_target_title",
+      "reload_target_setting_retained"
+    ],
+    "passed_checks": 12,
+    "fixture": "Public scripted native responses; real browser clicks, UI messages and backend retrieval",
+    "screenshot": {
+      "path": "artifacts/shared-memory-2026-11-12/browser-final.png",
+      "sha256": "f5f482cc9e029a89018a1fb271cfcc9fb93f8a46d6a2ea82954e2ad245fac74d"
+    },
+    "earlier_checks_superseded": "browser-report-v1.json had insufficient selection assertions; browser-scope-gap.json records the finding. Raw receipts and screenshots retained.",
+    "limitations": [
+      "Not a live model effectiveness evaluation.",
+      "Existing generated content remains after opt-out."
+    ]
+  },
+  "full_automated_tests": {
+    "status": "finished",
+    "path": "artifacts/shared-memory-2026-11-12/full-validation-final",
+    "exit_code": 0,
+    "elapsed_seconds": 804.26,
+    "source_changes": [
+      "pico/web_assets/style.css"
+    ],
+    "frozen_files": 325,
+    "total": 930,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 930
+  },
+  "line_ending_normalization": {
+    "path": "pico/web_assets/style.css",
+    "before_bytes": 13788,
+    "after_bytes": 13762,
+    "difference_is_only_CRLF_to_LF": true,
+    "behavior_change": false
+  },
+  "live_preview": {
+    "url": "http://127.0.0.1:8789/",
+    "model": "glm-5.3-flash",
+    "token_context_window": 1048576,
+    "shell_backend": "appcontainer",
+    "privacy_mode": "enforce",
+    "external_model_calls_during_startup": 0,
+    "workspace": "new isolated preview workspace",
+    "check": "HTTP configuration only"
+  },
+  "evidence_root": "artifacts/shared-memory-2026-11-12",
+  "limitations": [
+    "Rule-and-label privacy checks are not a comprehensive semantic secrecy detector.",
+    "Previously generated replies, copies and derived memories are not automatically revoked or deleted.",
+    "Shared references do not override current Goal contracts, permissions or acceptance.",
+    "No real model quality, long-task pass rate, cache or efficiency uplift claim.",
+    "Browser uses explicit scripted native model replies, not GLM output.",
+    "First browser scope assertions were insufficient; old receipts retained and replaced by stronger exact-title checks."
+  ],
+  "browser_state_audit": {
+    "schema": "shared-memory-browser-state-audit-v1",
+    "source_setting": {
+      "enabled": true,
+      "revision": 1
+    },
+    "target_setting": {
+      "enabled": false,
+      "revision": 4
+    },
+    "selection_matches_target": true,
+    "target_constraints_unchanged": true,
+    "runs": [
+      {
+        "id": "0c7b9687e67395ca043a353e",
+        "status": "completed",
+        "bound_goal": "goal_706c7488ff2c48378506",
+        "shared_retrieval_count": 1,
+        "scripted": true
+      },
+      {
+        "id": "712c4f75205b8c882cfdd5d1",
+        "status": "completed",
+        "bound_goal": "goal_706c7488ff2c48378506",
+        "shared_retrieval_count": 0,
+        "scripted": true
+      },
+      {
+        "id": "bb09f51aa5eaf2179c444c45",
+        "status": "completed",
+        "bound_goal": "goal_706c7488ff2c48378506",
+        "shared_retrieval_count": 1,
+        "scripted": true
+      },
+      {
+        "id": "f24c52fdc1cc0466a013067a",
+        "status": "completed",
+        "bound_goal": "goal_706c7488ff2c48378506",
+        "shared_retrieval_count": 0,
+        "scripted": true
+      }
+    ],
+    "all_runs_target_bound": true,
+    "all_runs_completed": true,
+    "source_and_target_are_distinct": true,
+    "external_model_calls_in_scripted_fixture": 0,
+    "provider_tokens": "not_measured_for_scripted_fixture"
+  },
+  "frontend_post_normalization_tests": {
+    "passed": 8,
+    "failed": 0,
+    "elapsed_seconds": 3.04
+  },
+  "credential_scan": {
+    "scope": "tracked and non-ignored worktree files",
+    "files_checked": 794,
+    "credential_available_for_check": true,
+    "matching_paths": [],
+    "key_not_in_report": true
+  }
+}

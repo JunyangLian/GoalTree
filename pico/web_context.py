@@ -159,10 +159,24 @@ class WebContext:
         if not isinstance(query, str) or not query.strip() or len(query) > 400 or type(limit) is not int or not 1 <= limit <= 5:
             raise WebAccessError('invalid bounded search query/limit')
         from .web_search import SOURCES, GROUPS
-        if not isinstance(source,str) or (source not in SOURCES and source not in GROUPS and source!='mcp'):raise WebAccessError('unknown search source')
-        use_mcp = self.search_mcp is not None and source in {'auto','mcp'}
+        if not isinstance(source,str) or (source not in SOURCES and source not in GROUPS and source not in {'mcp','glm'}):raise WebAccessError('unknown search source')
+        hybrid=getattr(self.search_mcp,'kind',None)=='hybrid'
+        use_hybrid=hybrid and source in {'auto','glm','duckduckgo','bing-intl'}
+        if source=='glm' and not hybrid:raise WebAccessError('GLM search_pro backend is not configured')
+        use_mcp = self.search_mcp is not None and not hybrid and source in {'auto','mcp'}
+        if use_mcp:
+            from .extension_hub import ExtensionSettings
+            exa_settings=ExtensionSettings(self.agent.root)
+            if not exa_settings.read()['mcp']['exa'] and exa_settings.path.exists():
+                raise WebAccessError('Exa Search MCP is disabled in this workspace; choose an explicitly authorized source')
         if source=='mcp' and not use_mcp:raise WebAccessError('Search MCP is not configured; no silent fallback')
-        cache_key = json.dumps([SEARCH_REVISION,'exa-mcp' if use_mcp else 'public',query.strip(), limit, source], ensure_ascii=False)
+        enabled=None
+        if use_hybrid:
+            from .extension_hub import ExtensionSettings
+            switches=ExtensionSettings(self.agent.root).read()['mcp']
+            enabled={'glm':switches['glm-search'],'duckduckgo':switches['international-search']}
+            if not any(enabled.values()):raise WebAccessError('Both default search providers are disabled in this workspace')
+        cache_key = json.dumps([SEARCH_REVISION,'glm-free' if use_hybrid else 'exa-mcp' if use_mcp else 'public',enabled,query.strip(), limit, source], ensure_ascii=False)
         found = self._cached('web_search_cache', cache_key) if not refresh else None
         if found:
             evidence_id, report, meta = found
@@ -172,7 +186,8 @@ class WebContext:
                 with self.budget.network('search') as deadline:
                     proxy = SimpleNamespace(check=self.client.check, deadline=deadline,
                         get=lambda url, accepted, **kw:self.client.get(url, accepted, deadline=min(deadline,kw.get('deadline',deadline))))
-                    report = (self.search_mcp.search(query,limit,deadline,self.client.check,self.budget.request)
+                    report = (self.search_mcp.search(query,limit,deadline,self.client.check,self.budget.request,source=source,enabled=enabled)
+                              if use_hybrid else self.search_mcp.search(query,limit,deadline,self.client.check,self.budget.request)
                               if use_mcp else search(proxy, query, limit, source, rendered=False))
             except SearchUnavailable as exc:
                 exc.audit_evidence_id = self._save('web_search_report',exc.search_report,[],{})[0]

@@ -1,0 +1,8 @@
+[
+  {"id":"scope-change","kind":"revision","query":"报告验收要求已经改为需要逐条页码。请判断下一步任务和是否需要重新验收。","goal_constraints":"只使用公开资料，不编造实验数据。","expected":{"next_task":"资料核读","needs_acceptance":true}},
+  {"id":"dependency-archived","kind":"archive","query":"资料核读已被归档。下游报告能否直接交付？下一步需要恢复哪个任务？","goal_constraints":"只使用公开资料，不编造实验数据。","expected":{"next_task":"资料核读","needs_acceptance":true}},
+  {"id":"restart-recovery","kind":"restart","query":"服务中断后继续，已验收资料不要重做。下一步应恢复哪个任务？","goal_constraints":"已验收资料保持有效；报告完成仍需人工验收。","expected":{"next_task":"撰写报告","needs_acceptance":true}},
+  {"id":"preference-revision","kind":"memory","query":"请按本目标最新的汇报表达偏好准备下一次汇报，给出偏好代码。","goal_constraints":"只使用公开资料，不编造实验数据。","expected":{"preference":"evidence_first"}},
+  {"id":"goal-isolation","kind":"scope","query":"继续当前鱼类报告目标，使用当前目标汇报偏好。不要使用另一个购物目标的偏好。","goal_constraints":"当前目标仅讨论鱼类公开文献。","expected":{"preference":"evidence_first","foreign_used":false}},
+  {"id":"early-evidence","kind":"evidence","query":"audit_contract.py 的凭据验收要求在哪条证据中？仅返回能够核对的 evidence_id。","goal_constraints":"历史证据不是当前验收通过证明。","expected":{"evidence_id":"ev_11111111111111111111111111111111"}}
+]

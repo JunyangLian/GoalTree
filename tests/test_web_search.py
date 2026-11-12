@@ -123,7 +123,7 @@ def test_pubmed_empty_ids_skip_summary_and_bad_ids_are_errors(monkeypatch):
     assert len(calls)==2
 
 
-@pytest.mark.parametrize('source',['missing','duckduckgo','360',{},None])
+@pytest.mark.parametrize('source',['missing','unsupported-engine','360',{},None])
 def test_invalid_or_unimplemented_source_is_rejected_before_network(source):
     with patch.object(PublicWeb,'get') as get:
         with pytest.raises(WebAccessError):PublicWeb().search('docs',source=source)

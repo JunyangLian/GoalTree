@@ -2,6 +2,7 @@
 from datetime import datetime, timezone
 import hashlib
 import http.client
+from .privacy import outbound, incoming
 import json
 import re
 import threading
@@ -112,6 +113,7 @@ class SearchMCP:
             raise MCPError('Search MCP method not allowlisted')
         check();left=deadline-time.monotonic()
         if left<=0:raise MCPError('Search MCP request deadline exceeded','mcp_timeout')
+        outbound(ENDPOINT,json.dumps({'method':method,'params':params}),purpose='search')
         on_request()
         audit={'url':ENDPOINT,'rpc_method':method,'retrieved_at':datetime.now(timezone.utc).isoformat()}
         requests.append(audit)
@@ -152,6 +154,7 @@ class SearchMCP:
             kind=(response.getheader('Content-Type') or '').split(';')[0].strip().lower()
             result,raw=read_message(response,kind,request_id,check,deadline,conn.sock)
             audit.update(bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest(),hash_scope='consumed response bytes through matching JSON-RPC result')
+            incoming(raw.decode('utf-8'))
             return result
         except (OSError,http.client.HTTPException) as exc:
             raise MCPError('Search MCP connection failed or timed out; no automatic retry',

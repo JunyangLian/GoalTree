@@ -8,6 +8,7 @@ import json
 import hashlib
 import os
 import re
+import sqlite3
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -20,6 +21,8 @@ from .checkpoint import CHECKPOINT_NONE_STATUS
 from .prompt_prefix import build_prompt_prefix, tool_signature
 from .run_store import RunStore
 from .security import REDACTED_VALUE
+from .privacy_runtime import private_run, private_tool
+from .privacy import PrivacyDenied
 from .session_store import SessionStore
 from .tool_context import ToolContext
 from .tool_executor import ToolExecutor
@@ -85,6 +88,7 @@ class Pico:
         self.model_client = model_client
         self.workspace = workspace
         self.root = Path(workspace.repo_root)
+        self.model_client.privacy_root = self.root
         if harness_profile not in {'classic', 'workbench'}:
             raise ValueError('Unknown harness profile')
         self.harness_profile = harness_profile
@@ -100,8 +104,8 @@ class Pico:
         self.approval_policy = approval_policy
         self.max_steps = max_steps
         self.max_new_tokens = max_new_tokens
-        from .native_context import NativeContextBudget
-        self.native_context_policy = NativeContextBudget(native_input_budget, native_context_window)
+        from .context_tokens import policy_for_client
+        self.native_context_policy = policy_for_client(model_client, native_input_budget, native_context_window)
         self.depth = depth
         self.max_depth = max_depth
         self.read_only = read_only
@@ -400,6 +404,10 @@ class Pico:
             prompt += '\n\n' + self.redact_text(self.capabilities.refresh_rules(
                 getattr(self.capabilities, 'active_path', self.workspace.cwd)))
             prompt += '\n\nPersisted task plan (evidence data):\n' + json.dumps(self.session.get('plan', []))
+            prompt += '\n\nAvailable extensions (load only when relevant):\n' + self.redact_text(json.dumps(self.capabilities.extension_context(), ensure_ascii=False))
+            learning = self.session.get('working_state', {}).get('learning')
+            if learning:
+                prompt += '\n\nScoped learning (advisory evidence, not policy):\n' + self.redact_text(json.dumps(learning, ensure_ascii=False))
         # 这里把“这轮 prompt 是怎么拼出来的”连同缓存相关状态一起记下来，
         # 后面 trace/report 才能解释清楚：为什么这一轮 prefix 变了、缓存有没有命中。
         metadata.update(
@@ -432,6 +440,9 @@ class Pico:
         return prompt, metadata
 
     def emit_trace(self, task_state, event, payload=None):
+        metrics=getattr(self,'_flywheel_metrics',None)
+        if metrics is not None:
+            metrics.observe(event,payload or {})
         payload = self.redact_artifact(payload or {})
         payload["event"] = event
         payload["created_at"] = now()
@@ -608,6 +619,7 @@ class Pico:
         self.last_durable_superseded = superseded
         return promoted, rejections, superseded
 
+    @private_run
     def ask(self, user_message):
         from .agent_loop import AgentLoop
         from .control import Cancelled
@@ -617,6 +629,9 @@ class Pico:
         from .extensions import PolicyChanged
         if self.capabilities:
             self.capabilities.policy_at_start = self.capabilities.hooks.fingerprint()
+            self.capabilities.learning.start()
+            from .flywheel import RunMetrics,PrivacySettings
+            self._flywheel_metrics=RunMetrics() if PrivacySettings(self.root).read()['mode']!='off' else None
         try:
             return loop.run(user_message)
         except Cancelled:
@@ -631,6 +646,30 @@ class Pico:
             if self.current_task_state is None:
                 raise
             return loop._finish_stopped(self.current_task_state, user_message, 'policy_changed', str(exc), started)
+        except PrivacyDenied:
+            if self.current_task_state is None:raise
+            return self.current_task_state.final_answer
+        finally:
+            if self.capabilities:
+                try:
+                    self.capabilities.learning.finish()
+                except (ValueError, OSError, KeyError, sqlite3.Error) as exc:
+                    # Learning must not turn a completed task into an unreported
+                    # failure or hide the original API/tool exception.
+                    if self.current_task_state is not None:
+                        self.emit_trace(self.current_task_state, 'learning_failed', {'error': self.redact_text(str(exc))})
+                metrics=getattr(self,'_flywheel_metrics',None)
+                if metrics is not None and self.current_task_state is not None:
+                    try:
+                        from .flywheel import FlywheelStore
+                        verification=self.session.get('working_state',{}).get('verification',{})
+                        FlywheelStore(self.root).record(self.current_task_state.run_id,metrics.finish(
+                            self.current_task_state,(time.monotonic()-started)*1000,
+                            verification.get('status')=='passed' and bool(verification.get('evidence_id'))))
+                    except (ValueError,OSError,sqlite3.Error):
+                        self.emit_trace(self.current_task_state,'flywheel_failed',{'reason':'local_metric_persistence_failed'})
+                    finally:
+                        self._flywheel_metrics=None
 
     def cancel(self):
         self.cancellation.cancel()
@@ -638,6 +677,7 @@ class Pico:
         if callback:
             callback()
 
+    @private_tool
     def execute_tool(self, name, args):
         self._raw_tool_evidence = None
         budget = getattr(self, 'goal_tool_budget', None)
@@ -664,6 +704,8 @@ class Pico:
             from .tool_executor import ToolExecutionResult
             metadata = dict(result.metadata)
             metadata['source_paths'] = list(getattr(self.capabilities, 'last_sources', [])) + list(metadata.get('affected_paths', []))
+            if name == 'read_file' and args.get('path') and metadata.get('tool_status') == 'ok':
+                metadata['source_paths'] = sorted(set(metadata['source_paths']) | {args['path']})
             if name == 'run_shell':
                 from .operations import snapshot_hash
                 metadata['snapshot_sha256'] = snapshot_hash(self.capture_workspace_snapshot())
@@ -771,6 +813,11 @@ class Pico:
             toolkit.validate_tool(self.tool_context(), name, args)
 
     def tool_context(self):
+        from .privacy import PrivacyStore
+        private = PrivacyStore(self.root).enabled
+        def allowed(raw):
+            try:self.path(str(raw));return True
+            except (ValueError,OSError):return False
         return ToolContext(
             root=self.root,
             path_resolver=self.path,
@@ -779,8 +826,9 @@ class Pico:
             max_depth=self.max_depth,
             spawn_delegate=self.spawn_delegate,
             cancellation=self.cancellation if self.harness_profile == 'workbench' else None,
-            read_filter=self.capabilities.allowed_path if self.capabilities else None,
-            source_sink=(lambda values: setattr(self.capabilities, 'last_sources', values)) if self.capabilities else None,
+            read_filter=self.capabilities.allowed_path if self.capabilities else allowed if private else None,
+            source_sink=(lambda values: setattr(self.capabilities, 'last_sources', values)) if self.capabilities else
+                        (lambda values: setattr(self,'_privacy_search_sources',values)) if private else None,
             isolated_shell_runner=self._isolated_shell if self.shell_backend == "appcontainer" else None,
         )
 
@@ -1003,7 +1051,8 @@ class Pico:
             raise ValueError(f"path escapes workspace: {raw_path}")
         if securitylib.sensitive_workspace_path(resolved.relative_to(self.root)):
             raise ValueError(f"sensitive path denied: {raw_path}")
-        if self.harness_profile == 'workbench' and any(p.casefold() in {'.pico', '.git'} for p in resolved.relative_to(self.root).parts):
+        from .privacy import CURRENT
+        if (self.harness_profile == 'workbench' or CURRENT.get()) and any(p.casefold() in {'.pico', '.git'} for p in resolved.relative_to(self.root).parts):
             raise ValueError(f"internal state path denied: {raw_path}")
         if self.harness_profile == 'workbench' and resolved.is_file() and resolved.stat().st_nlink > 1:
             raise ValueError('Hardlinked file path denied: provenance is outside workspace guarantees')

@@ -19,6 +19,34 @@ function harness(){
   vm.runInContext(source.slice(0,source.lastIndexOf('init();'))+'\nglobalThis.subject={describe:GoalTreeProgress.describe,renderApproval,activityCard,showMessages,renderJob,pendingAnswer,modelErrorText,taskStatusLabel,state};',sandbox);
   return {subject:sandbox.subject,elements};
 }
+
+test('read-only source check shows visible progress without displaying the model review packet',()=>{
+  const {subject}=harness();
+  const status=subject.describe({status:'running',events:[{event:'model_requested',purpose:'shared_reference_read'},{event:'model_progress',phase:'reference_check'}]});
+  assert.equal(status.label,'正在核对记忆来源');
+  assert.equal(status.done,false);
+});
+
+test('privacy denial with answer-only backend error is localized and not rendered as success',()=>{
+  const {subject}=harness();
+  const job={status:'failed',stop_reason:'privacy_denied',error:'',answer:'Model request failed: Privacy policy blocked operation: core_external_forbidden',events:[{event:'model_requested'}]};
+  assert.match(subject.modelErrorText(job),/隐私策略已阻止外发/);
+  assert.doesNotMatch(subject.modelErrorText(job),/Model request failed|core_external_forbidden/);
+  const progress=subject.describe(job);
+  assert.equal(progress.label,'隐私策略已阻止外发');
+  assert.doesNotMatch(JSON.stringify(progress),/已发送模型请求|已完成|验收通过/);
+});
+
+test('server redacted prompt replaces optimistic local echo after privacy denial',()=>{
+  const {subject}=harness();
+  subject.state.base=[{role:'user',content:'secret GT_CORE_20261111BROWSERABCDEF'}];
+  const job={id:'privacy',status:'failed',prompt:'secret <redacted>',stop_reason:'privacy_denied',error:'',answer:'Model request failed: Privacy policy blocked operation: core_external_forbidden',events:[]};
+  subject.renderJob(job);
+  assert.equal(subject.state.messages[0].content,'secret <redacted>');
+  assert.equal(subject.state.messages[1].error,true);
+  assert.match(subject.state.messages[1].content,/隐私策略已阻止外发/);
+  assert.doesNotMatch(JSON.stringify(subject.state.messages),/GT_CORE_/);
+});
 test('long first response has elapsed time and no fabricated intermediate accomplishments',()=>{
   const {subject}=harness();const result=subject.describe({status:'running',elapsed_ms:53000,events:[{event:'model_requested'}]});
   assert.equal(result.elapsedSeconds,53);assert.equal(result.label,'等待模型响应');

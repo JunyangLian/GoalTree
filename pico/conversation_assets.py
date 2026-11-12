@@ -31,6 +31,7 @@ def cooperation(value):
 
 class ConversationAssets:
     def __init__(self, root):
+        self.root=Path(root).resolve()
         self.path = Path(root) / '.pico/conversation-assets.sqlite3'
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self.connect() as db:
@@ -154,6 +155,11 @@ class ConversationAssets:
         row = {'id': 'att_' + secrets.token_hex(12), 'owner': owner, 'name': name, 'mime': mime,
                'data': data, 'extracted': redact_text(extracted), 'sha256': hashlib.sha256(data).hexdigest(),
                'original_bytes': original_bytes, 'created': now()}
+        from .privacy import PrivacyStore,inspect_text
+        privacy=PrivacyStore(self.root)
+        if privacy.enabled:
+            level,_=inspect_text(extracted)
+            privacy.label('artifact:'+row['id'],'sensitive' if mime.startswith('image/') else level)
         with self.connect() as db:
             # Bounded private storage; no silent eviction of older attachments.
             db.execute('BEGIN IMMEDIATE')

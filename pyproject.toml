@@ -12,10 +12,12 @@ dependencies = []
 [project.optional-dependencies]
 attachments = ["Pillow>=10.0", "pypdf>=5.0"]
 web-pdf = ["pypdf>=6.21.1"]
+long-context = ["tokenizers>=0.22"]
 
 [project.scripts]
 goaltree = "goaltree.cli:main"
 goaltree-web = "goaltree.web:main"
+goaltree-improver = "pico.improver_cli:main"
 codetrail = "pico.cli:main"
 codetrail-web = "pico.web:main"
 pico = "pico.cli:main"
@@ -31,7 +33,7 @@ dev = [
 include = ["pico*", "goaltree*"]
 
 [tool.setuptools.package-data]
-pico = ["web_assets/*.html", "web_assets/*.css", "web_assets/*.js", "web_assets/*.LICENSE.txt"]
+pico = ["web_assets/*.html", "web_assets/*.css", "web_assets/*.js", "web_assets/*.md", "web_assets/*.LICENSE.txt", "web_assets/icons/*.svg", "web_assets/icons/*.png", "web_assets/icons/*.ico", "web_assets/icons/*.md", "bundled_skills/*.json", "bundled_skills/*.md", "bundled_skills/*/*.md", "bundled_skills/*/LICENSE"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

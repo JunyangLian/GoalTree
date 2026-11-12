@@ -76,7 +76,8 @@ def redact_text(text, env=None, secret_env_names=None):
         reverse=True,
     ):
         text = text.replace(value, REDACTED_VALUE)
-    return text
+    from .privacy import scrub
+    return scrub(text)
 
 
 def redact_artifact(value, key=None, env=None, secret_env_names=None):
@@ -97,7 +98,8 @@ def redact_artifact(value, key=None, env=None, secret_env_names=None):
         if isinstance(item,str):
             for secret in secrets:item=item.replace(secret,REDACTED_VALUE)
         return item
-    return visit(value,key)
+    from .privacy import scrub
+    return scrub(visit(value,key))
 
 
 def shell_env(env=None, allowlist=(), root="."):

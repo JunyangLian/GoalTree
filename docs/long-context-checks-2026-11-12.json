@@ -1,0 +1,454 @@
+{
+  "schema": "goaltree-million-context-validation-v1",
+  "date": "2026-11-12",
+  "evidence_started": "2026-11-11",
+  "configuration": {
+    "model": "glm-5.3-flash",
+    "provider": "BigModel ordinary API",
+    "token_window": 1048576,
+    "input_token_estimate_limit": 1032192,
+    "default_web_output_tokens": 8192,
+    "wire_byte_limit": 33554432,
+    "counter": {
+      "margin": "4096 + ceil(1% raw count)",
+      "method": "official_glm_tokenizer_json_estimate_plus_margin",
+      "provider_exact": false,
+      "repository": "zai-org/GLM-5.3-Flash",
+      "revision": "46a050bec13002ad29ee795c16e61cf4fa3c4a9c",
+      "sha256": "19e773648cb4e65de8660ea6365e10acca112d42a854923df93db4a6f333a82d",
+      "tokenizers_version": "0.22.2"
+    },
+    "provider_exact_local_counter": false,
+    "immutable_provider_weight_version_available": false
+  },
+  "live_capacity": {
+    "model_calls": 1,
+    "input_tokens": 1005433,
+    "output_tokens": 36,
+    "total_tokens": 1005469,
+    "needle_correct": 3,
+    "needle_total": 3,
+    "elapsed_seconds": 109.438,
+    "wire_bytes": 2011902,
+    "wire_sha256": "5c067728bd952baaecb7cf6aa39360097639045657f7271798529ea99ed54d82",
+    "wire_reconstruction": {
+      "reconstructed_body_matches_actual_wire_sha256": true,
+      "wire_sha256": "5c067728bd952baaecb7cf6aa39360097639045657f7271798529ea99ed54d82",
+      "wire_bytes": 2011902,
+      "note": "Rebuilt original dictionary ordering using frozen native schema. The first direct reserialization failed because atomic persistence sorts nested keys; raw structured fields were unchanged. No auth or reasoning in this input."
+    },
+    "scope": "low-entropy public synthetic capacity/three-needle probe; not a complex million-token task score",
+    "final_revision_live_retested": false
+  },
+  "latest_offline_capacity": {
+    "model_calls": 0,
+    "audit": {
+      "after_estimate": 1019576,
+      "before_estimate": 1019576,
+      "budget_unit": "estimated_tokens",
+      "compacted_groups": 0,
+      "counting": "official_glm_tokenizer_json_estimate_plus_margin",
+      "input_budget": 1032192,
+      "output_reserve_tokens_requested": 1024,
+      "provider_usage": "reported_separately",
+      "retrieved_memory_omitted": false,
+      "token_context_window": 1048576,
+      "tokenizer": {
+        "margin": "4096 + ceil(1% raw count)",
+        "method": "official_glm_tokenizer_json_estimate_plus_margin",
+        "provider_exact": false,
+        "repository": "zai-org/GLM-5.3-Flash",
+        "revision": "46a050bec13002ad29ee795c16e61cf4fa3c4a9c",
+        "sha256": "19e773648cb4e65de8660ea6365e10acca112d42a854923df93db4a6f333a82d",
+        "tokenizers_version": "0.22.2"
+      },
+      "wire_byte_ceiling": 33554432,
+      "wire_bytes_after": 2012285,
+      "wire_bytes_before": 2012285,
+      "wire_ceiling_exceeded": false,
+      "wire_sha256": "bc80ca085fed4ed2fd58447dc19da839f93fc9a1a5d221bd96687927eeb593d4"
+    }
+  },
+  "development_sequences": [
+    {
+      "version": "pressure-v3",
+      "case_count": 1,
+      "planned_turns": 12,
+      "completed_turns": 12,
+      "started_turns": 12,
+      "checkpoint_passed": 3,
+      "checkpoint_planned": 4,
+      "checkpoint_attempted": 4,
+      "fields_correct": 31,
+      "fields_planned": 32,
+      "pressure_qualified": true,
+      "compacted_requests": 12,
+      "distinct_read_files": 13,
+      "successful_reads": 19,
+      "frozen_identical_requested_range_repeats": 5,
+      "posthoc_same_turn_returned_coverage_repeats": 3,
+      "tool_steps": 28,
+      "observed_native_protocol_error_events": 0,
+      "strict_deliverable_passed": false,
+      "halted": null,
+      "known_tokens": 364557,
+      "unknown_reserved_tokens": 0,
+      "sources_unchanged_during_run": true,
+      "verification_path": "artifacts/long-context-2026-11-11/pressure-v3/verification.json",
+      "slots_path": "artifacts/long-context-2026-11-11/pressure-v3/slots.json"
+    },
+    {
+      "version": "pressure-v4",
+      "case_count": 1,
+      "planned_turns": 12,
+      "completed_turns": 6,
+      "started_turns": 7,
+      "checkpoint_passed": 2,
+      "checkpoint_planned": 4,
+      "checkpoint_attempted": 2,
+      "fields_correct": 16,
+      "fields_planned": 32,
+      "pressure_qualified": false,
+      "compacted_requests": 8,
+      "distinct_read_files": 9,
+      "successful_reads": 12,
+      "frozen_identical_requested_range_repeats": 0,
+      "posthoc_same_turn_returned_coverage_repeats": 3,
+      "tool_steps": 16,
+      "observed_native_protocol_error_events": 0,
+      "strict_deliverable_passed": false,
+      "halted": "Unknown provider usage; dispatch stopped",
+      "known_tokens": 196373,
+      "unknown_reserved_tokens": 53139,
+      "sources_unchanged_during_run": true,
+      "verification_path": "artifacts/long-context-2026-11-11/pressure-v4/verification.json",
+      "slots_path": "artifacts/long-context-2026-11-11/pressure-v4/slots.json"
+    },
+    {
+      "version": "pressure-v5",
+      "case_count": 1,
+      "planned_turns": 12,
+      "completed_turns": 6,
+      "started_turns": 7,
+      "checkpoint_passed": 2,
+      "checkpoint_planned": 4,
+      "checkpoint_attempted": 2,
+      "fields_correct": 16,
+      "fields_planned": 32,
+      "pressure_qualified": false,
+      "compacted_requests": 9,
+      "distinct_read_files": 9,
+      "successful_reads": 13,
+      "frozen_identical_requested_range_repeats": 4,
+      "posthoc_same_turn_returned_coverage_repeats": 4,
+      "tool_steps": 16,
+      "observed_native_protocol_error_events": 0,
+      "strict_deliverable_passed": false,
+      "halted": "Unknown provider usage; dispatch stopped",
+      "known_tokens": 200789,
+      "unknown_reserved_tokens": 56270,
+      "sources_unchanged_during_run": true,
+      "verification_path": "artifacts/long-context-2026-11-11/pressure-v5/verification.json",
+      "slots_path": "artifacts/long-context-2026-11-11/pressure-v5/slots.json"
+    }
+  ],
+  "frozen_tasks_and_gold": {
+    "task_hashes_equal": true,
+    "gold_hashes_equal": true,
+    "batches": {
+      "pressure-v3": {
+        "tasks": "0a29c80557770d17a48ebfb794a6d2a1ee1fd726a3a03894fa097723391f07ba",
+        "gold": "cb03daa267e33a82206f0b75d57b51e83767d2defa0a51fa52602c9e7d8155ce",
+        "protocol": {
+          "approvals": "Existing ask policy; only fixture-scoped plan/goal mutations preauthorized. No acceptance, Shell, delegation, network, or added permissions.",
+          "base_url": "https://open.bigmodel.cn/api/paas/v4",
+          "budget_revision": "v1 was stopped after a 300-second task deadline and unknown cancelled-request usage. v2 preserves all v1 escrow and failures with --carry-budget. Cumulative estimated CNY remains 1; tasks, gold, corpus, model parameters and turn deadline unchanged.",
+          "cases": 2,
+          "concurrency": 1,
+          "context_byte_ceiling": 98304,
+          "estimated_cny_limit": "1",
+          "goal_switch_policy": "Same original A conversation and host binding throughout; runner cannot route on behalf of the Agent. Switching failures are reported, not adapted away.",
+          "gold": "External verifier only; not copied to workspace, prompt, files or tools. Facts legitimately introduced by the user or source files are not hidden.",
+          "input_json_byte_budget": 60000,
+          "known_token_limit": 600000,
+          "max_output_tokens": 2048,
+          "max_tool_steps_per_turn": 8,
+          "maximum_requests": 70,
+          "minimum_compacted_requests": 2,
+          "minimum_distinct_reads": 10,
+          "model": "glm-5.3-flash",
+          "native_wire_options": {
+            "reasoning_effort": "low",
+            "thinking": {
+              "clear_thinking": false,
+              "type": "enabled"
+            }
+          },
+          "pressure": "Smaller fixed byte budget; actual compaction/read qualification mandatory. Not natural 1M-token saturation.",
+          "privacy": "enforce; ordinary local credential only; no raw protected wire callbacks",
+          "purpose": "Multi-turn synthetic development diagnostic with real tools; no held-out or ranking claim",
+          "repetitions_per_case": 1,
+          "rules": [
+            "Freeze runner, verifier, tasks, gold, fixture files and Harness before first request",
+            "No gold changes, source changes, task replacement or success-triggered selective expansion",
+            "Every reservation persisted before dispatch; unknown usage halts following requests",
+            "Every turn preserves original prompt, outcome, task tree, requests sans reasoning, responses, approvals and run trace",
+            "First sequence is mechanism diagnosis; fix and retest only in a new version/batch, retaining all failures"
+          ],
+          "schema": "goal-stress-pilot-v2",
+          "tariff_note": "Frozen conservative Nov 6 rate snapshot reused; provider debit unknown, not a guaranteed current tariff",
+          "temperature": 1,
+          "timeout_seconds": 90,
+          "top_p": 0.95,
+          "transport_attempts": 1,
+          "turn_deadline_seconds": 300
+        }
+      },
+      "pressure-v4": {
+        "tasks": "0a29c80557770d17a48ebfb794a6d2a1ee1fd726a3a03894fa097723391f07ba",
+        "gold": "cb03daa267e33a82206f0b75d57b51e83767d2defa0a51fa52602c9e7d8155ce",
+        "protocol": {
+          "approvals": "Existing ask policy; only fixture-scoped plan/goal mutations preauthorized. No acceptance, Shell, delegation, network, or added permissions.",
+          "base_url": "https://open.bigmodel.cn/api/paas/v4",
+          "budget_revision": "v1 was stopped after a 300-second task deadline and unknown cancelled-request usage. v2 preserves all v1 escrow and failures with --carry-budget. Cumulative estimated CNY remains 1; tasks, gold, corpus, model parameters and turn deadline unchanged.",
+          "cases": 2,
+          "concurrency": 1,
+          "context_byte_ceiling": 98304,
+          "estimated_cny_limit": "1",
+          "goal_switch_policy": "Same original A conversation and host binding throughout; runner cannot route on behalf of the Agent. Switching failures are reported, not adapted away.",
+          "gold": "External verifier only; not copied to workspace, prompt, files or tools. Facts legitimately introduced by the user or source files are not hidden.",
+          "input_json_byte_budget": 60000,
+          "known_token_limit": 600000,
+          "max_output_tokens": 2048,
+          "max_tool_steps_per_turn": 8,
+          "maximum_requests": 70,
+          "minimum_compacted_requests": 2,
+          "minimum_distinct_reads": 10,
+          "model": "glm-5.3-flash",
+          "native_wire_options": {
+            "reasoning_effort": "low",
+            "thinking": {
+              "clear_thinking": false,
+              "type": "enabled"
+            }
+          },
+          "pressure": "Smaller fixed byte budget; actual compaction/read qualification mandatory. Not natural 1M-token saturation.",
+          "privacy": "enforce; ordinary local credential only; no raw protected wire callbacks",
+          "purpose": "Multi-turn synthetic development diagnostic with real tools; no held-out or ranking claim",
+          "repetitions_per_case": 1,
+          "rules": [
+            "Freeze runner, verifier, tasks, gold, fixture files and Harness before first request",
+            "No gold changes, source changes, task replacement or success-triggered selective expansion",
+            "Every reservation persisted before dispatch; unknown usage halts following requests",
+            "Every turn preserves original prompt, outcome, task tree, requests sans reasoning, responses, approvals and run trace",
+            "First sequence is mechanism diagnosis; fix and retest only in a new version/batch, retaining all failures"
+          ],
+          "schema": "goal-stress-pilot-v2",
+          "tariff_note": "Frozen conservative Nov 6 rate snapshot reused; provider debit unknown, not a guaranteed current tariff",
+          "temperature": 1,
+          "timeout_seconds": 90,
+          "top_p": 0.95,
+          "transport_attempts": 1,
+          "turn_deadline_seconds": 300
+        }
+      },
+      "pressure-v5": {
+        "tasks": "0a29c80557770d17a48ebfb794a6d2a1ee1fd726a3a03894fa097723391f07ba",
+        "gold": "cb03daa267e33a82206f0b75d57b51e83767d2defa0a51fa52602c9e7d8155ce",
+        "protocol": {
+          "approvals": "Existing ask policy; only fixture-scoped plan/goal mutations preauthorized. No acceptance, Shell, delegation, network, or added permissions.",
+          "base_url": "https://open.bigmodel.cn/api/paas/v4",
+          "budget_revision": "v1 was stopped after a 300-second task deadline and unknown cancelled-request usage. v2 preserves all v1 escrow and failures with --carry-budget. Cumulative estimated CNY remains 1; tasks, gold, corpus, model parameters and turn deadline unchanged.",
+          "cases": 2,
+          "concurrency": 1,
+          "context_byte_ceiling": 98304,
+          "estimated_cny_limit": "1",
+          "goal_switch_policy": "Same original A conversation and host binding throughout; runner cannot route on behalf of the Agent. Switching failures are reported, not adapted away.",
+          "gold": "External verifier only; not copied to workspace, prompt, files or tools. Facts legitimately introduced by the user or source files are not hidden.",
+          "input_json_byte_budget": 60000,
+          "known_token_limit": 380000,
+          "max_output_tokens": 2048,
+          "max_tool_steps_per_turn": 8,
+          "maximum_requests": 70,
+          "minimum_compacted_requests": 2,
+          "minimum_distinct_reads": 10,
+          "model": "glm-5.3-flash",
+          "native_wire_options": {
+            "reasoning_effort": "low",
+            "thinking": {
+              "clear_thinking": false,
+              "type": "enabled"
+            }
+          },
+          "pressure": "Smaller fixed byte budget; actual compaction/read qualification mandatory. Not natural 1M-token saturation.",
+          "privacy": "enforce; ordinary local credential only; no raw protected wire callbacks",
+          "purpose": "Multi-turn synthetic development diagnostic with real tools; no held-out or ranking claim",
+          "repetitions_per_case": 1,
+          "rules": [
+            "Freeze runner, verifier, tasks, gold, fixture files and Harness before first request",
+            "No gold changes, source changes, task replacement or success-triggered selective expansion",
+            "Every reservation persisted before dispatch; unknown usage halts following requests",
+            "Every turn preserves original prompt, outcome, task tree, requests sans reasoning, responses, approvals and run trace",
+            "First sequence is mechanism diagnosis; fix and retest only in a new version/batch, retaining all failures"
+          ],
+          "schema": "goal-stress-pilot-v2",
+          "tariff_note": "Frozen conservative Nov 6 rate snapshot reused; provider debit unknown, not a guaranteed current tariff",
+          "temperature": 1,
+          "timeout_seconds": 90,
+          "top_p": 0.95,
+          "transport_attempts": 1,
+          "turn_deadline_seconds": 300
+        }
+      }
+    }
+  },
+  "local_scrub_replay": {
+    "schema": "local-scrub-replay-v1",
+    "input_bytes": 157863,
+    "input_sha256": "b4faf6ef6accc61b1d5fbeb95eb7fc9b708498459ede783c30c619a506448da9",
+    "rows": [
+      {
+        "version": "frozen-v5",
+        "samples_seconds": [
+          0.4753937999998925,
+          0.4184832999999344,
+          0.4377491000000191
+        ],
+        "median_seconds": 0.4377491000000191
+      },
+      {
+        "version": "optimized",
+        "samples_seconds": [
+          0.015863200000012512,
+          0.017313699999931487,
+          0.01736609999989014
+        ],
+        "median_seconds": 0.017313699999931487
+      }
+    ],
+    "outputs_equal": true,
+    "model_calls": 0,
+    "limitations": "One public synthetic stored task; local microbenchmark, not end-to-end model latency or long-task correctness."
+  },
+  "callback_targeted_tests": {
+    "command": "E:/Python/python.exe -X utf8 -m pytest tests/test_million_context.py tests/test_privacy.py tests/test_web.py tests/test_stream_throughput.py -q --tb=short",
+    "passed": 75,
+    "failed": 0,
+    "duration_seconds": 34.42,
+    "model_calls": 0
+  },
+  "latest_live_failure": {
+    "version": "pressure-v5",
+    "turn": "t06-reading-2",
+    "request": 23,
+    "error": "IncompleteSSEError: stream_deadline",
+    "stream_callback_ms": 87885,
+    "stream_read_wait_ms": 116,
+    "tool_calls_from_partial_stream_accepted": 0,
+    "coverage_metadata_visible_before_repeated_reads": true,
+    "final_callback_fix_live_retested": false
+  },
+  "final_automated_tests": {
+    "status": "finished",
+    "path": "artifacts/long-context-2026-11-11/release-validation-final",
+    "exit_code": 0,
+    "elapsed_seconds": 753.62,
+    "source_changes": [],
+    "frozen_files": 318,
+    "tests": 898,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 898
+  },
+  "budget": {
+    "schema": "round-budget-closed-v1",
+    "global_token_cap": 2000000,
+    "global_cny_cap": 5,
+    "batches": [
+      {
+        "batch": "pressure-v3",
+        "known_tokens": 364557,
+        "unknown_reserved_tokens": 0,
+        "tariff_upper_estimate_cny": "0.3043356",
+        "unknown_reserved_cny": "0",
+        "ledger_sha256": "ddc7d5ed147179a6b03fe1732380d0f26974051b20c0a959aaa13397df0801af"
+      },
+      {
+        "batch": "pressure-v4",
+        "known_tokens": 196373,
+        "unknown_reserved_tokens": 53139,
+        "tariff_upper_estimate_cny": "0.1624464",
+        "unknown_reserved_cny": "0.0466072",
+        "ledger_sha256": "a660419cda745c25c1ccf8b3140b4e9e6837c056c33d8b55be5081d785d0fb16"
+      },
+      {
+        "batch": "pressure-v5",
+        "known_tokens": 200789,
+        "unknown_reserved_tokens": 56270,
+        "tariff_upper_estimate_cny": "0.1649952",
+        "unknown_reserved_cny": "0.049112",
+        "ledger_sha256": "1bcbf4e77376b5abf55dbbdb024277b0ab4820ebd190104a7ba3de27ebf360f3"
+      },
+      {
+        "batch": "capacity-live",
+        "known_tokens": 1005469,
+        "unknown_reserved_tokens": 0,
+        "tariff_upper_estimate_cny": "0.8044472",
+        "unknown_reserved_cny": "0",
+        "result_sha256": "effdc19cafb9dd7ca9f8b9062a102605f655027fb22cee21b21fc499c554e27f"
+      }
+    ],
+    "known_tokens": 1767188,
+    "unknown_reserved_tokens": 109409,
+    "tariff_upper_estimate_cny": "1.4362244",
+    "unknown_reserved_cny": "0.0957192",
+    "actual_billed_cost": null,
+    "further_dispatch": false,
+    "reason": "Unknown requests remain reserved; another whole 12-turn experiment cannot be budgeted inside remaining round ceiling; final callback fix validated offline only.",
+    "remaining_tokens_after_reservations": 123403
+  },
+  "limitations": [
+    "Known synthetic development sequence, not held-out or independent checkpoint tasks.",
+    "Latest live sequence completed six of twelve turns; five unstarted after one failed turn.",
+    "Latest callback fix verified offline; no final live long-task success claim.",
+    "Historical best checkpoint result is not the latest revision score.",
+    "Same-conversation goal switching is outside this round.",
+    "Input capacity does not expand individual file/PDF extraction limits."
+  ],
+  "independent_integrity_audit": {
+    "schema": "independent-local-evidence-integrity-v1",
+    "model_calls": 0,
+    "batch_manifests": [
+      {
+        "batch": "pressure-v3",
+        "files_checked": 513,
+        "mismatches": []
+      },
+      {
+        "batch": "pressure-v4",
+        "files_checked": 444,
+        "mismatches": []
+      },
+      {
+        "batch": "pressure-v5",
+        "files_checked": 444,
+        "mismatches": []
+      }
+    ],
+    "capacity_wire_hash_matches": true,
+    "note": "Integrity and frozen-asset audit; does not rerun models or alter primary metrics."
+  },
+  "preview_health": {
+    "url": "http://127.0.0.1:8787/",
+    "http_status": 200,
+    "token_context_window": 1048576,
+    "input_token_budget": 1032192,
+    "native_counting": "official_glm_tokenizer_json_estimate_plus_margin",
+    "shell_backend": "appcontainer",
+    "privacy_protection": true,
+    "model_calls_during_startup": 0,
+    "check": "HTTP configuration only; no browser E2E claim",
+    "privacy_mode": "enforce"
+  }
+}

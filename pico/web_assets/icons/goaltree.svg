@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <title>GoalTree</title>
+  <rect x="1" y="1" width="62" height="62" rx="18" fill="#254C3B"/>
+  <path d="M31 49V32M31 37 17 25V19M31 32 45 18" stroke="#D7E9CC" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M31 31V17" stroke="#91BC8B" stroke-width="4.5" stroke-linecap="round"/>
+  <circle cx="17" cy="18" r="4.5" fill="#D7E9CC"/>
+  <circle cx="31" cy="15" r="4" fill="#91BC8B"/>
+  <circle cx="46" cy="17" r="7" fill="#254C3B" stroke="#E4C582" stroke-width="3"/>
+  <circle cx="46" cy="17" r="2.5" fill="#E4C582"/>
+  <circle cx="31" cy="49" r="4.5" fill="#D7E9CC"/>
+</svg>

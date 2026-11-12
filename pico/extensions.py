@@ -31,7 +31,21 @@ class PolicyHooks:
 
     def fingerprint(self):
         import hashlib
-        return hashlib.sha256(self.path.read_bytes() if self.path.exists() else b'').hexdigest()
+        body = self.path.read_bytes() if self.path.exists() else b''
+        settings = self.root / '.pico/extensions.json'
+        if settings.exists():
+            settings.resolve().relative_to(self.root)
+            body += b'\nGoalTreeExtensions\0' + settings.read_bytes()
+        privacy = self.root / '.pico/flywheel/settings.json'
+        if privacy.exists():
+            privacy.resolve().relative_to(self.root)
+            body += b'\nGoalTreePrivacy\0' + privacy.read_bytes()
+        disclosure = self.root / '.pico/privacy/policy.json'
+        if disclosure.exists():
+            from .privacy import PrivacyStore
+            PrivacyStore(self.root).policy()
+            body += b'\nGoalTreeDisclosure\0' + disclosure.read_bytes()
+        return hashlib.sha256(body).hexdigest()
 
     def allows_path(self, path, write=False):
         policy = self.policy()
@@ -82,10 +96,14 @@ def skill_catalog(root):
         description = next((line.partition(':')[2].strip().strip('\"\'') for line in text.splitlines()[:12]
                             if line.startswith('description:')), 'Repository workflow')
         result.append({'name': name, 'description': description[:200], 'path': path.relative_to(root).as_posix()})
-    return result[:16]
+    from .extension_hub import bundled_skills
+    return result[:16] + bundled_skills(root)
 
 
 def load_skill(agent, name):
+    if name.startswith('builtin:'):
+        from .extension_hub import bundled_skill_text
+        return bundled_skill_text(agent.root, name.split(':', 1)[1])
     match = next((s for s in skill_catalog(agent.root) if s['name'] == name), None)
     if not match:
         raise ValueError('Unknown bounded repository skill')
@@ -111,6 +129,15 @@ class StdioMCP:
     def call(self, tool, arguments, timeout=10):
         if tool not in self.allowed_tools:
             raise ValueError('MCP tool not in host allowlist')
+        return self._exchange(tool, arguments, timeout)
+
+    def probe(self, timeout=8):
+        """Negotiate and discover only; never invoke a tool or read documents."""
+        return self._exchange(None, {}, timeout)
+
+    def _exchange(self, tool, arguments, timeout):
+        from .privacy import CURRENT,PrivacyDenied
+        if CURRENT.get():raise PrivacyDenied('local_mcp_has_no_egress_isolation')
         self.cancellation.check()
         process = subprocess.Popen(self.command, cwd=self.root, env=self.env, stdin=subprocess.PIPE,
                                    stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
@@ -157,6 +184,12 @@ class StdioMCP:
                 raise ValueError('MCP server did not negotiate supported tool protocol')
             send({'method': 'notifications/initialized'})
             tools = request(2, 'tools/list', {})['tools']
+            if tool is None:
+                names = [t['name'] for t in tools if t.get('name') in self.allowed_tools and
+                         isinstance(t.get('inputSchema'), dict) and t['inputSchema'].get('type') == 'object']
+                if not names:
+                    raise ValueError('MCP server advertises no supported tool')
+                return {'tools': names, 'protocol': handshake['protocolVersion']}
             schema = next((t['inputSchema'] for t in tools if t['name'] == tool), None)
             if schema is None or schema.get('type') != 'object':
                 raise ValueError('MCP tool not advertised')

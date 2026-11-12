@@ -1,0 +1,107 @@
+{
+  "date": "2026-11-11",
+  "automated_tests": {
+    "cases": 833,
+    "failed": 0,
+    "source_files": 329,
+    "changed_files": [],
+    "elapsed_seconds": 763.69
+  },
+  "node_tests": {
+    "passed": 61,
+    "included_in_python_wrapper": true
+  },
+  "model_probe": {
+    "completed": 18,
+    "failed": 0,
+    "known_tokens": 63829,
+    "live": true,
+    "per_variant": {
+      "conversation": {
+        "attempted": 6,
+        "passed": 0,
+        "planned": 6
+      },
+      "goal_tree": {
+        "attempted": 6,
+        "passed": 2,
+        "planned": 6
+      },
+      "goal_tree_memory": {
+        "attempted": 6,
+        "passed": 3,
+        "planned": 6
+      }
+    },
+    "planned": 18,
+    "source_unchanged": true,
+    "failed_definition": "request/transport failures only; not gold correctness failures",
+    "strict_case_passed": 5,
+    "strict_case_failed": 13
+  },
+  "gold_and_runner_hashes": {
+    "benchmarks/goal_continuity_v1/protocol.json": {
+      "frozen": "e9b7dca93ccb073e09f6e28757928c1cda581c50b1c7e75d7b1c23634605e5a3",
+      "current": "e9b7dca93ccb073e09f6e28757928c1cda581c50b1c7e75d7b1c23634605e5a3"
+    },
+    "benchmarks/goal_continuity_v1/tasks.json": {
+      "frozen": "637a91bcebc53f33ce4d142a9a6359b0f8f7ac8a5419bb467be52ac7aabec345",
+      "current": "637a91bcebc53f33ce4d142a9a6359b0f8f7ac8a5419bb467be52ac7aabec345"
+    },
+    "scripts/eval_goal_continuity.py": {
+      "frozen": "f2b8bb534ee9fe9fee45c8ebf20da89d0fda670479a9d9f251744ece2ec4874a",
+      "current": "f2b8bb534ee9fe9fee45c8ebf20da89d0fda670479a9d9f251744ece2ec4874a"
+    }
+  },
+  "known_secret_leak_files": [],
+  "web_state_checks": {
+    "checks": {
+      "task_ids_unchanged": true,
+      "task_5f05cbac539445618bf4:session_id": true,
+      "task_5f05cbac539445618bf4:chat_session_id": true,
+      "task_5f05cbac539445618bf4:spec_version": true,
+      "task_5f05cbac539445618bf4:depends_on": true,
+      "task_5f05cbac539445618bf4:description": true,
+      "task_5f05cbac539445618bf4:acceptance": true,
+      "task_5f05cbac539445618bf4:status": true,
+      "task_5f05cbac539445618bf4:validity": true,
+      "task_beaff9b64efe489da35c:session_id": true,
+      "task_beaff9b64efe489da35c:chat_session_id": true,
+      "task_beaff9b64efe489da35c:spec_version": true,
+      "task_beaff9b64efe489da35c:depends_on": true,
+      "task_beaff9b64efe489da35c:description": true,
+      "task_beaff9b64efe489da35c:acceptance": true,
+      "task_beaff9b64efe489da35c:status": true,
+      "task_beaff9b64efe489da35c:validity": true,
+      "renamed_existing_node": true,
+      "all_still_planned": true,
+      "no_execution_runs": true,
+      "same_goal_contracts": true,
+      "latest_event_matches_state": true
+    },
+    "passed": true,
+    "events": 9
+  },
+  "package": {
+    "wheel": "goaltree_agent-0.1.0-py3-none-any.whl",
+    "setuptools": "75.8.2",
+    "verified_assets": 54,
+    "all_asset_bytes_match": true
+  },
+  "artifact_note": {
+    "old_summary_restored_from": "docs/search-catalog-checks-2026-11-11.json",
+    "old_same_name_wheel": "overwritten by reused build helper; original binary unavailable",
+    "new_build_archived_at": "artifacts\\long-goals-2026-11-11\\wheels\\goaltree_agent-0.1.0-py3-none-any.whl",
+    "historical_model_evaluation_results_changed": false
+  },
+  "main_service": "8778 restart rejected by automatic approval; existing process preserved",
+  "final_model_retest": "not performed; all 18 original results retained",
+  "final_demo": {
+    "url": "http://127.0.0.1:8781/",
+    "pid": 34924,
+    "fresh_workspace": true,
+    "browser_page_verified": true,
+    "additional_model_calls": 0,
+    "screenshot": "artifacts/long-goals-2026-11-11/final-demo.png"
+  }
+}
