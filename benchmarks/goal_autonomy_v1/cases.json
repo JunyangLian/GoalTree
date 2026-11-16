@@ -1,0 +1,5 @@
+[
+  {"id":"library-brief","title":"公共图书馆活动资料简报","record_id":"LIB-R73","count_v1":27,"count_v2":39,"format_v1":"资料长文","format_v2":"三页简报","constraint":"只使用公开合成资料，不收集读者个人信息"},
+  {"id":"garden-review","title":"社区花园观察记录整理","record_id":"GRD-P26","count_v1":18,"count_v2":24,"format_v1":"观察长文","format_v2":"四页提纲","constraint":"只描述观察，不推断因果关系"},
+  {"id":"archive-handover","title":"公开档案移交资料整理","record_id":"ARC-M54","count_v1":43,"count_v2":58,"format_v1":"移交长文","format_v2":"两页清单","constraint":"只使用合成档案，不编造真实馆藏"}
+]

@@ -1,0 +1,16 @@
+case,turn,status,passed,failures,tool_steps,failed_tool_calls,recovery_observed,successful_reads,repeated_read_calls,model_requests,known_tokens,usage_unknown_requests,elapsed_ms
+library-brief,t01,completed,False,['planning_contract'],2,0,False,1,0,3,22611,0,25421
+library-brief,t02,completed,True,[],8,0,False,3,0,10,75990,0,109656
+library-brief,t03,completed,True,[],1,0,False,0,0,2,19313,0,39078
+library-brief,t04,completed,True,[],10,2,False,3,0,11,124446,0,151764
+library-brief,t05,completed,True,[],0,0,False,0,0,1,13014,0,12764
+garden-review,t01,completed,True,[],2,0,False,1,0,3,22673,0,28328
+garden-review,t02,completed,True,[],9,1,False,3,0,9,69002,0,113593
+garden-review,t03,completed,True,[],1,0,False,0,0,2,19683,0,20860
+garden-review,t04,completed,True,[],8,2,False,2,0,8,98671,0,87436
+garden-review,t05,completed,True,[],2,0,False,2,0,2,24203,0,24062
+archive-handover,t01,completed,True,[],5,3,False,1,0,6,54703,0,60233
+archive-handover,t02,completed,False,['answer_incorrect'],7,0,False,3,0,7,51894,0,103233
+archive-handover,t03,completed,True,[],1,0,False,0,0,2,23015,0,18453
+archive-handover,t04,completed,False,['answer_incorrect'],7,0,False,2,0,6,77045,0,56688
+archive-handover,t05,completed,True,[],1,0,False,1,0,2,25328,0,12764

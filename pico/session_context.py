@@ -4,6 +4,7 @@ import hashlib
 import json
 
 from .native_context import read_coverage
+from .path_identity import source_path
 
 RETENTION_TYPES = ('current_request', 'current_contracts_and_ancestor_constraints', 'host_rules_and_permissions',
                    'unresolved_error_exact_excerpt', 'read_coverage_and_source_version',
@@ -27,6 +28,7 @@ def start(agent, run_id):
     state = ledger(agent)
     if state.get('scope') != scope_key(agent):
         state.update(reads={}, errors={}, changed_files=[], scope=scope_key(agent))
+    normalize_reads(agent, state)
     state['run_id'] = run_id
     # A previous run's pass never verifies a new run, even after restart.
     state['verification'] = {'status':'not_run', 'run_id':run_id}
@@ -55,10 +57,44 @@ def error_excerpt(text, limit=1800):
     return {'head':text[:half], 'tail':text[-half:], 'omitted_chars':len(text)-limit}
 
 
+def merge_reads(old, current):
+    if not old or not old.get('source_sha256') or old['source_sha256'] != current.get('source_sha256') or old.get('total_lines') != current.get('total_lines'):
+        return copy.deepcopy(current)
+    merged = []
+    for low, high in sorted(old['returned_ranges'] + current['returned_ranges']):
+        if merged and low <= merged[-1][1] + 1:
+            merged[-1][1] = max(high, merged[-1][1])
+        else:
+            merged.append([low, high])
+    refs = copy.deepcopy(old.get('evidence_refs', []))
+    for ref in current.get('evidence_refs', []):
+        if ref not in refs:
+            refs.append(copy.deepcopy(ref))
+    return {**current, 'returned_ranges': merged, 'evidence_refs': refs,
+            'full_file_returned': current['total_lines'] == 0 or merged == [[1, current['total_lines']]]}
+
+
+def normalize_reads(agent, state):
+    rows = {}
+    for path, receipt in state['reads'].items():
+        key = source_path(agent, path)
+        old = rows.get(key)
+        if old and old.get('source_sha256') != receipt.get('source_sha256'):
+            # Migrated legacy aliases may describe different versions. Prefer
+            # the receipt matching current bytes, never union their coverage.
+            try:
+                if hashlib.sha256(agent.path(key).read_bytes()).hexdigest() == old.get('source_sha256'):
+                    continue
+            except (ValueError, OSError):
+                pass
+        rows[key] = merge_reads(old, receipt)
+    state['reads'] = rows
+
+
 def observe(agent, name, args, result, verification):
     state = ledger(agent)
     meta = result.metadata
-    locator = args.get('path') or args.get('command') or json.dumps(args, sort_keys=True, ensure_ascii=False)
+    locator = source_path(agent, args['path']) if args.get('path') else args.get('command') or json.dumps(args, sort_keys=True, ensure_ascii=False)
     key = hashlib.sha256(json.dumps([name,locator],ensure_ascii=False).encode()).hexdigest()
     success = meta.get('tool_status') == 'ok' and (name != 'run_shell' or
               (type(meta.get('exit_code')) is int and meta['exit_code'] == 0 and not meta.get('workspace_changed')))
@@ -68,32 +104,26 @@ def observe(agent, name, args, result, verification):
             'output_sha256':hashlib.sha256(result.content.encode()).hexdigest(), **error_excerpt(result.content)}
     else:
         state['errors'].pop(key, None)
+        if args.get('path'):
+            for old_key, error in list(state['errors'].items()):
+                if error['tool'] == name and source_path(agent, error['locator']) == locator:
+                    state['errors'].pop(old_key)
     state['changed_files'] = sorted(set(state['changed_files']) | set(meta.get('affected_paths', [])))
     state['verification'] = {**copy.deepcopy(verification), 'run_id':state.get('run_id')}
     if name == 'read_file' and meta.get('tool_status') == 'ok':
         coverage = read_coverage(result.content)
         if coverage:
-            old = state['reads'].get(args['path'], {})
-            intervals = coverage['returned_ranges']
-            refs = []
-            if old.get('source_sha256') and old['source_sha256'] == coverage['source_sha256']:
-                intervals = old['returned_ranges'] + intervals
-                refs = old.get('evidence_refs', [])
+            normalize_reads(agent, state)
             ref = {'evidence_id':meta.get('evidence_id'), 'returned_ranges':coverage['returned_ranges']}
-            if ref not in refs:refs = refs + [ref]
-            merged = []
-            for low,high in sorted(intervals):
-                if merged and low <= merged[-1][1]+1:merged[-1][1] = max(high,merged[-1][1])
-                else:merged.append([low,high])
-            state['reads'][args['path']] = {**coverage, 'returned_ranges':merged,
-                'full_file_returned':coverage['total_lines'] == 0 or merged == [[1,coverage['total_lines']]],
-                'evidence_id':meta.get('evidence_id'), 'evidence_refs':refs}
+            state['reads'][locator] = merge_reads(state['reads'].get(locator), {
+                **coverage, 'evidence_id':meta.get('evidence_id'), 'evidence_refs':[ref]})
 
 
 def protected_view(agent):
     state = copy.deepcopy(ledger(agent))
     if state.get('scope') != scope_key(agent):
         raise ValueError('Session retention contract changed during execution')
+    normalize_reads(agent, state)
     # File freshness is checked by the host on every model dispatch; metadata
     # is never promoted into current source text or permission.
     for path,receipt in state['reads'].items():

@@ -13,7 +13,7 @@ def digest(value):
 
 
 def contracts(context):
-    keys = ('id', 'spec_version', 'description', 'acceptance', 'constraints', 'context_notes')
+    keys = ('id', 'spec_version', 'description', 'acceptance', 'constraints', 'context_notes', 'output_contract')
     def spec(row):
         return {k: row[k] for k in keys if k in row}
     return {'goal': spec(context['goal']), 'task': spec(context['task']),

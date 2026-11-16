@@ -34,7 +34,7 @@ def dump(path, value):
 
 def sources():
     files = []
-    for folder in ('pico', 'goaltree', 'scripts', 'tests', 'benchmarks/goal_stress_v1'):
+    for folder in ('pico', 'goaltree', 'scripts', 'tests', 'benchmarks/goal_stress_v1', 'benchmarks/goal_autonomy_v1'):
         files.extend(p for p in (ROOT / folder).rglob('*') if p.is_file() and '__pycache__' not in p.parts
                      and p.suffix in {'.py', '.json', '.txt', '.js', '.cjs', '.html', '.css', '.svg'})
     return {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(files)}

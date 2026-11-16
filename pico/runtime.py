@@ -271,7 +271,8 @@ class Pico:
 
     def build_prefix(self):
         return build_prompt_prefix(workspace=self.workspace, tools=self.tools,
-                                   verification_command=self.verification_command if not self.read_only else None)
+                                   verification_command=self.verification_command if not self.read_only else None,
+                                   task_executor=getattr(self,'goal_binding',{}).get('mode')=='execute')
 
     def _apply_prefix_state(self, prefix_state):
         self.prefix_state = prefix_state
@@ -706,6 +707,8 @@ class Pico:
             metadata['source_paths'] = list(getattr(self.capabilities, 'last_sources', [])) + list(metadata.get('affected_paths', []))
             if name == 'read_file' and args.get('path') and metadata.get('tool_status') == 'ok':
                 metadata['source_paths'] = sorted(set(metadata['source_paths']) | {args['path']})
+            from .path_identity import source_path
+            metadata['source_paths'] = sorted({source_path(self, p) for p in metadata['source_paths']})
             if name == 'run_shell':
                 from .operations import snapshot_hash
                 metadata['snapshot_sha256'] = snapshot_hash(self.capture_workspace_snapshot())

@@ -1,0 +1,586 @@
+{
+  "schema": "goal-autonomy-audit-v1",
+  "cases_equal": true,
+  "prompts_and_gold_equal": true,
+  "asset_sha_equal": true,
+  "baseline": {
+    "planned_cases": 3,
+    "planned_turns": 15,
+    "started_turns": 8,
+    "passed_turns": 2,
+    "complete_cases_passed": 0,
+    "per_case": {
+      "library-brief": {
+        "planned": 5,
+        "passed": 2
+      },
+      "garden-review": {
+        "planned": 5,
+        "passed": 0
+      },
+      "archive-handover": {
+        "planned": 5,
+        "passed": 0
+      }
+    },
+    "failures": [
+      {
+        "case": "library-brief",
+        "turn": "t01",
+        "categories": [
+          "planning_contract"
+        ],
+        "failed_checks": [
+          "manual_plan",
+          "delivery_contract"
+        ]
+      },
+      {
+        "case": "library-brief",
+        "turn": "t02",
+        "categories": [
+          "answer_incorrect",
+          "boundary_violation"
+        ],
+        "failed_checks": [
+          "no_unauthorized_tools",
+          "field:format"
+        ]
+      },
+      {
+        "case": "library-brief",
+        "turn": "t04",
+        "categories": [
+          "answer_incorrect",
+          "planning_contract"
+        ],
+        "failed_checks": [
+          "field:format",
+          "current_deliverable_submitted"
+        ]
+      },
+      {
+        "case": "garden-review",
+        "turn": "t01",
+        "categories": [
+          "planning_contract"
+        ],
+        "failed_checks": [
+          "delivery_contract"
+        ]
+      },
+      {
+        "case": "garden-review",
+        "turn": "t02",
+        "categories": [
+          "answer_incorrect"
+        ],
+        "failed_checks": [
+          "field:format"
+        ]
+      },
+      {
+        "case": "garden-review",
+        "turn": "t03",
+        "categories": [
+          "run_incomplete",
+          "scope_sync"
+        ],
+        "failed_checks": [
+          "completed",
+          "acceptance_current"
+        ]
+      },
+      {
+        "case": "garden-review",
+        "turn": "t04",
+        "categories": [
+          "unstarted"
+        ],
+        "failed_checks": []
+      },
+      {
+        "case": "garden-review",
+        "turn": "t05",
+        "categories": [
+          "unstarted"
+        ],
+        "failed_checks": []
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t01",
+        "categories": [
+          "unstarted"
+        ],
+        "failed_checks": []
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t02",
+        "categories": [
+          "unstarted"
+        ],
+        "failed_checks": []
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t03",
+        "categories": [
+          "unstarted"
+        ],
+        "failed_checks": []
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t04",
+        "categories": [
+          "unstarted"
+        ],
+        "failed_checks": []
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t05",
+        "categories": [
+          "unstarted"
+        ],
+        "failed_checks": []
+      }
+    ],
+    "actual_model_requests": 43,
+    "known_tokens": 399328,
+    "unknown_usage_responses": 0,
+    "ledger_tokens": [
+      399328,
+      0
+    ],
+    "ledger_matches_responses": true,
+    "estimated_cny": "0.3375544",
+    "unknown_reserved_cny": "0",
+    "halted": "Frozen money/token budget exhausted",
+    "frozen_snapshot_mismatches": [],
+    "sources_unchanged_during_run": true,
+    "forbidden_tool_requests": [
+      {
+        "case": "library-brief",
+        "turn": "t02",
+        "tool": "run_shell",
+        "status": "rejected",
+        "exit_code": null,
+        "workspace_changed": false
+      }
+    ],
+    "children": [
+      {
+        "case": "library-brief",
+        "turn": "t02",
+        "status": "stopped",
+        "verification": "blocked",
+        "stop_reason": "verification_incomplete",
+        "independent_session": true
+      },
+      {
+        "case": "garden-review",
+        "turn": "t02",
+        "status": "completed",
+        "verification": "not_configured",
+        "stop_reason": "final_answer_returned",
+        "independent_session": true
+      }
+    ],
+    "foreign_marker_in_prepared_requests": [],
+    "tools": [
+      {
+        "case": "library-brief",
+        "turn": "t01",
+        "tool_calls_including_forwarded_children_once": 2
+      },
+      {
+        "case": "library-brief",
+        "turn": "t02",
+        "tool_calls_including_forwarded_children_once": 13
+      },
+      {
+        "case": "library-brief",
+        "turn": "t03",
+        "tool_calls_including_forwarded_children_once": 1
+      },
+      {
+        "case": "library-brief",
+        "turn": "t04",
+        "tool_calls_including_forwarded_children_once": 8
+      },
+      {
+        "case": "library-brief",
+        "turn": "t05",
+        "tool_calls_including_forwarded_children_once": 2
+      },
+      {
+        "case": "garden-review",
+        "turn": "t01",
+        "tool_calls_including_forwarded_children_once": 3
+      },
+      {
+        "case": "garden-review",
+        "turn": "t02",
+        "tool_calls_including_forwarded_children_once": 10
+      },
+      {
+        "case": "garden-review",
+        "turn": "t03",
+        "tool_calls_including_forwarded_children_once": 2
+      }
+    ],
+    "protocol_errors": 0,
+    "failed_model_responses": 0
+  },
+  "repair": {
+    "planned_cases": 3,
+    "planned_turns": 15,
+    "started_turns": 15,
+    "passed_turns": 6,
+    "complete_cases_passed": 0,
+    "per_case": {
+      "library-brief": {
+        "planned": 5,
+        "passed": 3
+      },
+      "garden-review": {
+        "planned": 5,
+        "passed": 1
+      },
+      "archive-handover": {
+        "planned": 5,
+        "passed": 2
+      }
+    },
+    "failures": [
+      {
+        "case": "library-brief",
+        "turn": "t01",
+        "categories": [
+          "planning_contract"
+        ],
+        "failed_checks": [
+          "delivery_contract"
+        ]
+      },
+      {
+        "case": "library-brief",
+        "turn": "t02",
+        "categories": [
+          "answer_incorrect"
+        ],
+        "failed_checks": [
+          "field:count",
+          "field:format",
+          "field:record_id",
+          "field:version"
+        ]
+      },
+      {
+        "case": "garden-review",
+        "turn": "t01",
+        "categories": [
+          "planning_contract"
+        ],
+        "failed_checks": [
+          "delivery_contract"
+        ]
+      },
+      {
+        "case": "garden-review",
+        "turn": "t02",
+        "categories": [
+          "answer_incorrect"
+        ],
+        "failed_checks": [
+          "field:count",
+          "field:format",
+          "field:record_id",
+          "field:version"
+        ]
+      },
+      {
+        "case": "garden-review",
+        "turn": "t04",
+        "categories": [
+          "answer_incorrect",
+          "planning_contract"
+        ],
+        "failed_checks": [
+          "field:count",
+          "field:format",
+          "field:record_id",
+          "field:version",
+          "current_deliverable_submitted"
+        ]
+      },
+      {
+        "case": "garden-review",
+        "turn": "t05",
+        "categories": [
+          "answer_incorrect"
+        ],
+        "failed_checks": [
+          "field:format"
+        ]
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t01",
+        "categories": [
+          "planning_contract"
+        ],
+        "failed_checks": [
+          "delivery_contract"
+        ]
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t02",
+        "categories": [
+          "answer_incorrect"
+        ],
+        "failed_checks": [
+          "field:format"
+        ]
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t04",
+        "categories": [
+          "answer_incorrect",
+          "boundary_violation",
+          "planning_contract"
+        ],
+        "failed_checks": [
+          "no_unauthorized_tools",
+          "field:format",
+          "current_deliverable_submitted"
+        ]
+      }
+    ],
+    "actual_model_requests": 77,
+    "known_tokens": 635823,
+    "unknown_usage_responses": 0,
+    "ledger_tokens": [
+      635823,
+      0
+    ],
+    "ledger_matches_responses": true,
+    "estimated_cny": "0.5357744",
+    "unknown_reserved_cny": "0",
+    "halted": null,
+    "frozen_snapshot_mismatches": [],
+    "sources_unchanged_during_run": true,
+    "forbidden_tool_requests": [
+      {
+        "case": "archive-handover",
+        "turn": "t04",
+        "tool": "confirm_task",
+        "status": "rejected",
+        "exit_code": null,
+        "workspace_changed": false
+      }
+    ],
+    "children": [
+      {
+        "case": "library-brief",
+        "turn": "t02",
+        "status": "completed",
+        "verification": "not_configured",
+        "stop_reason": "final_answer_returned",
+        "independent_session": true
+      },
+      {
+        "case": "library-brief",
+        "turn": "t04",
+        "status": "completed",
+        "verification": "not_configured",
+        "stop_reason": "final_answer_returned",
+        "independent_session": true
+      },
+      {
+        "case": "garden-review",
+        "turn": "t02",
+        "status": "completed",
+        "verification": "not_configured",
+        "stop_reason": "final_answer_returned",
+        "independent_session": true
+      },
+      {
+        "case": "garden-review",
+        "turn": "t04",
+        "status": "completed",
+        "verification": "not_configured",
+        "stop_reason": "final_answer_returned",
+        "independent_session": true
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t02",
+        "status": "completed",
+        "verification": "not_configured",
+        "stop_reason": "final_answer_returned",
+        "independent_session": true
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t04",
+        "status": "completed",
+        "verification": "not_configured",
+        "stop_reason": "final_answer_returned",
+        "independent_session": true
+      }
+    ],
+    "foreign_marker_in_prepared_requests": [],
+    "tools": [
+      {
+        "case": "library-brief",
+        "turn": "t01",
+        "tool_calls_including_forwarded_children_once": 2
+      },
+      {
+        "case": "library-brief",
+        "turn": "t02",
+        "tool_calls_including_forwarded_children_once": 7
+      },
+      {
+        "case": "library-brief",
+        "turn": "t03",
+        "tool_calls_including_forwarded_children_once": 1
+      },
+      {
+        "case": "library-brief",
+        "turn": "t04",
+        "tool_calls_including_forwarded_children_once": 8
+      },
+      {
+        "case": "library-brief",
+        "turn": "t05",
+        "tool_calls_including_forwarded_children_once": 2
+      },
+      {
+        "case": "garden-review",
+        "turn": "t01",
+        "tool_calls_including_forwarded_children_once": 2
+      },
+      {
+        "case": "garden-review",
+        "turn": "t02",
+        "tool_calls_including_forwarded_children_once": 8
+      },
+      {
+        "case": "garden-review",
+        "turn": "t03",
+        "tool_calls_including_forwarded_children_once": 2
+      },
+      {
+        "case": "garden-review",
+        "turn": "t04",
+        "tool_calls_including_forwarded_children_once": 9
+      },
+      {
+        "case": "garden-review",
+        "turn": "t05",
+        "tool_calls_including_forwarded_children_once": 2
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t01",
+        "tool_calls_including_forwarded_children_once": 2
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t02",
+        "tool_calls_including_forwarded_children_once": 7
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t03",
+        "tool_calls_including_forwarded_children_once": 1
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t04",
+        "tool_calls_including_forwarded_children_once": 12
+      },
+      {
+        "case": "archive-handover",
+        "turn": "t05",
+        "tool_calls_including_forwarded_children_once": 2
+      }
+    ],
+    "protocol_errors": 0,
+    "failed_model_responses": 0
+  },
+  "current_source_mismatches": [],
+  "full_tests": {
+    "exit_code": 0,
+    "elapsed_seconds": 1082.985,
+    "frozen_source_files": 340,
+    "sources_unchanged": true,
+    "tests": 1018,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "full_and_live_source_freezes_equal": true,
+  "credential_scan": {
+    "source_files_with_matches": []
+  },
+  "protocol": {
+    "base_url": "https://open.bigmodel.cn/api/paas/v4",
+    "classification": "New synthetic development diagnostics; no held-out/generalization claim",
+    "concurrency": 1,
+    "implementation": "balanced",
+    "input_token_budget": 1032192,
+    "max_output_tokens": 2048,
+    "max_spend_cny": "2",
+    "max_tool_steps_per_turn": 14,
+    "max_total_tokens": 1200000,
+    "maximum_requests": 80,
+    "model": "glm-5.3-flash",
+    "native_wire_options": {
+      "reasoning_effort": "low",
+      "thinking": {
+        "clear_thinking": false,
+        "type": "enabled"
+      }
+    },
+    "oracle_current_submissions": true,
+    "planning": "balanced",
+    "pricing_checked_date": "2026-11-14",
+    "provider_weight_revision": "unavailable; alias only",
+    "schema": "goal-autonomy-diagnostic-v1",
+    "shell_backend": "appcontainer",
+    "temperature": 1,
+    "timeout_seconds": 120,
+    "token_context_window": 1048576,
+    "top_p": 0.95,
+    "transport_attempts": 1,
+    "turn_deadline_seconds": 480,
+    "verification_command": "python -B -m unittest discover -v",
+    "web_access": false,
+    "wire_byte_limit": 33554432
+  },
+  "combined": {
+    "actual_model_requests": 120,
+    "known_tokens": 1035151,
+    "estimated_cny": "0.8733288",
+    "actual_debit": null
+  },
+  "limitations": [
+    "Synthetic development diagnostic; not held-out or public Benchmark.",
+    "Active Goal bound by host; Agent chooses task IDs, tool order and recovery. No autonomous cross-Goal routing.",
+    "Restart is quiescent Workbench reconstruction, not killed-process or uncertain-effect recovery.",
+    "Successful read does not prove understanding; recovery_observed is ordering only, not causal proof.",
+    "Tool counts deduplicate forwarded children; read repeats only within each actor/run and turn.",
+    "Five turns per case; not 1M-token pressure or days-long user validation.",
+    "Baseline v2 is posthoc; original verifier and shape-corrected v1 report retained.",
+    "Budgets differ; rates are descriptive, not causal comparisons.",
+    "confirm_task is an approval request, not an approval bypass; frozen strict rejection retained."
+  ]
+}

@@ -125,7 +125,7 @@ class AgentLoop:
         if agent.capabilities and hasattr(agent.model_client, 'on_delta'):
             needs_reference_read = bool(shared_notes and not task_state.tool_steps and
                                         getattr(agent.model_client,'supports_reference_grounding',False))
-            agent.model_client.on_delta = (None if needs_reference_read else
+            agent.model_client.on_delta = (None if needs_reference_read or getattr(agent,'response_contract',None) else
                 lambda text: agent.emit_trace(task_state, 'model_delta', {'text': text}))
         if agent.capabilities and hasattr(agent.model_client, 'on_progress'):
             agent.model_client.on_progress = lambda info: agent.emit_trace(task_state, 'model_progress',
@@ -182,6 +182,14 @@ class AgentLoop:
         )
         return raw, kind, payload
 
+    def _reply_problem(self, final):
+        agent = self.agent
+        contract = getattr(agent, 'response_contract', None)
+        if contract is None:
+            return None
+        preview = agent.goal_finalizer(final) if getattr(agent,'goal_finalizer',None) else final
+        return contract.problem(preview)
+
     def _finish_success(self, task_state, user_message, final, run_started_at):
         agent = self.agent
         from .memory_grounding import ground_answer, GroundingError
@@ -200,6 +208,10 @@ class AgentLoop:
             self._persist_model_failure(task_state,user_message,exc,run_started_at,dict(agent.last_prompt_metadata or {}),record_failure=False)
             raise
         if getattr(agent,'goal_finalizer',None):final=agent.goal_finalizer(final)
+        contract=getattr(agent,'response_contract',None)
+        if contract and contract.problem(final):
+            return self._finish_stopped(task_state,user_message,'response_contract_incomplete',
+                '回复未满足本轮指定的JSON输出格式，未作为成功答复保存。原始运行与核对记录已保留。',run_started_at)
         if agent.capabilities:
             agent.cancellation.check()
         agent.record({"role": "assistant", "content": final, "created_at": now(), 'run_id': task_state.run_id})
@@ -239,6 +251,9 @@ class AgentLoop:
         if agent.capabilities:
             agent.cancellation.check()
         completion = CompletionGate(agent)
+        from .response_contract import from_request
+        agent.response_contract = from_request(user_message)
+        format_repairs = 0
         run_started_at = time.monotonic()
         agent.memory.set_task_summary(user_message)
         previous_working_state = agent.session.get('working_state', {})
@@ -249,6 +264,10 @@ class AgentLoop:
                 agent.session['plan_invalidations'] = invalidated
         agent.session['working_state'] = {'goal': user_message[:300], 'changed_files': [],
                                           'failed_attempts': [], 'verification': {'status': 'not_run'}}
+        if agent.response_contract:
+            agent.session['working_state']['response_contract']={'kind':agent.response_contract.kind,
+                'object_required':agent.response_contract.object_required,
+                'source':'explicit current user instruction; bounded reply-layout grammar, not a semantic grader'}
         agent.record({"role": "user", "content": user_message, "created_at": now(),
                       **({'attachments': agent.message_attachments} if getattr(agent, 'message_attachments', None) else {})})
 
@@ -288,6 +307,8 @@ class AgentLoop:
                 user_message, agent.verification_command)
             conversation = getattr(agent.model_client, 'native_conversation', None)
             if conversation is not None:
+                if getattr(agent,'goal_binding',{}).get('mode')=='execute' and hasattr(conversation,'bind_task_executor'):
+                    conversation.bind_task_executor()
                 from .native_history import historical_turns
                 if agent.capabilities:
                     conversation.messages.extend(historical_turns(agent))
@@ -303,12 +324,19 @@ class AgentLoop:
                     conversation.messages[0]['content'] = conversation.messages[0]['content'].replace(
                         'Send exactly one function call per step.',
                         'You may return at most 8 native calls per request; execution is ordered, budgeted and individually approved. ')
-                    conversation.messages[0]['content'] += ((' Plan from the user request and current goal. Do not browse local files to guess the topic of a new goal. '
-                        'Ask for the report topic/audience if unknown instead of borrowing another project\'s subject. ')
-                        if conversation.goal_coordinator else (' Use code_search or symbol_info to navigate. '
-                        'Persist a small plan for multi-step tasks. Prose memories stay candidates until operator confirmation. '
-                        'Use evidence IDs to recover details after compaction. Available skills (load only when relevant): ' +
-                        str(agent.capabilities.skills)))
+                    if conversation.goal_coordinator:
+                        guidance = (' Plan from the user request and current goal. Do not browse local files to guess the topic of a new goal. '
+                                    'Ask for the report topic/audience if unknown instead of borrowing another project\'s subject. ')
+                    elif getattr(conversation,'task_executor',False):
+                        guidance = (' Use evidence and the bound task contract to choose relevant tools. '
+                                    'Keep source facts, user requirements and pending manual acceptance distinct. '
+                                    'Use evidence IDs for details after compaction. ')
+                    else:
+                        guidance = (' Use code_search or symbol_info to navigate. '
+                                    'Persist a small plan for multi-step tasks. Prose memories stay candidates until operator confirmation. '
+                                    'Use evidence IDs to recover details after compaction. Available skills (load only when relevant): ' +
+                                    str(agent.capabilities.skills))
+                    conversation.messages[0]['content'] += guidance
                     agent.model_client.cancellation = agent.cancellation
         agent.emit_trace(
             task_state,
@@ -431,6 +459,14 @@ class AgentLoop:
 
             final = (payload or raw).strip()
             problem = completion.problem() or (agent.goal_sync_problem() if getattr(agent,'goal_sync_problem',None) else '')
+            layout_problem = self._reply_problem(final) if not problem else None
+            if layout_problem:
+                format_repairs += 1
+                agent.emit_trace(task_state,'response_contract_rejected',{'kind':agent.response_contract.kind,'repair':format_repairs})
+                if format_repairs > 2:
+                    return self._finish_stopped(task_state,user_message,'response_contract_incomplete',
+                        '两次格式纠正后仍未满足本轮JSON输出要求；未修改数值、权限或验收标准。运行记录已保留。',run_started_at)
+                problem=layout_problem
             if problem:
                 agent.emit_trace(task_state, 'completion_rejected', dict(completion.state))
                 agent.record({'role':'assistant', 'content':problem, 'created_at':now()})
@@ -465,25 +501,35 @@ class AgentLoop:
                     "purpose": "finalization",
                 },
             )
-            raw, kind, payload = self._request_model(
-                task_state,
-                user_message,
-                prompt,
-                prompt_metadata,
-                run_started_at,
-                purpose="finalization",
-            )
-            if kind == "final":
-                final = (payload or raw).strip()
-                problem = completion.problem() or (agent.goal_sync_problem() if getattr(agent,'goal_sync_problem',None) else '')
-                if not problem:
-                    return self._finish_success(task_state, user_message, final, run_started_at)
-                agent.emit_trace(task_state, 'completion_rejected', dict(completion.state))
-                return self._finish_stopped(task_state, user_message, 'verification_incomplete', problem, run_started_at)
-            if native and kind in {'tool', 'tools'}:
-                conversation = getattr(agent.model_client, 'native_conversation', None)
-                while conversation and conversation.pending:
-                    agent.model_client.observe_native_tool('Not executed: finalization has no tool budget')
+            for render_attempt in range(3):
+                if render_attempt:
+                    task_state.record_attempt()
+                    agent.run_store.write_task_state(task_state)
+                raw, kind, payload = self._request_model(task_state,user_message,prompt,prompt_metadata,
+                    run_started_at,purpose="finalization")
+                if kind == "final":
+                    final = (payload or raw).strip()
+                    problem = completion.problem() or (agent.goal_sync_problem() if getattr(agent,'goal_sync_problem',None) else '')
+                    if problem:
+                        agent.emit_trace(task_state, 'completion_rejected', dict(completion.state))
+                        return self._finish_stopped(task_state,user_message,'verification_incomplete',problem,run_started_at)
+                    problem=self._reply_problem(final)
+                    if not problem:
+                        return self._finish_success(task_state,user_message,final,run_started_at)
+                    format_repairs += 1
+                    agent.emit_trace(task_state,'response_contract_rejected',{'kind':agent.response_contract.kind,'repair':format_repairs})
+                    if format_repairs > 2 or render_attempt==2:
+                        return self._finish_stopped(task_state,user_message,'response_contract_incomplete',
+                            '回复未满足本轮JSON输出要求，已达到有限纠正上限。未执行额外工具或自行验收。',run_started_at)
+                    agent.record({'role':'assistant','content':problem,'created_at':now()})
+                    if native:agent.model_client.native_notice(problem+' Tool budget is still zero.')
+                    prompt += '\n\n' + problem + ' Tool budget is still zero.'
+                    continue
+                if native and kind in {'tool', 'tools'}:
+                    conversation = getattr(agent.model_client, 'native_conversation', None)
+                    while conversation and conversation.pending:
+                        agent.model_client.observe_native_tool('Not executed: finalization has no tool budget')
+                break
 
         if attempts >= max_attempts and tool_steps < agent.max_steps:
             final = "Stopped after too many malformed model responses without a valid tool call or final answer."

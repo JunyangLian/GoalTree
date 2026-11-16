@@ -537,8 +537,34 @@ class Workbench:
                 agent.session_store.save(agent.session)
 
             sync_conflicts={}
-            agent.goal_sync_problem=lambda: ('Task-tree update conflicts are unresolved. Use the current node revision below to repair the rejected update; '
-                'do not ask the user to refresh or claim the tree was fully updated:\n'+json.dumps(sync_conflicts,ensure_ascii=False)) if sync_conflicts else ''
+            submitted_outputs={}
+
+            def output_current(key, output, state):
+                node=state['tasks'].get(key)
+                if not node or node.get('context_status')=='archived' or node['status']=='cancelled':
+                    return False
+                return (node['spec_version']==output['spec_version'] and node['status'] in {'review','completed'} and
+                        any(e.get('evidence_id')==output['evidence_id'] and e.get('task_spec_version')==node['spec_version']
+                            for e in node.get('deliverables',[])))
+
+            def sync_problem():
+                problems=[]
+                if sync_conflicts:
+                    problems.append('Task-tree update conflicts are unresolved. Use the current node revision to repair the rejected update; '
+                        'do not ask the user to refresh or claim the tree was fully updated:\n'+json.dumps(sync_conflicts,ensure_ascii=False))
+                state=self.goals.read()
+                stale=[]
+                for key,output in submitted_outputs.items():
+                    node=state['tasks'].get(key)
+                    if node and node.get('context_status')!='archived' and node['status']!='cancelled' and not output_current(key,output,state):
+                        stale.append({'task_id':key,'revision':node['revision'],'spec_version':node['spec_version'],
+                                      'submitted_spec_version':output['spec_version'],'status':node['status']})
+                if stale:
+                    problems.append('A deliverable submitted during this run became stale after a task/ancestor/dependency contract changed. '
+                        'Do not claim it is currently submitted. Recheck the changed contract and use record_progress with a current output '
+                        'and current revision before finalizing; do not self-accept or restore old requirements.\n'+json.dumps(stale,ensure_ascii=False))
+                return '\n'.join(problems)
+            agent.goal_sync_problem=sync_problem
 
             def action(proposal):
                 if task.policy == 'never':
@@ -568,8 +594,10 @@ class Workbench:
                                   'run_id':agent.current_task_state.run_id,'task_spec_version':self.goals.get(self.goals.read(),'tasks',proposal.get('task_id'))['spec_version']}
                     result=self.goals.record_progress(binding['goal_id'],proposal.get('task_id'),proposal.get('revision'),
                         proposal.get('status'),proposal.get('note'),evidence)
-                    if proposal.get('status')=='review' and proposal.get('output'):
-                        conversational_outputs.append({'title':current['title'],'content':agent.redact_text(proposal['output'])})
+                    if proposal.get('status')=='review':
+                        submitted_outputs[current['id']]={'title':current['title'],
+                            'content':agent.redact_text(proposal.get('output','')), 'evidence_id':evidence['evidence_id'],
+                            'spec_version':result['spec_version']}
                     refresh()
                     return result
                 if proposal.get('action') == 'create_goal':
@@ -581,6 +609,15 @@ class Workbench:
                     raise GoalError('Agent不能自行验收、切换目标或扩大权限。')
                 if not binding['goal_id'] or proposal.get('goal_id', binding['goal_id']) != binding['goal_id']:
                     raise GoalError('提议必须作用于当前目标。', 403)
+                if proposal.get('action')=='create_task':
+                    from .goals import require_agent_verification_modes
+                    require_agent_verification_modes([proposal])
+                if proposal.get('action') in {'create_task', 'update_task'}:
+                    from .output_contract import prepare_step
+                    previous = self.goals.get(self.goals.read(), 'tasks', proposal.get('task_id')) if proposal['action']=='update_task' else None
+                    if previous and previous['goal_id'] != binding['goal_id']:
+                        raise GoalError('任务不属于当前目标。', 403)
+                    proposal = prepare_step(agent, proposal, previous)
                 try:
                     result = self.goals.action({**proposal, 'goal_id': binding['goal_id']}, assistant_session_id=binding['session_id'])
                 except GoalError as exc:
@@ -601,6 +638,11 @@ class Workbench:
                 if task.policy == 'never':
                     raise GoalError('只读策略禁止修改任务树。', 403)
                 goal = self.goals.get(self.goals.read(), 'goals', binding['goal_id'])
+                from .goals import require_agent_verification_modes
+                require_agent_verification_modes(steps, self.goals.read()['tasks'])
+                from .output_contract import prepare_step
+                current = {k: v for k, v in self.goals.read()['tasks'].items() if v['goal_id']==binding['goal_id']}
+                steps = [prepare_step(agent, step, current.get(step.get('id'))) for step in steps]
                 result = self.goals.plan(goal['id'], steps, goal['revision'])
                 refresh()
                 return result
@@ -655,11 +697,16 @@ class Workbench:
                      'acceptance':summary['acceptance']})
                 return summary
 
-            conversational_outputs=[]
             def finalize_conversation(answer):
+                if getattr(getattr(agent,'response_contract',None),'kind',None)=='json_only':
+                    # Actual drafts stay in their task evidence. Explicit
+                    # JSON-only replies must not acquire automatic prose.
+                    return answer
                 missing=[]
-                for output in conversational_outputs:
-                    if output['content'] not in answer and output['content'] not in [r['content'] for r in missing]:missing.append(output)
+                state=self.goals.read()
+                for key,output in submitted_outputs.items():
+                    if (output['content'] and output_current(key,output,state) and output['content'] not in answer
+                            and output['content'] not in [r['content'] for r in missing]):missing.append(output)
                 if not missing:return answer
                 return '\n\n'.join('## '+r['title']+'\n\n'+r['content'] for r in missing)+'\n\n'+answer
             agent.goal_finalizer=finalize_conversation
@@ -710,6 +757,9 @@ class Workbench:
 
             def plan(steps):
                 goal = self.goals.read()['goals'][binding['goal_id']]
+                from .output_contract import prepare_step
+                current = {k: v for k, v in self.goals.read()['tasks'].items() if v['goal_id']==binding['goal_id']}
+                steps = [prepare_step(agent, step, current.get(step.get('id'))) for step in steps]
                 result = self.goals.plan(binding['goal_id'], steps, goal['revision'])
                 agent.goal_context = self.goals.context(binding)
                 return result

@@ -75,11 +75,15 @@ class Capabilities:
         if getattr(self.agent, 'goal_planner', None):
             tools['plan_tasks'] = {'schema': {'steps': 'str'}, 'risky': False,
             'description': 'Persist 1..20 GoalTree tasks as a JSON array of id,title,description,acceptance,parent_id,depends_on. '
-                           'Optional verification_mode is configured (default) or manual (requires operator acceptance, never self-completion). '
+                           'Every NEW coordinator task requires its own JSON field verification_mode: configured or manual '
+                           '(requires operator acceptance, never self-completion). Putting this only in acceptance prose has no effect. '
                            'Use temporary ids to link new tasks. Existing unexecuted planned IDs may be updated. '
                            'For multi-stage planning use stage nodes and child tasks linked by parent_id, '
                            'with concrete descriptions and acceptance conditions. Research/documents use manual verification. '
-                           'Never delete history or declare completed. This replaces no existing tasks implicitly.',
+                           'Artifact tasks should declare output_contract with kind:artifact, format:the literal requested delivery form, '
+                           'required_in:[title,description,acceptance] when all are requested, source:request or actual read_file Evidence ID, '
+                           'and quote:an exact source substring containing the form. Evidence-only tasks may use {"kind":"evidence"}. '
+                           'Never invent/copy provenance. Never delete history or declare completed. This replaces no existing tasks implicitly.',
             'run': lambda args: self.run('plan_tasks', args)}
         if getattr(self.agent, 'goal_action', None):
             tools['goal_action'] = {'schema': {'proposal': 'str'}, 'risky': False,
@@ -88,9 +92,12 @@ class Capabilities:
                                'proposal is a JSON-encoded string. create_goal fields: action, title:string (1..160 chars), '
                                'description:string (max 6000), constraints:string (max 4000), acceptance:string (max 2000). '
                                'constraints must be a single text string, NEVER an array or object; use newlines for multiple constraints. '
-                               'create_task additionally requires title and may use parent_id:string, depends_on:array of task IDs, '
-                               'verification_mode:manual/configured. update_goal uses goal_id and revision; '
-                               'update_task uses task_id and revision. Only send fields for the requested action. '
+                               'create_task additionally requires title and verification_mode:manual/configured as JSON fields; '
+                               'it may use parent_id:string and depends_on:array of task IDs. update_goal uses goal_id and revision; '
+                               'update_task uses task_id and revision. For artifact tasks declare/update output_contract as in plan_tasks: '
+                               'kind:artifact, format:literal delivery form, required_in:requested node fields, source:request or read_file Evidence ID, '
+                               'quote:exact supporting text. Keep an existing contract unless the user changes it; never silently erase it. '
+                               'Only send fields for the requested action. '
                                'record_progress uses task_id, revision, status:active/review, note (max1200). '
                                'review requires output (actual deliverable text,max20000) OR evidence_id from this session, never both. '
                                'This records conversation work without rerunning it; it is NOT acceptance. '
@@ -137,6 +144,21 @@ class Capabilities:
             self.changes.prepare(json.loads(args['changes']))
         if name == 'learning_propose':
             self.learning.parse_proposal(args)
+        if getattr(self.agent, 'goal_binding', {}).get('mode') == 'assistant':
+            from .goals import require_agent_verification_modes
+            from .output_contract import prepare_step
+            existing = {t['id']: t for t in self.agent.goal_context.get('existing_tasks', [])}
+            if name == 'plan_tasks':
+                steps = json.loads(args['steps'])
+                require_agent_verification_modes(steps, existing)
+                for step in steps:
+                    prepare_step(self.agent, step, existing.get(step.get('id')))
+            if name == 'goal_action':
+                proposal = json.loads(args['proposal'])
+                if isinstance(proposal, dict) and proposal.get('action') == 'create_task':
+                    require_agent_verification_modes([proposal])
+                if isinstance(proposal, dict) and proposal.get('action') in {'create_task', 'update_task'}:
+                    prepare_step(self.agent, proposal, existing.get(proposal.get('task_id')))
 
     def legacy_edit(self, name, args):
         path = self.agent.path(args['path'])

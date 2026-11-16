@@ -6,7 +6,7 @@ import textwrap
 from dataclasses import dataclass
 
 from .workspace import now
-from .goal_instructions import GOAL_COORDINATOR_INSTRUCTIONS, is_goal_coordinator
+from .goal_instructions import GOAL_COORDINATOR_INSTRUCTIONS, GOAL_EXECUTOR_INSTRUCTIONS, is_goal_coordinator
 
 
 @dataclass
@@ -35,7 +35,7 @@ def tool_signature(tools):
     return hashlib.sha256(json.dumps(payload, sort_keys=True).encode("utf-8")).hexdigest()
 
 
-def build_prompt_prefix(workspace, tools, built_at=None, verification_command=None):
+def build_prompt_prefix(workspace, tools, built_at=None, verification_command=None, task_executor=False):
     tool_lines = []
     for name, tool in tools.items():
         fields = ", ".join(f"{key}: {value}" for key, value in tool["schema"].items())
@@ -90,13 +90,14 @@ def build_prompt_prefix(workspace, tools, built_at=None, verification_command=No
         {completion_rule}
         """
     ).strip()
-    if is_goal_coordinator(tools):
-        text = (GOAL_COORDINATOR_INSTRUCTIONS + '\n\n'
+    if is_goal_coordinator(tools) or task_executor:
+        role = GOAL_COORDINATOR_INSTRUCTIONS if is_goal_coordinator(tools) else GOAL_EXECUTOR_INSTRUCTIONS
+        text = (role + '\n\n'
                 'Return exactly one <tool>...</tool> or one <final>...</final>. '
                 'Tool format: <tool>{"name":"tool_name","args":{...}}</tool>. '
                 'Tool arguments containing JSON arrays or objects must be JSON-encoded strings '
                 'when the schema declares str. Final format: <final>your answer</final>.\n\n'
-                'Tools:\n' + tool_text + '\n\n' + workspace.text())
+                'Tools:\n' + tool_text + '\n\n' + workspace.text() + '\n' + completion_rule)
     signature = tool_signature(tools)
     return PromptPrefix(
         text=text,

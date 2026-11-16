@@ -35,6 +35,7 @@ readme_intro_locked/
 /docs/interview-*.md
 /docs/final-agent-interview.md
 /docs/resume-*.md
+/docs/unified-conversation-acceptance.md
 *.tmp
 *.temp
 .DS_Store

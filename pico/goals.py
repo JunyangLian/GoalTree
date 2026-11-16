@@ -16,6 +16,7 @@ from .security import redact_artifact
 from .workspace import now
 from .goal_instructions import GOAL_COORDINATOR_INSTRUCTIONS
 from .task_progress import tree_view, task_progress
+from . import output_contract
 
 
 class GoalError(ValueError):
@@ -32,6 +33,21 @@ def text(value, name, limit, required=False):
     if not isinstance(value, str) or len(value) > limit or (required and not value.strip()):
         raise GoalError(f'{name} 必须是{limit}字以内的' + ('非空文本。' if required else '文本。'))
     return redact_artifact(value.strip())
+
+
+def require_agent_verification_modes(steps, existing_ids=()):
+    """New coordinator tasks must choose a real field, never prose defaults."""
+    if not isinstance(steps, list):
+        raise GoalError('规划必须是任务对象数组。')
+    for step in steps:
+        if not isinstance(step, dict):
+            raise GoalError('规划条目必须是任务对象。')
+        if step.get('id') not in existing_ids and 'verification_mode' not in step:
+            raise GoalError('New task requires an explicit JSON field verification_mode: "manual" or "configured". '
+                            'Text such as verification_mode=manual inside acceptance does not set this field. '
+                            'Research/documents without an executable check use manual; configured code checks must not be bypassed.')
+        if 'verification_mode' in step:
+            GoalStore.verification(step['verification_mode'])
 
 
 class GoalStore:
@@ -139,7 +155,7 @@ class GoalStore:
                 'title': text(title, '标题', 160, True), 'description': text(description, '说明', 6000),
                 'acceptance': text(acceptance, '验收条件', 2000), 'constraints': text(constraints, '约束', 4000),
                 'context_notes': '', 'depends_on': [], 'status': 'planned', 'validity': 'unknown',
-                'verification_mode': 'configured',
+                'verification_mode': 'configured', 'output_contract': None,
                 'context_status': 'live', 'revision': 1, 'spec_version': 1,
                 'session_id': uid('gt_exec_'), 'chat_session_id': uid('gt_chat_'), 'planner_session_id': uid('gt_plan_'),
                 'context_history': [], 'runs': [], 'summary': '', 'created_at': now(), 'updated_at': now()}
@@ -150,6 +166,7 @@ class GoalStore:
             raise GoalError('当前工作区最多32个目标、500个任务。')
         tasks = state['tasks']
         for task in tasks.values():
+            output_contract.check_fields(task)
             if not isinstance(task['parent_id'], str):
                 raise GoalError('父任务ID必须是文本。')
             if task['goal_id'] not in state['goals']:
@@ -229,6 +246,7 @@ class GoalStore:
                                  data.get('acceptance', ''), data.get('constraints', ''))
                 task['context_notes'] = text(data.get('context_notes', ''), '上下文备注', 4000)
                 task['verification_mode'] = self.verification(data.get('verification_mode', 'configured'))
+                task['output_contract'] = output_contract.normalize(data.get('output_contract'))
                 task['depends_on'] = self.dependencies(data.get('depends_on', []))
                 state['tasks'][task['id']] = task
                 self.bump(goal)
@@ -241,6 +259,11 @@ class GoalStore:
             if action in {'update_goal', 'update_task'}:
                 changed = False
                 changed_fields=set()
+                if not is_goal and 'output_contract' in data:
+                    value = output_contract.normalize(data['output_contract'])
+                    changed |= item.get('output_contract') != value
+                    if item.get('output_contract') != value: changed_fields.add('output_contract')
+                    item['output_contract'] = value
                 if not is_goal and 'verification_mode' in data:
                     value = self.verification(data['verification_mode'])
                     changed |= item['verification_mode'] != value
@@ -328,7 +351,7 @@ class GoalStore:
             self.version(goal, revision)
             aliases, result, previous = {}, [], {}
             for index, step in enumerate(steps):
-                if not isinstance(step, dict) or set(step) - {'id', 'title', 'description', 'acceptance', 'parent_id', 'depends_on', 'verification_mode'}:
+                if not isinstance(step, dict) or set(step) - {'id', 'title', 'description', 'acceptance', 'parent_id', 'depends_on', 'verification_mode', 'output_contract'}:
                     raise GoalError('规划包含无效字段。')
                 if 'parent_id' in step and not isinstance(step['parent_id'], str):
                     raise GoalError('父任务ID必须是文本。')
@@ -349,6 +372,8 @@ class GoalStore:
                     state['tasks'][task['id']] = task
                 if 'verification_mode' in step:
                     task['verification_mode'] = self.verification(step['verification_mode'])
+                if 'output_contract' in step:
+                    task['output_contract'] = output_contract.normalize(step['output_contract'])
                 aliases[alias] = task['id']
                 result.append(task)
             for step, task in zip(steps, result):
@@ -359,8 +384,8 @@ class GoalStore:
             # Resolve the whole proposal before invalidating once. Updating an
             # unexecuted prerequisite can still invalidate downstream results.
             self.validate(state)
-            contracts={'description','acceptance','parent_id','depends_on','verification_mode'}
-            changed=[key for key,old in previous.items() if any(old[k]!=state['tasks'][key][k] for k in contracts)]
+            contracts={'description','acceptance','parent_id','depends_on','verification_mode','output_contract'}
+            changed=[key for key,old in previous.items() if any(old.get(k)!=state['tasks'][key].get(k) for k in contracts)]
             affected=set(self.invalidate(state,changed,'plan_contract_changed')) if changed else set()
             for key,old in previous.items():
                 if key not in affected and old!=state['tasks'][key]:self.bump(state['tasks'][key])
@@ -423,7 +448,7 @@ class GoalStore:
         if goal['spec_version'] != binding['goal_spec_version'] or (task and task['spec_version'] != binding['task_spec_version']):
             raise GoalError('目标或任务版本已变化，拒绝使用旧上下文。', 409)
         def spec(item):
-            return {k: item[k] for k in ('id', 'title', 'description', 'acceptance', 'constraints', 'context_notes', 'revision', 'spec_version', 'verification_mode', 'status', 'validity', 'display_status', 'rollup') if k in item}
+            return {k: item[k] for k in ('id', 'title', 'description', 'acceptance', 'constraints', 'context_notes', 'revision', 'spec_version', 'verification_mode', 'output_contract', 'status', 'validity', 'display_status', 'rollup') if k in item}
         context = {'workspace_id': state['workspace_id'], 'goal': spec(goal), 'mode': binding['mode'], 'task': spec(task) if task else None,
                    'rules': 'Operate only on this goal. Chat is read-only and does not change the task tree. '
                             'Task completion requires current verification or explicit operator acceptance. '
@@ -442,8 +467,14 @@ class GoalStore:
                                         'validity': state['tasks'][key]['validity'], 'summary': state['tasks'][key]['summary'][:1200]}
                                        for key in task['depends_on']]
         elif binding['mode'] in {'plan', 'assistant'}:
-            context['existing_tasks'] = [{k: t[k] for k in ('id', 'title', 'description', 'acceptance', 'parent_id', 'depends_on', 'status', 'validity', 'revision', 'spec_version', 'display_status', 'rollup','progress_note','deliverables') if k in t}
+            context['existing_tasks'] = [{k: t[k] for k in ('id', 'title', 'description', 'acceptance', 'parent_id', 'depends_on', 'verification_mode', 'output_contract', 'status', 'validity', 'revision', 'spec_version', 'display_status', 'rollup','progress_note','deliverables') if k in t}
                                          for t in state['tasks'].values() if t['goal_id'] == goal['id']]
+        visible = ([context['task']] if context.get('task') else context.get('existing_tasks', []))
+        context['artifact_contracts'] = [
+            {'task_id': t['id'], 'spec_version': t['spec_version'], **t['output_contract']}
+            for t in visible if (t.get('output_contract') or {}).get('kind') == 'artifact'
+            and state['tasks'][t['id']].get('context_status') != 'archived'
+            and t.get('status') != 'cancelled']
         if binding['mode'] == 'assistant':
             context['rules'] = GOAL_COORDINATOR_INSTRUCTIONS
             context['status_rule'] = 'display_status and rollup summarize child progress. They do not grant acceptance. A parent stage requires valid child acceptance and its own verification/operator confirmation before completion.'
