@@ -192,8 +192,9 @@ class ToolExecutor:
             # Web results are already bounded as complete JSON envelopes. A
             # second 4K clip would silently lose lines/citations and break JSON.
             output_limit=(agent.web_budget.result_limit if name in {'web_read','web_find','web_search'}
-                          and hasattr(agent,'web_budget') else 12000 if name=='run_shell' else 4000)
-            content = agent.redact_text(clip(raw_content, output_limit))
+                          and hasattr(agent,'web_budget') else 12000 if name=='run_shell' else int(tool.get('output_limit', 4000)))
+            raw_text = str(raw_content)
+            content = agent.redact_text(clip(raw_text, output_limit))
             after_snapshot = agent.capture_workspace_snapshot() if observe_effects else before_snapshot
             affected_paths, diff_summary = agent.diff_workspace_snapshots(before_snapshot, after_snapshot)
             workspace_changed = bool(affected_paths)
@@ -218,6 +219,13 @@ class ToolExecutor:
                 workspace_changed=workspace_changed,
                 workspace_fingerprint=agent.workspace.fingerprint(),
                 diff_summary=diff_summary,
+            )
+            metadata.update(
+                **({'effect': tool['effect']} if 'effect' in tool else {}),
+                output_total_chars=len(raw_text),
+                output_preview_chars=len(content),
+                output_truncated=len(raw_text) > output_limit,
+                output_limit_chars=output_limit,
             )
             if name == "run_shell":
                 metadata["exit_code"] = int(match.group(1)) if match else None

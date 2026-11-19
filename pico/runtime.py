@@ -26,6 +26,7 @@ from .privacy import PrivacyDenied
 from .session_store import SessionStore
 from .tool_context import ToolContext
 from .tool_executor import ToolExecutor
+from .environment import EnvironmentProfile, validate_tool_arguments
 from . import tools as toolkit
 from .workspace import IGNORED_PATH_NAMES, MAX_HISTORY, WorkspaceContext, clip, now
 
@@ -84,7 +85,16 @@ class Pico:
         embedding_mode='off',
         persist_session=True,
         network_route='environment',
+        environment=None,
+        wire_protocol='auto',
     ):
+        if environment is not None and not isinstance(environment, EnvironmentProfile):
+            raise TypeError('environment must be an EnvironmentProfile or None')
+        if wire_protocol not in {'auto', 'text', 'native'}:
+            raise ValueError('wire_protocol must be auto, text or native')
+        self.environment = environment
+        self.requested_wire_protocol = wire_protocol
+        self.effective_wire_protocol = ''
         self.model_client = model_client
         self.workspace = workspace
         self.root = Path(workspace.repo_root)
@@ -272,7 +282,8 @@ class Pico:
     def build_prefix(self):
         return build_prompt_prefix(workspace=self.workspace, tools=self.tools,
                                    verification_command=self.verification_command if not self.read_only else None,
-                                   task_executor=getattr(self,'goal_binding',{}).get('mode')=='execute')
+                                   task_executor=getattr(self,'goal_binding',{}).get('mode')=='execute',
+                                   environment=self.environment)
 
     def _apply_prefix_state(self, prefix_state):
         self.prefix_state = prefix_state
@@ -620,6 +631,14 @@ class Pico:
         self.last_durable_superseded = superseded
         return promoted, rejections, superseded
 
+    def native_tools_enabled(self):
+        supported = bool(getattr(self.model_client, 'supports_native_tools', False))
+        if self.requested_wire_protocol == 'native' and not supported:
+            raise ValueError('Native tool protocol was requested but this model client does not support it')
+        if self.requested_wire_protocol == 'text':
+            return False
+        return supported
+
     @private_run
     def ask(self, user_message):
         from .agent_loop import AgentLoop
@@ -634,6 +653,7 @@ class Pico:
             from .flywheel import RunMetrics,PrivacySettings
             self._flywheel_metrics=RunMetrics() if PrivacySettings(self.root).read()['mode']!='off' else None
         try:
+            self.effective_wire_protocol = 'native' if self.native_tools_enabled() else 'text'
             return loop.run(user_message)
         except Cancelled:
             if self.current_task_state is None:
@@ -726,6 +746,9 @@ class Pico:
             if metadata.get('source_sha256'):
                 suffix += '\nSource SHA256: ' + metadata['source_sha256']
             result = ToolExecutionResult(self.redact_text(result.content) + suffix, metadata)
+            if 'output_preview_chars' in metadata:
+                metadata['output_evidence_suffix_chars'] = len(suffix)
+                metadata['output_preview_chars'] = len(result.content)
         self._last_tool_result_metadata = dict(result.metadata)
         return result
 
@@ -791,6 +814,9 @@ class Pico:
             "durable_superseded": list(self.last_durable_superseded),
             "redacted_env": self.detected_secret_env_summary(),
             "harness_profile": self.harness_profile,
+            "environment": self.environment.name if self.environment else None,
+            "requested_wire_protocol": self.requested_wire_protocol,
+            "effective_wire_protocol": self.effective_wire_protocol,
             "plan": self.session.get('plan', []),
             "retrieval": dict(getattr(getattr(self.capabilities, 'index', None), 'last_audit', {})),
         }
@@ -800,7 +826,13 @@ class Pico:
 
     def validate_tool(self, name, args):
         """把通用工具校验和 runtime 级额外约束串起来。"""
-        if self.capabilities and name in self.tools:
+        if name in self.tools:
+            spec = self.tools[name]
+            if 'json_schema' in spec or name not in toolkit.legal_tool_names():
+                # External tools previously fell through the legacy local-tool
+                # validator without any checks. Use the same schema on both wires.
+                validate_tool_arguments(spec, args)
+        if self.capabilities and name in self.tools and 'json_schema' not in self.tools[name]:
             schema = self.tools[name]['schema']
             if not isinstance(args, dict) or set(args) - set(schema):
                 raise ValueError('Unknown argument or non-object parameters')
@@ -860,6 +892,8 @@ class Pico:
             harness_profile=self.harness_profile,
             embedding_mode=self.embedding_mode,
             network_route=self.network_route,
+            environment=self.environment,
+            wire_protocol=self.requested_wire_protocol,
         )
         child.cancellation = self.cancellation
         # 委派的目标是“调查”，不是“放权执行”。

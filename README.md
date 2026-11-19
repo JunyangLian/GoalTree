@@ -4,6 +4,8 @@
 
 最新验证（2026-11-15）：补齐通用子任务角色、有来源的交付契约与有限JSON布局检查，全量 **1,079项测试通过**。相同3个合成高层目标、15轮真实GLM诊断，完整复制批次严格通过 **12/15**、五轮全部通过 **1/3**；此前6/15、中间3/15及主机睡眠中断8/15批次均保留。这是已用于调试的开发诊断，不是独立留出、公开Benchmark或百万Token长任务成绩。见[本轮报告](docs/goal-delivery-validation-2026-11-15.md)、[交付机制与边界](docs/goal-delivery-reliability.md)、[此前报告](docs/goal-autonomy-validation-2026-11-14.md)。
 
+2026-11-19 外部环境契约改造后，当前源码全量 **1,091项测试通过**（含新增12项环境/实际wire合同测试，0模型调用）。文本与原生共享环境角色和完整工具Schema，不改变默认Goal宿主角色；机制测试不代表外部Benchmark成功率。实现、复现命令与边界见[外部执行环境](docs/execution-environments.md)。
+
 ## 当前版本
 
 - **阶段卡片与关系图**：完成阶段默认收起，当前阶段展开；完整图支持缩放、拖动画布与依赖箭头。点击节点可查看验收条件、产出记录和近期变更。
@@ -22,6 +24,7 @@
 - **隐私来源继承与受控外发**：公开/一般/敏感/核心四档，Goal、Task、摘要、记忆、证据和改动继承来源等级；已标记核心内容及其派生上下文禁止外发。模型、搜索、Embedding和固定MCP接入统一检查，隐私审计不含正文。默认GLM启动器启用保护，无法检查的图片暂不外发，受保护响应在检查完成后显示。见[机制、配置与限制](docs/privacy-boundary.md)。
 - **插件栏**：目录提供 12 个插件、13 项文本技能及 9 个搜索/MCP 条目，默认只启用 3 个插件包、7 项按需技能。可选 Superpowers 需求澄清、测试驱动、代码审查，以及 Context7、GitHub、Microsoft Learn、DeepWiki 只读连接；Playwright 仍是配置模板。第三方标识本地加载，自研组件统一使用新的 GoalTree 树形标识。见[扩展目录与边界](docs/extensions.md)。
 - **隐私与 Harness 改进**：新增统计不含正文，普通消息不再复制为学习来源；正常模型推理仍发送经授权的上下文。日常 Agent 保持 GLM-5.3-Flash，低频 GLM-5.3 仅基于冻结的公共复现提出改进，经外部 AppContainer 检查和宿主人工裁决后才记录采用决定。见[数据与改进闭环](docs/improver.md)。
+- **外部环境与双通道工具契约**：显式 `EnvironmentProfile` 为文本和原生 Tool Calling 共享角色、任务说明、预算语义与完整 JSON Schema；`wire_protocol=auto/text/native` 可固定或记录实际协议，外部数组/对象参数不再统一降级为字符串。默认 coding 与 Goal 宿主角色保持不变；该能力尚不等于 step-wise、多轮事件或新 Benchmark 成功率。见[外部执行环境](docs/execution-environments.md)。
 
 隐私护栏首轮工程验收：当时全量自动化871/871通过（含38项隐私专项）；24例冻结合成外发检查中，禁止内容到达接收端0/16，合法请求误拦截0/8。小样本机制检查不代表生产泄漏率或真实模型隐私识别能力。见[报告与证据口径](docs/privacy-evaluation-2026-11-11.md)。
 
@@ -71,7 +74,7 @@ flowchart LR
 
 [项目架构](docs/goaltree.md) · [任务树视图](docs/task-tree-views.md) · [动态进度与验收](docs/dynamic-task-progress.md) · [文件夹工作区](docs/folder-workspaces.md)
 
-[附件与协作](docs/conversation-controls.md) · [公开网页读取](docs/public-web-access.md) · [Search MCP](docs/search-mcp.md) · [PDF读取](docs/pdf-reading.md) · [预算单位](docs/context-budgets.md) · [流式恢复](docs/stream-recovery.md)
+[附件与协作](docs/conversation-controls.md) · [公开网页读取](docs/public-web-access.md) · [Search MCP](docs/search-mcp.md) · [PDF读取](docs/pdf-reading.md) · [预算单位](docs/context-budgets.md) · [流式恢复](docs/stream-recovery.md) · [外部执行环境](docs/execution-environments.md)
 
 ## 验证与边界
 

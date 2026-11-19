@@ -126,20 +126,22 @@ class Capabilities:
         if (name=='plan_tasks' and getattr(self.agent,'goal_binding',{}).get('mode')=='assistant'
                 and not self.agent.goal_binding.get('goal_id')):
             raise ValueError('Create the Goal first with goal_action create_goal, then plan_tasks. No planning approval or state change occurred.')
-        schema = self.registry()[name]['schema']
-        if not isinstance(args, dict) or set(args) - set(schema):
-            raise ValueError('Unknown workbench tool argument')
-        for key, declaration in schema.items():
-            if key not in args:
-                if '=' not in declaration:
-                    raise ValueError('Missing argument: ' + key)
-                continue
-            value = args[key]
-            if declaration.startswith('int'):
-                if type(value) is not int:
-                    raise ValueError('Integer argument required')
-            elif not isinstance(value, str) or not value.strip() or len(value) > 60000:
-                raise ValueError('Bounded non-empty string argument required')
+        spec = self.registry()[name]
+        if 'json_schema' not in spec:
+            schema = spec['schema']
+            if not isinstance(args, dict) or set(args) - set(schema):
+                raise ValueError('Unknown workbench tool argument')
+            for key, declaration in schema.items():
+                if key not in args:
+                    if '=' not in declaration:
+                        raise ValueError('Missing argument: ' + key)
+                    continue
+                value = args[key]
+                if declaration.startswith('int'):
+                    if type(value) is not int:
+                        raise ValueError('Integer argument required')
+                elif not isinstance(value, str) or not value.strip() or len(value) > 60000:
+                    raise ValueError('Bounded non-empty string argument required')
         if name == 'apply_changes':
             self.changes.prepare(json.loads(args['changes']))
         if name == 'learning_propose':

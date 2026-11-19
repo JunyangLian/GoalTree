@@ -299,9 +299,10 @@ class OpenAICompatibleModelClient:
         except (AttributeError, OSError):
             pass
 
-    def begin_native_run(self, tools, context, request, verification_command):
+    def begin_native_run(self, tools, context, request, verification_command, environment=None):
         self.native_conversation = NativeToolConversation(tools, context, request, verification_command,
-                                                        self.native_wire_options, require_reasoning=not (self.siliconflow_deepseek or self.bigmodel_glm))
+                                                        self.native_wire_options, require_reasoning=not (self.siliconflow_deepseek or self.bigmodel_glm),
+                                                        environment=environment)
 
     def observe_native_tool(self, content):
         self.native_conversation.observe(content)

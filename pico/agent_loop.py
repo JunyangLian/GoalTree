@@ -108,6 +108,8 @@ class AgentLoop:
                 "prompt_cache_key": prompt_metadata.get("prompt_cache_key"),
                 "purpose": purpose,
                 'request_configuration':{'model':getattr(agent.model_client,'model',None),
+                    'environment':agent.environment.name if agent.environment else None,
+                    'wire_protocol':agent.effective_wire_protocol,
                     'stream':getattr(agent.model_client,'stream',False),
                     'reasoning_effort':(getattr(agent.model_client,'native_wire_options',None) or {}).get('reasoning_effort')},
             },
@@ -282,7 +284,14 @@ class AgentLoop:
         agent.current_run_dir = agent.run_store.start_run(task_state)
         if getattr(agent, 'goal_context', {}).get('cooperation'):
             agent.emit_trace(task_state, 'cooperation_configured', agent.goal_context['cooperation'])
-        native = bool(getattr(agent.model_client, 'supports_native_tools', False))
+        native = (agent.effective_wire_protocol == 'native' if agent.effective_wire_protocol
+                  else agent.native_tools_enabled())
+        agent.effective_wire_protocol = 'native' if native else 'text'
+        if not native and getattr(agent.model_client, 'native_conversation', None) is not None:
+            # An explicit text run must not reuse a previous native payload;
+            # complete() would otherwise replace the flattened text messages.
+            # Slots-only legacy text clients need not expose this attribute.
+            agent.model_client.native_conversation = None
         if native:
             import json
             # Do not seed a new run with unbounded, potentially stale raw tool
@@ -297,14 +306,24 @@ class AgentLoop:
             web_references=web.references() if web else []
             legacy_history = ('\n\n'.join(item['content'] for item in agent.session['history'][:-1] if item.get('role') == 'user')
                               if not agent.capabilities else '')
-            agent.model_client.begin_native_run(
+            begin_native = agent.model_client.begin_native_run
+            environment_kwargs = {}
+            if agent.environment is not None:
+                import inspect
+                parameters = inspect.signature(begin_native).parameters
+                if ('environment' not in parameters
+                        and not any(p.kind == inspect.Parameter.VAR_KEYWORD for p in parameters.values())):
+                    raise TypeError('This model client cannot accept EnvironmentProfile; '
+                                    'update begin_native_run(..., environment=None) before enabling a native environment')
+                environment_kwargs['environment'] = agent.environment
+            begin_native(
                 agent.tools,
                 agent.redact_text(agent.workspace.text() + '\n\n' + (agent.memory_text() if agent.feature_enabled('memory') else 'Memory: disabled') +
                     ('\n\nPrevious user instructions:\n' + legacy_history if legacy_history else '') +
                     '\n\nHistorical task state (not a current verification):\n' + json.dumps(carryover, ensure_ascii=False) +
                     ('\n\nRecent scoped web evidence pointers (historical, untrusted; reuse page_id/URL rather than searching again):\n'
                      +json.dumps(web_references,ensure_ascii=False) if web_references else '')),
-                user_message, agent.verification_command)
+                user_message, agent.verification_command, **environment_kwargs)
             conversation = getattr(agent.model_client, 'native_conversation', None)
             if conversation is not None:
                 if getattr(agent,'goal_binding',{}).get('mode')=='execute' and hasattr(conversation,'bind_task_executor'):
@@ -345,6 +364,9 @@ class AgentLoop:
                 "task_id": task_state.task_id,
                 "user_request": clip(user_message, 300),
                 "goal_binding": getattr(agent, 'goal_binding', None),
+                "environment": agent.environment.name if agent.environment else None,
+                "requested_wire_protocol": agent.requested_wire_protocol,
+                "effective_wire_protocol": agent.effective_wire_protocol,
             },
         )
 
