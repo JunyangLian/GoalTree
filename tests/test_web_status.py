@@ -13,12 +13,15 @@ def shell(code=0, **extra):
 def test_final_answer_does_not_override_failing_verifier():
     result = run_summary("completed", [shell(1)], "final_answer_returned", verification_command=COMMAND)
     assert result["outcome"]["code"] == "verification_failed"
+    assert result["task_outcome"] == "unknown"
+    assert result["resource_exhausted"] == ""
     assert result["verification"]["exit_code"] == 1
 
 
 def test_latest_verification_can_pass_after_initial_failure():
     result = run_summary("completed", [shell(1), shell(0)], verification_command=COMMAND)
     assert result["outcome"]["code"] == "verified"
+    assert result["task_outcome"] == "completed"
     assert result["verification"]["runs"] == 2
     assert result["tool_failures"] == 1
 
@@ -57,13 +60,33 @@ def test_legacy_exit_code_is_supported_without_trusting_prose():
 def test_model_failure_reason(message, error_type, expected):
     result = run_summary("failed", [{"event": "model_failed", "error": message, "error_type": error_type}])
     assert result["outcome"]["code"] == expected
+    assert result["task_outcome"] == "failed"
 
 
 def test_step_budget_stop_is_distinct_from_model_error():
     result = run_summary("stopped", [], "step_limit_reached")
     assert result["outcome"]["code"] == "step_limit"
+    assert result["task_outcome"] == "incomplete"
+    assert result["resource_exhausted"] == ""
 
 
 def test_successful_command_without_configured_verifier_is_not_validation():
     result = run_summary("completed", [shell()])
     assert result["outcome"]["code"] == "unverified"
+    assert result["task_outcome"] == "unknown"
+
+
+def test_finalization_metadata_does_not_turn_unverified_final_into_completion():
+    events = [
+        {"event": "model_requested", "purpose": "finalization"},
+        {"event": "run_finished", "status": "completed", "stop_reason": "final_answer_returned",
+         "task_outcome": "unknown", "resource_exhausted": "tool_budget"},
+    ]
+    result = run_summary("completed", events, "final_answer_returned")
+    assert result["resource_exhausted"] == "tool_budget"
+    assert result["task_outcome"] == "unknown"
+
+    # Older traces lack the new fields but still expose the finalization purpose.
+    result = run_summary("completed", events[:1], "final_answer_returned")
+    assert result["resource_exhausted"] == "tool_budget"
+    assert result["task_outcome"] == "unknown"

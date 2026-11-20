@@ -18,6 +18,8 @@ def test_task_state_starts_running_with_empty_progress():
     assert state.last_tool == ""
     assert state.stop_reason == ""
     assert state.final_answer == ""
+    assert state.resource_exhausted == ""
+    assert state.task_outcome == "unknown"
 
 
 def test_task_state_records_success_and_final_answer():
@@ -32,6 +34,11 @@ def test_task_state_records_success_and_final_answer():
     assert state.status == "completed"
     assert state.stop_reason == STOP_REASON_FINAL_ANSWER_RETURNED
     assert state.final_answer == "Done."
+    assert state.task_outcome == "unknown"
+
+    state.finish_success("Done.", verified=True)
+    assert state.status == "completed"
+    assert state.task_outcome == "completed"
 
 
 def test_task_state_records_step_limit_stop_reason():
@@ -41,6 +48,8 @@ def test_task_state_records_step_limit_stop_reason():
 
     assert state.status == "stopped"
     assert state.stop_reason == STOP_REASON_STEP_LIMIT_REACHED
+    assert state.resource_exhausted == "tool_budget"
+    assert state.task_outcome == "incomplete"
 
 
 def test_task_state_records_retry_limit_stop_reason():
@@ -73,3 +82,23 @@ def test_task_state_snapshot_keeps_checkpoint_reference_without_body():
     assert snapshot["resume_status"] == "full-valid"
     assert "current_goal" not in snapshot
     assert "next_step" not in snapshot
+
+
+def test_task_state_persists_resource_and_outcome_with_legacy_fallback():
+    state = TaskState.create(run_id="run_007", task_id="task_007", user_request="Inspect")
+    state.mark_resource_exhausted("tool_budget")
+    state.stop_model_error("Model failed")
+
+    snapshot = state.to_dict()
+    assert snapshot["resource_exhausted"] == "tool_budget"
+    assert snapshot["task_outcome"] == "failed"
+    restored = TaskState.from_dict(snapshot)
+    assert restored.resource_exhausted == "tool_budget"
+    assert restored.task_outcome == "failed"
+
+    legacy = snapshot.copy()
+    del legacy["resource_exhausted"]
+    del legacy["task_outcome"]
+    assert TaskState.from_dict(legacy).task_outcome == "failed"
+    legacy["status"] = "stopped"
+    assert TaskState.from_dict(legacy).task_outcome == "incomplete"

@@ -121,6 +121,19 @@ def run_summary(status, events, stop_reason="", error="", verification_command=N
     failures = [e for e in events if e.get("event") == "tool_executed"
                 and e.get("tool_status") not in {None, "ok"}]
     failed_model = next((e for e in reversed(events) if e.get("event") == "model_failed"), None)
+    resource_exhausted = finished.get("resource_exhausted", "")
+    if not resource_exhausted and any(e.get("purpose") == "finalization" for e in events):
+        resource_exhausted = "tool_budget"
+    task_outcome = finished.get("task_outcome", "")
+    if status == "failed" or reason == "model_error" or failed_model:
+        task_outcome = "failed"
+    elif status == "stopped":
+        task_outcome = "incomplete"
+    elif status == "completed":
+        # A model-produced final answer is not independent completion evidence.
+        task_outcome = "completed" if verification["status"] == "passed" else "unknown"
+    elif not task_outcome:
+        task_outcome = "incomplete" if reason in {"step_limit_reached", "retry_limit_reached"} else "unknown"
     detail = ""
     action = ""
     if status in {"queued", "running", "waiting_approval", "finishing", 'cancelling'}:
@@ -166,5 +179,6 @@ def run_summary(status, events, stop_reason="", error="", verification_command=N
         detail = "尚未执行指定验证命令。" if verification_command else "未指定验证命令；请核对实际命令输出。"
     if failures and status == "completed":
         detail += f" 执行中出现 {len(failures)} 次工具异常或拦截，详见过程记录。"
-    return {"stop_reason": reason, "verification": verification, "tool_failures": len(failures),
+    return {"stop_reason": reason, "resource_exhausted": resource_exhausted,
+            "task_outcome": task_outcome, "verification": verification, "tool_failures": len(failures),
             "outcome": {"code": code, "title": title, "detail": detail, "action": action}}

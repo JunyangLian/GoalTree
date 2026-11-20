@@ -27,6 +27,7 @@ from .session_store import SessionStore
 from .tool_context import ToolContext
 from .tool_executor import ToolExecutor
 from .environment import EnvironmentProfile, validate_tool_arguments
+from .output_store import ToolOutputStore, MAX_READ_CHARS
 from . import tools as toolkit
 from .workspace import IGNORED_PATH_NAMES, MAX_HISTORY, WorkspaceContext, clip, now
 
@@ -145,6 +146,7 @@ class Pico:
             "memory": memorylib.default_memory_state(),
         }
         self._ensure_session_shape()
+        self.tool_outputs = ToolOutputStore(self.root, self.session['id'])
         self.memory = memorylib.LayeredMemory(
             self.session.setdefault("memory", memorylib.default_memory_state()),
             workspace_root=self.root,
@@ -168,7 +170,9 @@ class Pico:
                 self.model_client.stream = True
                 self.model_client.cancellation = self.cancellation
         self.session["memory"] = self.memory.to_dict()
-        self.tools = self._apply_tool_allowlist(self.build_tools())
+        self.tools = self.build_tools()
+        self._register_output_reader()
+        self.tools = self._apply_tool_allowlist(self.tools)
         if self.shell_backend == "appcontainer" and "run_shell" in self.tools:
             self.tools["run_shell"] = {**self.tools["run_shell"], "command_allowlist": [self.verification_command]}
         self.tool_executor = ToolExecutor(self)
@@ -253,6 +257,48 @@ class Pico:
                 tools[name]['run'] = lambda args, name=name: self.capabilities.legacy_edit(name, args)
         return tools
 
+    def _register_output_reader(self):
+        if self.environment is None or self.evidence is not None:
+            return
+        if 'read_tool_output' in self.tools:
+            raise ValueError('read_tool_output is a reserved host tool name')
+        schema = {
+            'type': 'object',
+            'properties': {
+                'output_id': {'type': 'string'},
+                'offset': {'type': 'integer', 'default': 1, 'minimum': 1},
+                'limit': {'type': 'integer', 'default': 4000, 'minimum': 1, 'maximum': MAX_READ_CHARS},
+            },
+            'required': ['output_id'],
+            'additionalProperties': False,
+        }
+        self.tools['read_tool_output'] = {
+            'schema': {'output_id': 'str', 'offset': 'int=1', 'limit': 'int=4000'},
+            'json_schema': schema,
+            'risky': False,
+            'effect': 'read',
+            'output_limit': MAX_READ_CHARS + 2000,
+            'description': ('Read an earlier truncated tool result from this session by exact character offset. '
+                            'This accesses host audit data only and performs no environment action.'),
+            'run': self._read_tool_output,
+        }
+
+    def _read_tool_output(self, args):
+        return json.dumps(self.tool_outputs.read(
+            args['output_id'], offset=args.get('offset', 1), limit=args.get('limit', 4000),
+        ), ensure_ascii=False)
+
+    def store_tool_output(self, content, tool_name):
+        if self.environment is None or self.evidence is not None or 'read_tool_output' not in self.tools:
+            return None
+        state = self.current_task_state
+        # ToolExecutor passes the same fully redacted text used for its preview.
+        # Do not redact again here: offsets must share one exact coordinate space.
+        return self.tool_outputs.put(
+            content, tool=tool_name,
+            run_id=getattr(state, 'run_id', ''), total_chars=len(content),
+        )
+
     @staticmethod
     def _normalize_allowed_tools(allowed_tools):
         if allowed_tools is None:
@@ -265,7 +311,7 @@ class Pico:
     def _apply_tool_allowlist(self, tools):
         if self.allowed_tools is None:
             return tools
-        legal_names = toolkit.legal_tool_names()
+        legal_names = toolkit.legal_tool_names() | (set(self.tools) if self.environment is not None else set())
         unknown = [name for name in self.allowed_tools if name not in legal_names]
         if unknown:
             raise ValueError(f"unknown allowed tool: {', '.join(unknown)}")
@@ -801,6 +847,8 @@ class Pico:
             "task_id": task_state.task_id,
             "status": task_state.status,
             "stop_reason": task_state.stop_reason,
+            "resource_exhausted": getattr(task_state, 'resource_exhausted', ''),
+            "task_outcome": getattr(task_state, 'task_outcome', 'unknown'),
             "final_answer": task_state.final_answer,
             "tool_steps": task_state.tool_steps,
             "attempts": task_state.attempts,

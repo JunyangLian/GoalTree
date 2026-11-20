@@ -12,6 +12,13 @@ class AgentLoop:
     def __init__(self, agent):
         self.agent = agent
 
+    @staticmethod
+    def _outcome_fields(task_state):
+        return {
+            "resource_exhausted": task_state.resource_exhausted,
+            "task_outcome": task_state.task_outcome,
+        }
+
     def _persist_model_failure(self, task_state, user_message, exc, run_started_at, prompt_metadata, record_failure=True):
         agent = self.agent
         error_text = agent.redact_text(str(exc))
@@ -48,6 +55,7 @@ class AgentLoop:
             {
                 "status": task_state.status,
                 "stop_reason": task_state.stop_reason,
+                **self._outcome_fields(task_state),
                 "final_answer": final,
                 "checkpoint_id": checkpoint["checkpoint_id"],
                 "run_duration_ms": int((time.monotonic() - run_started_at) * 1000),
@@ -217,7 +225,8 @@ class AgentLoop:
         if agent.capabilities:
             agent.cancellation.check()
         agent.record({"role": "assistant", "content": final, "created_at": now(), 'run_id': task_state.run_id})
-        task_state.finish_success(final)
+        verified = agent.last_verification.get('status') == 'passed'
+        task_state.finish_success(final, verified=verified)
         if agent.feature_enabled('memory'):
             agent.promote_durable_memory(user_message, final)
         if agent.capabilities and agent.feature_enabled('memory'):
@@ -240,6 +249,7 @@ class AgentLoop:
             {
                 "status": task_state.status,
                 "stop_reason": task_state.stop_reason,
+                **self._outcome_fields(task_state),
                 "final_answer": final,
                 "run_duration_ms": int((time.monotonic() - run_started_at) * 1000),
             },
@@ -502,6 +512,7 @@ class AgentLoop:
         if remaining() <= 0:
             if agent.capabilities:
                 agent.cancellation.check()
+            task_state.mark_resource_exhausted('tool_budget')
             if native:
                 agent.model_client.native_notice('Tool budget exhausted. Do not call tools. Give a concise final answer based on actual evidence.')
             task_state.record_attempt()
@@ -521,6 +532,7 @@ class AgentLoop:
                     "prompt_metadata": prompt_metadata,
                     "duration_ms": int((time.monotonic() - prompt_started_at) * 1000),
                     "purpose": "finalization",
+                    **self._outcome_fields(task_state),
                 },
             )
             for render_attempt in range(3):
@@ -620,6 +632,7 @@ class AgentLoop:
             {
                 "status": task_state.status,
                 "stop_reason": task_state.stop_reason,
+                **self._outcome_fields(task_state),
                 "final_answer": final,
                 "run_duration_ms": int((time.monotonic() - run_started_at) * 1000),
             },

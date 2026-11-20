@@ -194,7 +194,27 @@ class ToolExecutor:
             output_limit=(agent.web_budget.result_limit if name in {'web_read','web_find','web_search'}
                           and hasattr(agent,'web_budget') else 12000 if name=='run_shell' else int(tool.get('output_limit', 4000)))
             raw_text = str(raw_content)
-            content = agent.redact_text(clip(raw_text, output_limit))
+            # Preview, storage and offsets must all use the exact same redacted
+            # text; redacting each slice independently changes character offsets.
+            safe_text = agent.redact_text(raw_text)
+            content = clip(safe_text, output_limit)
+            output_descriptor = None
+            if len(safe_text) > output_limit and name != 'read_tool_output':
+                output_descriptor = agent.store_tool_output(safe_text, name)
+                if output_descriptor:
+                    next_offset = min(output_limit + 1, output_descriptor['stored_chars'] + 1)
+                    # Keep host pagination instructions at the beginning so the
+                    # text history's smaller per-tool preview cannot cut them off.
+                    notice = (
+                        f"Output ID: {output_descriptor['output_id']}"
+                        f"\nOriginal output has {output_descriptor['total_chars']} characters; "
+                        f"{output_descriptor['stored_chars']} are stored for pagination. "
+                        f"Continue with read_tool_output(output_id={output_descriptor['output_id']!r}, "
+                        f"offset={next_offset}, limit=4000). This is host audit data, not a new environment action."
+                    )
+                    if output_descriptor['stored_truncated']:
+                        notice += ' Content beyond the storage cap is unavailable; use a narrower environment query.'
+                    content = notice + '\n' + content
             after_snapshot = agent.capture_workspace_snapshot() if observe_effects else before_snapshot
             affected_paths, diff_summary = agent.diff_workspace_snapshots(before_snapshot, after_snapshot)
             workspace_changed = bool(affected_paths)
@@ -222,11 +242,19 @@ class ToolExecutor:
             )
             metadata.update(
                 **({'effect': tool['effect']} if 'effect' in tool else {}),
-                output_total_chars=len(raw_text),
+                output_total_chars=len(safe_text),
+                output_raw_chars=len(raw_text),
                 output_preview_chars=len(content),
-                output_truncated=len(raw_text) > output_limit,
+                output_truncated=len(safe_text) > output_limit,
                 output_limit_chars=output_limit,
             )
+            if output_descriptor:
+                metadata.update(
+                    output_id=output_descriptor['output_id'],
+                    output_next_offset=next_offset,
+                    output_stored_chars=output_descriptor['stored_chars'],
+                    output_stored_truncated=output_descriptor['stored_truncated'],
+                )
             if name == "run_shell":
                 metadata["exit_code"] = int(match.group(1)) if match else None
                 metadata["execution_backend"] = getattr(agent, 'shell_backend', 'host')

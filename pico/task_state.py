@@ -37,6 +37,10 @@ class TaskState:
     final_answer: str = ""
     checkpoint_id: str = ""
     resume_status: str = ""
+    # Resource pressure and evidence-based outcome are deliberately separate
+    # from the legacy process status/stop_reason fields.
+    resource_exhausted: str = ""
+    task_outcome: str = "unknown"
 
     @classmethod
     def create(cls, task_id, user_request, run_id=""):
@@ -58,6 +62,11 @@ class TaskState:
             final_answer=str(data.get("final_answer", "")),
             checkpoint_id=str(data.get("checkpoint_id", "")),
             resume_status=str(data.get("resume_status", "")),
+            resource_exhausted=str(data.get("resource_exhausted", "")),
+            task_outcome=str(data.get("task_outcome") or (
+                "failed" if data.get("status") == STATUS_FAILED else
+                "incomplete" if data.get("status") == STATUS_STOPPED else "unknown"
+            )),
         )
 
     def record_attempt(self):
@@ -71,15 +80,21 @@ class TaskState:
         self.last_tool = str(name or "")
         return self
 
+    def mark_resource_exhausted(self, resource="tool_budget"):
+        self.resource_exhausted = str(resource)
+        return self
+
     def stop(self, stop_reason, status=STATUS_STOPPED, final_answer=""):
         # stop_reason 和 status 分开存，是为了区分“怎么停的”和“停下时是什么状态”。
         self.status = status
         self.stop_reason = stop_reason
+        self.task_outcome = "failed" if status == STATUS_FAILED else "incomplete"
         if final_answer != "":
             self.final_answer = final_answer
         return self
 
     def stop_step_limit(self, final_answer=""):
+        self.mark_resource_exhausted('tool_budget')
         return self.stop(STOP_REASON_STEP_LIMIT_REACHED, final_answer=final_answer)
 
     def stop_retry_limit(self, final_answer=""):
@@ -88,9 +103,10 @@ class TaskState:
     def stop_model_error(self, final_answer=""):
         return self.stop(STOP_REASON_MODEL_ERROR, status=STATUS_FAILED, final_answer=final_answer)
 
-    def finish_success(self, final_answer):
+    def finish_success(self, final_answer, verified=False):
         self.status = STATUS_COMPLETED
         self.stop_reason = STOP_REASON_FINAL_ANSWER_RETURNED
+        self.task_outcome = "completed" if verified else "unknown"
         self.final_answer = str(final_answer)
         return self
 
@@ -107,4 +123,6 @@ class TaskState:
             "final_answer": self.final_answer,
             "checkpoint_id": self.checkpoint_id,
             "resume_status": self.resume_status,
+            "resource_exhausted": self.resource_exhausted,
+            "task_outcome": self.task_outcome,
         }
