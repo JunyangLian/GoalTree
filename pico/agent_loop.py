@@ -1,16 +1,19 @@
 """Agent control loop extracted from the runtime facade."""
 
 import time
+from collections import deque
 
 from .checkpoint import CHECKPOINT_NONE_STATUS, CHECKPOINT_PARTIAL_STALE_STATUS, CHECKPOINT_WORKSPACE_MISMATCH_STATUS
 from .task_state import TaskState
 from .completion import CompletionGate
+from .stepwise import AgentStep, StepInput
 from .workspace import clip, now
 
 
 class AgentLoop:
     def __init__(self, agent):
         self.agent = agent
+        self.pending_events = deque()
 
     @staticmethod
     def _outcome_fields(task_state):
@@ -257,7 +260,33 @@ class AgentLoop:
         agent.run_store.write_report(task_state, agent.redact_artifact(agent.build_report(task_state)))
         return final
 
+    def _drain_events(self, task_state, native):
+        agent = self.agent
+        while self.pending_events:
+            event = self.pending_events.popleft()
+            if isinstance(event, str):
+                event = {'type': 'user_message', 'content': event}
+            if not isinstance(event, dict):
+                raise TypeError('Agent events must be strings or dictionaries')
+            content = event.get('content', '')
+            if not isinstance(content, str) or not content.strip():
+                raise ValueError('Agent event content must be a non-empty string')
+            content = content.strip()
+            event_type = str(event.get('type') or 'user_message')
+            agent.record({'role': 'user', 'content': content, 'created_at': now(),
+                          'run_id': task_state.run_id, 'event_type': event_type})
+            agent.emit_trace(task_state, 'environment_event', {
+                'event_type': event_type, 'content': clip(content, 500),
+            })
+            conversation = getattr(agent.model_client, 'native_conversation', None) if native else None
+            if conversation is not None:
+                agent.model_client.native_notice('New '+event_type+': '+content)
+
     def run(self, user_message):
+        from .stepwise import AgentRun
+        return AgentRun(self.agent).start(user_message).run_to_completion()
+
+    def run_steps(self, user_message):
         agent = self.agent
         agent._run_history_start = len(agent.session.get('history', []))
         if agent.capabilities:
@@ -396,6 +425,7 @@ class AgentLoop:
         # 4. 记录：把结果写回 history / task_state / trace / memory
         # 然后进入下一轮，直到停机条件满足
         while remaining() > 0 and attempts < max_attempts:
+            self._drain_events(task_state, native)
             if agent.capabilities:
                 agent.cancellation.check()
             agent.remaining_tool_steps = remaining()
@@ -466,7 +496,12 @@ class AgentLoop:
 
             if kind in {'tool', 'tools'}:
                 actions = payload if kind == 'tools' else [payload]
-                for action in actions:
+                step_input = yield AgentStep('action', actions=tuple(actions), task_state=task_state)
+                if not isinstance(step_input, StepInput):
+                    raise TypeError('AgentRun action input must be StepInput')
+                external = self._normalize_observations(actions, step_input.observations) if not step_input.execute_local else None
+                results = []
+                for index, action in enumerate(actions):
                     if agent.cancellation.event.is_set():
                         if native:
                             while conversation.pending:
@@ -479,7 +514,16 @@ class AgentLoop:
                         continue
                     agent.remaining_tool_steps = remaining()
                     tool_steps += 1
-                    self._execute_action(action, task_state, completion, native, user_message)
+                    if step_input.execute_local:
+                        tool_result = self._execute_action(action, task_state, completion, native, user_message)
+                    else:
+                        tool_result = self._observe_external_action(
+                            action, external[index], task_state, completion, native, user_message)
+                    results.append({'name': action.get('name'), 'args': action.get('args', {}),
+                                    'content': tool_result.content, 'metadata': dict(tool_result.metadata)})
+                if step_input.execute_local:
+                    yield AgentStep('observation', actions=tuple(actions),
+                                    observations=tuple(results), task_state=task_state)
                 continue
 
             if kind == "retry":
@@ -487,6 +531,7 @@ class AgentLoop:
                     agent.model_client.native_notice(payload)
                 agent.record({"role": "assistant", "content": payload, "created_at": now()})
                 agent.run_store.write_task_state(task_state)
+                yield AgentStep('retry', message=payload, task_state=task_state)
                 continue
 
             final = (payload or raw).strip()
@@ -509,6 +554,9 @@ class AgentLoop:
                 continue
             return self._finish_success(task_state, user_message, final, run_started_at)
 
+        # Events injected after the last action must still be observed before
+        # budget finalization or a terminal retry stop.
+        self._drain_events(task_state, native)
         if remaining() <= 0:
             if agent.capabilities:
                 agent.cancellation.check()
@@ -573,7 +621,41 @@ class AgentLoop:
             task_state.stop_step_limit(final)
         return self._finish_stopped(task_state, user_message, task_state.stop_reason, final, run_started_at)
 
-    def _execute_action(self, payload, task_state, completion, native, user_message):
+    def _normalize_observations(self, actions, observations):
+        if observations is None:
+            raise ValueError('External actions require observations; none were provided')
+        if isinstance(observations, (list, tuple)):
+            values = list(observations)
+        elif len(actions) == 1:
+            values = [observations]
+        else:
+            raise ValueError('Multiple actions require a list of observations')
+        if len(values) != len(actions):
+            raise ValueError(f'Expected {len(actions)} observations, got {len(values)}')
+        return values
+
+    def _observe_external_action(self, payload, observation, task_state, completion, native, user_message):
+        from .tool_executor import ToolExecutionResult
+        if isinstance(observation, dict):
+            content = str(observation.get('content', '') or '')
+            metadata = dict(observation.get('metadata') or {})
+        else:
+            content, metadata = str(observation), {}
+        from .privacy import CURRENT
+        if CURRENT.get():
+            CURRENT.get().observe(
+                text=content,
+                sources=metadata.get('source_paths', []),
+                targets=metadata.get('affected_paths', []),
+            )
+        content, output_metadata = self.agent.tool_executor.preview(payload.get('name', ''), content)
+        metadata.update(output_metadata)
+        metadata.setdefault('tool_status', 'ok')
+        metadata['external_observation'] = True
+        return self._execute_action(payload, task_state, completion, native, user_message,
+                                    tool_result=ToolExecutionResult(content, metadata))
+
+    def _execute_action(self, payload, task_state, completion, native, user_message, tool_result=None):
         agent = self.agent
         name, args = payload.get('name', ''), payload.get('args', {})
         task_state.record_tool(name)
@@ -586,8 +668,14 @@ class AgentLoop:
                 agent.capabilities.refresh_rules(path)
                 agent.capabilities.active_path = path
         started = time.monotonic()
-        agent.emit_trace(task_state, 'tool_started', {'name': name, 'args': agent.redact_artifact(args)})
-        tool_result = agent.execute_tool(name, args)
+        if tool_result is None:
+            agent.emit_trace(task_state, 'tool_started', {'name': name, 'args': agent.redact_artifact(args)})
+            tool_result = agent.execute_tool(name, args)
+        else:
+            agent.emit_trace(task_state, 'external_observation_received', {
+                'name': name, 'args': agent.redact_artifact(args),
+                'content': clip(tool_result.content, 500),
+            })
         completion.observe(name, args, tool_result.metadata)
         result = tool_result.content
         working = agent.session['working_state']
@@ -611,6 +699,7 @@ class AgentLoop:
         checkpoint = agent.create_checkpoint(task_state, user_message, trigger='tool_executed')
         agent.run_store.write_task_state(task_state)
         agent.emit_trace(task_state, 'checkpoint_created', {'checkpoint_id': checkpoint['checkpoint_id'], 'trigger': 'tool_executed'})
+        return tool_result
 
     def _finish_stopped(self, task_state, user_message, reason, final, run_started_at):
         agent = self.agent

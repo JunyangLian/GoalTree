@@ -685,6 +685,20 @@ class Pico:
             return False
         return supported
 
+    def start_run(self, user_message, *, execute_actions=True):
+        """Start a resumable classic run without changing legacy ask() profiles."""
+        if self.capabilities is not None:
+            raise ValueError('Step-wise external runs currently require harness_profile=classic')
+        from .privacy_runtime import guard_for
+        from .stepwise import AgentRun
+        guard = guard_for(self)
+        if guard:
+            import json as _json
+            guard.observe(text=user_message)
+            guard.observe(text=_json.dumps(self.session.get('history', []), ensure_ascii=False))
+        self.effective_wire_protocol = 'native' if self.native_tools_enabled() else 'text'
+        return AgentRun(self, execute_actions=execute_actions, privacy_guard=guard).start(user_message)
+
     @private_run
     def ask(self, user_message):
         from .agent_loop import AgentLoop

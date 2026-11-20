@@ -2,7 +2,7 @@
 
 本文描述 `EnvironmentProfile` 和显式 `wire_protocol`。它们解决的是：同一个 Agent 在本地仓库、模拟 App 或问答环境中运行时，文本工具协议与原生 Tool Calling 不再各自继承不同的角色、参数类型和预算说明。
 
-本次没有新增外部 Benchmark 成功率，也没有实现 step-wise API、事件队列、自动单位判真或强制写操作。
+本次没有新增外部 Benchmark 成功率，也没有实现跨进程生成器序列化、Workbench/Goal 全功能 step-wise、自动单位判真或强制写操作。
 
 ## 角色与协议
 
@@ -85,6 +85,36 @@ Goal 协调器和宿主绑定的 Goal Executor 仍优先使用既有宿主角色
 
 旧文本 client 不需要声明新的 native 属性。旧原生 client 若不能接受 environment 关键字，会在请求前得到明确的能力错误，而不是静默退回 coding System 或抛出难定位的关键字错误。
 
+## Step-wise Action / Observation 与事件队列
+
+`AgentLoop.run_steps()` 是持有原 Run 状态的生成器；旧 `ask()` 通过同一驱动自动执行到结束。classic 外部环境可用 `Pico.start_run()` 逐步驱动：
+
+```python
+run = agent.start_run("Complete the task", execute_actions=False)
+step = run.step()
+if step.kind == "action":
+    # 此时尚未执行动作，也未写入工具结果。
+    result = environment.execute(step.actions[0])
+    step = run.step({
+        "content": result.text,
+        "metadata": {"tool_status": "ok"},
+    })
+assert step.kind == "final"
+print(step.answer)
+```
+
+- `action`：模型提出的一个或一批动作。外部模式必须回传对应 Observation 才能继续；动作数量不匹配会拒绝输入，修正后可重试，不会悄悄关闭 Run。
+- `observation`：内部模式已执行的工具结果，仅供宿主查看，下一步直接 `step()`，不要再次回传。
+- `retry`：协议输出被拒绝后的可继续状态，下一步直接 `step()`；宿主应设置自己的重试上限。
+- `final`：生成器已结束，文本位于 `step.answer`，也可读取 `run.final_answer`。
+- `closed`：宿主主动取消，不是正常 final；`close()` 幂等关闭原生 pending，并持久化 cancelled/stopped、checkpoint、run_finished 和 report。
+
+`run.inject_event({"type":"user_message","content":"new constraints"})` 将用户消息或环境事件放入队列，在下一次模型请求前写入文本历史/原生 notice 和 trace，包括最后一个 Action 后的预算 finalization 之前。事件不会中断正在进行的网络请求，也不会重放已经完成的副作用。
+
+原生 pending tool call 只能由对应外部 Observation 或 `close()` 关闭。外部结果与内部工具一样经过脱敏、预览截断、输出存储和分页，并携带 `external_observation=true`；宿主提供的 source_paths/affected_paths 同时进入隐私来源继承。`AgentRun` 继承 `private_run(ask)` 已激活的 guard，不会用空上下文重置隐私边界。外部 metadata 是宿主执行证据，不来自模型自述。公开 step-wise 入口目前限定 classic；Workbench/Goal 的学习、审批和生命周期仍走原 `ask()`，没有宣称所有高层能力都可重入。
+
+这是**同一进程内**的暂停/继续，不是跨进程生成器序列化或崩溃恢复。长期持久化恢复仍使用原有 checkpoint，不能直接恢复生成器调用栈。
+
 ## RunOutcome：资源耗尽不等于任务完成
 
 `status` 与 `stop_reason` 保留原有进程/协议兼容语义；新的 `resource_exhausted` 和 `task_outcome` 单独进入 TaskState、report、trace 和运行汇总：
@@ -128,9 +158,9 @@ read_tool_output(output_id="out_...", offset=4001, limit=4000)
 离线验证：
 
 ```powershell
-python -X utf8 -m pytest tests/test_environment.py tests/test_output_store.py tests/test_task_state.py tests/test_agent_loop.py tests/test_native_tools.py tests/test_prompt_prefix.py tests/test_response_contract.py -q
+python -X utf8 -m pytest tests/test_environment.py tests/test_output_store.py tests/test_task_state.py tests/test_agent_loop.py tests/test_stepwise.py tests/test_native_tools.py tests/test_prompt_prefix.py tests/test_response_contract.py -q
 ```
 
 这些测试检查实际 wire 的角色、Schema、预算说明和 typed arguments，不调用模型，也不代表真实模型任务成功率。
 
-2026-11-20 验证结果：当前源码全量 **1101/1101 通过**（1065.40 秒），其中环境/wire 合同 12 项、输出存储与自主分页合同 6 项，RunOutcome 相关回归亦纳入全量套件；外部评测适配器独立测试 **14/14 通过**。隔离 PEP 517 wheel 构建成功，并确认包含 `pico/environment.py` 与 `pico/output_store.py`。静态检查工具 ruff 在当前环境未安装，因此没有声称执行 ruff。
+2026-11-20 验证结果：当前源码全量 **1110/1110 通过**（992.47 秒），其中环境/wire 合同 12 项、输出存储与自主分页合同 6 项、step-wise 合同 9 项，RunOutcome 相关回归亦纳入全量套件；隐私/step-wise/Goal 联合回归 **83/83 通过**。外部评测适配器独立测试 **14/14 通过**，Exgentic 逐轮专项 **7/7 通过**。隔离 PEP 517 wheel 构建成功，并确认包含 `pico/environment.py`、`pico/output_store.py` 与 `pico/stepwise.py`。静态检查工具 ruff 在当前环境未安装，因此没有声称执行 ruff。

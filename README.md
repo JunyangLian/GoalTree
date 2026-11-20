@@ -4,7 +4,7 @@
 
 最新验证（2026-11-15）：补齐通用子任务角色、有来源的交付契约与有限JSON布局检查，全量 **1,079项测试通过**。相同3个合成高层目标、15轮真实GLM诊断，完整复制批次严格通过 **12/15**、五轮全部通过 **1/3**；此前6/15、中间3/15及主机睡眠中断8/15批次均保留。这是已用于调试的开发诊断，不是独立留出、公开Benchmark或百万Token长任务成绩。见[本轮报告](docs/goal-delivery-validation-2026-11-15.md)、[交付机制与边界](docs/goal-delivery-reliability.md)、[此前报告](docs/goal-autonomy-validation-2026-11-14.md)。
 
-2026-11-20 RunOutcome 与长输出治理更新后，当前源码全量 **1,101项测试通过**（含新增环境、RunOutcome 与分页合同测试，0模型调用）。文本与原生共享环境角色和完整工具Schema，不改变默认Goal宿主角色；机制测试不代表外部Benchmark成功率。实现、复现命令与边界见[外部执行环境](docs/execution-environments.md)。
+2026-11-20 step-wise 与外部 Action/Observation 更新后，当前源码全量 **1,110项测试通过**（含新增环境、RunOutcome、分页与 step-wise 合同测试，0模型调用）。文本与原生共享环境角色和完整工具Schema，不改变默认Goal宿主角色；机制测试不代表外部Benchmark成功率。实现、复现命令与边界见[外部执行环境](docs/execution-environments.md)。
 
 ## 当前版本
 
@@ -26,6 +26,7 @@
 - **隐私与 Harness 改进**：新增统计不含正文，普通消息不再复制为学习来源；正常模型推理仍发送经授权的上下文。日常 Agent 保持 GLM-5.3-Flash，低频 GLM-5.3 仅基于冻结的公共复现提出改进，经外部 AppContainer 检查和宿主人工裁决后才记录采用决定。见[数据与改进闭环](docs/improver.md)。
 - **外部环境与双通道工具契约**：显式 `EnvironmentProfile` 为文本和原生 Tool Calling 共享角色、任务说明、预算语义与完整 JSON Schema；`wire_protocol=auto/text/native` 可固定或记录实际协议，外部数组/对象参数不再统一降级为字符串。默认 coding 与 Goal 宿主角色保持不变；该能力尚不等于 step-wise、多轮事件或新 Benchmark 成功率。见[外部执行环境](docs/execution-environments.md)。
 - **运行结果与长输出治理**：`resource_exhausted` 与 `task_outcome` 分离预算耗尽和任务完成，未获独立验证的预算收尾标为 unknown；classic 外部环境的长输出以有界脱敏存储支持 `read_tool_output` 精确 offset 续读，不执行环境动作。默认本地路径和 Workbench EvidenceStore 保持原行为。
+- **同进程 step-wise 执行**：`Pico.start_run()` 以同一 Run 生成器支持外部 Action/Observation、观察数量校验和用户/环境事件注入；原生 pending tool call 由外部结果关闭。旧 `ask()` 共用驱动，Workbench/Goal 生命周期不变；目前不宣称跨进程生成器恢复或全部高层能力可重入。
 
 隐私护栏首轮工程验收：当时全量自动化871/871通过（含38项隐私专项）；24例冻结合成外发检查中，禁止内容到达接收端0/16，合法请求误拦截0/8。小样本机制检查不代表生产泄漏率或真实模型隐私识别能力。见[报告与证据口径](docs/privacy-evaluation-2026-11-11.md)。
 

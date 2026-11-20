@@ -45,6 +45,44 @@ class ToolExecutor:
     def __init__(self, agent):
         self.agent = agent
 
+    def preview(self, name, raw_content):
+        """Build the shared redacted preview for local or external results."""
+        agent = self.agent
+        output_limit = (agent.web_budget.result_limit if name in {'web_read', 'web_find', 'web_search'}
+                        and hasattr(agent, 'web_budget') else 12000 if name == 'run_shell'
+                        else int(agent.tools[name].get('output_limit', 4000)))
+        raw_text = str(raw_content)
+        safe_text = agent.redact_text(raw_text)
+        content = clip(safe_text, output_limit)
+        metadata = {
+            'output_total_chars': len(safe_text),
+            'output_raw_chars': len(raw_text),
+            'output_truncated': len(safe_text) > output_limit,
+            'output_limit_chars': output_limit,
+        }
+        if len(safe_text) > output_limit and name != 'read_tool_output':
+            descriptor = agent.store_tool_output(safe_text, name)
+            if descriptor:
+                next_offset = min(output_limit + 1, descriptor['stored_chars'] + 1)
+                notice = (
+                    f"Output ID: {descriptor['output_id']}"
+                    f"\nOriginal output has {descriptor['total_chars']} characters; "
+                    f"{descriptor['stored_chars']} are stored for pagination. "
+                    f"Continue with read_tool_output(output_id={descriptor['output_id']!r}, "
+                    f"offset={next_offset}, limit=4000). This is host audit data, not a new environment action."
+                )
+                if descriptor['stored_truncated']:
+                    notice += ' Content beyond the storage cap is unavailable; use a narrower environment query.'
+                content = notice + '\n' + content
+                metadata.update(
+                    output_id=descriptor['output_id'],
+                    output_next_offset=next_offset,
+                    output_stored_chars=descriptor['stored_chars'],
+                    output_stored_truncated=descriptor['stored_truncated'],
+                )
+        metadata['output_preview_chars'] = len(content)
+        return content, metadata
+
     def execute(self, name, args):
         agent = self.agent
         if getattr(agent, 'harness_profile', 'classic') == 'workbench':
@@ -189,32 +227,7 @@ class ToolExecutor:
             if CURRENT.get():CURRENT.get().observe(text=raw_content)
             if getattr(agent, 'evidence', None):
                 agent._raw_tool_evidence = agent.redact_text(clip(raw_content, 131072))
-            # Web results are already bounded as complete JSON envelopes. A
-            # second 4K clip would silently lose lines/citations and break JSON.
-            output_limit=(agent.web_budget.result_limit if name in {'web_read','web_find','web_search'}
-                          and hasattr(agent,'web_budget') else 12000 if name=='run_shell' else int(tool.get('output_limit', 4000)))
-            raw_text = str(raw_content)
-            # Preview, storage and offsets must all use the exact same redacted
-            # text; redacting each slice independently changes character offsets.
-            safe_text = agent.redact_text(raw_text)
-            content = clip(safe_text, output_limit)
-            output_descriptor = None
-            if len(safe_text) > output_limit and name != 'read_tool_output':
-                output_descriptor = agent.store_tool_output(safe_text, name)
-                if output_descriptor:
-                    next_offset = min(output_limit + 1, output_descriptor['stored_chars'] + 1)
-                    # Keep host pagination instructions at the beginning so the
-                    # text history's smaller per-tool preview cannot cut them off.
-                    notice = (
-                        f"Output ID: {output_descriptor['output_id']}"
-                        f"\nOriginal output has {output_descriptor['total_chars']} characters; "
-                        f"{output_descriptor['stored_chars']} are stored for pagination. "
-                        f"Continue with read_tool_output(output_id={output_descriptor['output_id']!r}, "
-                        f"offset={next_offset}, limit=4000). This is host audit data, not a new environment action."
-                    )
-                    if output_descriptor['stored_truncated']:
-                        notice += ' Content beyond the storage cap is unavailable; use a narrower environment query.'
-                    content = notice + '\n' + content
+            content, output_metadata = self.preview(name, raw_content)
             after_snapshot = agent.capture_workspace_snapshot() if observe_effects else before_snapshot
             affected_paths, diff_summary = agent.diff_workspace_snapshots(before_snapshot, after_snapshot)
             workspace_changed = bool(affected_paths)
@@ -242,19 +255,8 @@ class ToolExecutor:
             )
             metadata.update(
                 **({'effect': tool['effect']} if 'effect' in tool else {}),
-                output_total_chars=len(safe_text),
-                output_raw_chars=len(raw_text),
-                output_preview_chars=len(content),
-                output_truncated=len(safe_text) > output_limit,
-                output_limit_chars=output_limit,
+                **output_metadata,
             )
-            if output_descriptor:
-                metadata.update(
-                    output_id=output_descriptor['output_id'],
-                    output_next_offset=next_offset,
-                    output_stored_chars=output_descriptor['stored_chars'],
-                    output_stored_truncated=output_descriptor['stored_truncated'],
-                )
             if name == "run_shell":
                 metadata["exit_code"] = int(match.group(1)) if match else None
                 metadata["execution_backend"] = getattr(agent, 'shell_backend', 'host')
