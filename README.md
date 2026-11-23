@@ -27,6 +27,7 @@
 - **外部环境与双通道工具契约**：显式 `EnvironmentProfile` 为文本和原生 Tool Calling 共享角色、任务说明、预算语义与完整 JSON Schema；`wire_protocol=auto/text/native` 可固定或记录实际协议，外部数组/对象参数不再统一降级为字符串。默认 coding 与 Goal 宿主角色保持不变；该能力尚不等于 step-wise、多轮事件或新 Benchmark 成功率。见[外部执行环境](docs/execution-environments.md)。
 - **运行结果与长输出治理**：`resource_exhausted` 与 `task_outcome` 分离预算耗尽和任务完成，未获独立验证的预算收尾标为 unknown；classic 外部环境的长输出以有界脱敏存储支持 `read_tool_output` 精确 offset 续读，不执行环境动作。默认本地路径和 Workbench EvidenceStore 保持原行为。
 - **同进程 step-wise 执行**：`Pico.start_run()` 以同一 Run 生成器支持外部 Action/Observation、观察数量校验和用户/环境事件注入；原生 pending tool call 由外部结果关闭。旧 `ask()` 共用驱动，Workbench/Goal 生命周期不变；目前不宣称跨进程生成器恢复或全部高层能力可重入。
+- **可注入模拟时钟**：`EnvironmentProfile.clock` 让模拟环境在文本与原生通道统一提供 `Current simulated time`，支持回合间 `advance()/tick()`；默认无时钟时行为不变，也不改动审计里的真实墙钟时间。
 
 隐私护栏首轮工程验收：当时全量自动化871/871通过（含38项隐私专项）；24例冻结合成外发检查中，禁止内容到达接收端0/16，合法请求误拦截0/8。小样本机制检查不代表生产泄漏率或真实模型隐私识别能力。见[报告与证据口径](docs/privacy-evaluation-2026-11-11.md)。
 

@@ -26,6 +26,7 @@ class EnvironmentProfile:
         "Converge on the current environment task and reserve enough budget "
         "for required actions, verification and the final response."
     )
+    clock: object = field(default=None, compare=False, hash=False)
 
     def __post_init__(self):
         if not self.name.strip() or not self.role.strip():
@@ -33,14 +34,25 @@ class EnvironmentProfile:
         object.__setattr__(self, "instructions", tuple(self.instructions))
         if self.native_instructions is not None:
             object.__setattr__(self, "native_instructions", tuple(self.native_instructions))
+        if self.clock is not None and not (hasattr(self.clock, "now") and hasattr(self.clock, "iso")):
+            raise ValueError("Environment clock must expose now() and iso()")
+
+    def time_line(self) -> str:
+        return "" if self.clock is None else f"Current simulated time: {self.clock.iso()}"
 
     def text_instructions(self) -> str:
-        return "\n".join("- " + item for item in self.instructions if item.strip())
+        lines = ["- " + item for item in self.instructions if item.strip()]
+        if self.time_line():
+            lines.insert(0, "- " + self.time_line())
+        return "\n".join(lines)
 
     def native_prompt(self) -> str:
         instructions = (self.native_instructions if self.native_instructions is not None
                         else self.instructions)
-        return "\n".join(part for part in (self.role, *instructions) if part.strip())
+        parts = [self.role, *instructions]
+        if self.time_line():
+            parts.append(self.time_line())
+        return "\n".join(part for part in parts if part.strip())
 
 
 _DECLARATION = re.compile(r"^(?P<kind>[A-Za-z_][A-Za-z0-9_]*(?:\[[^\]]+\])?)(?:=(?P<default>.*))?$")

@@ -7,7 +7,7 @@
 ## 角色与协议
 
 ```python
-from pico import EnvironmentProfile, Pico
+from pico import EnvironmentProfile, Pico, SimulatedClock
 
 profile = EnvironmentProfile(
     name="simulated-phone",
@@ -17,6 +17,7 @@ profile = EnvironmentProfile(
         "Finish required environment actions before reporting completion.",
     ),
     budget_instruction="Reserve a step for the required environment action.",
+    clock=SimulatedClock(1728975600.0, step_seconds=60),
 )
 
 agent = Pico(
@@ -30,6 +31,17 @@ agent = Pico(
 - `text` 强制 `<tool>...</tool>` 文本协议，并清除可能复用的旧 native conversation。
 - `native` 强制原生 Tool Calling；客户端不支持时在发起请求前明确拒绝。
 - 实际选择保存在 `requested_wire_protocol` 和 `effective_wire_protocol`，并进入 run trace/report。`auto` 是请求配置，不应被当作实际线上协议。
+
+## 可注入时钟
+
+`EnvironmentProfile.clock` 是可选时间源，默认 `None` 时不显示任何模拟时间行，行为不变。环境提供 `SimulatedClock(epoch, step_seconds)` 后，文本 prefix 和原生 System 会同时显示 `Current simulated time: YYYY-MM-DD HH:MM`，由同一份 `Clock.now()/iso()` 生成，避免两套协议各自格式化。
+
+- `Clock.now()` 返回 epoch 秒；`Clock.iso()` 返回 UTC 分钟精度字符串。
+- `SimulatedClock.advance()/tick()` 供宿主在回合边界推进时间。
+- `SystemClock` 读取真实 UTC，仅作对照。
+- 时钟是模拟环境语义，不改变 session 时间戳、checkpoint 或审计里的真实墙钟时间。
+
+多轮驱动把回合间环境事件注入与时钟推进配合使用，见 [Step-wise 与多轮](#step-wise-action--observation-与事件队列)。
 
 显式 environment 只提供角色、任务说明和预算语义。文本与原生渲染器分别添加自己的协议规则；不会把 XML 示例拼进原生 System，也不会在外部文本环境中展示不存在的 `read_file/write_file/run_shell` 示例。
 
@@ -158,7 +170,7 @@ read_tool_output(output_id="out_...", offset=4001, limit=4000)
 离线验证：
 
 ```powershell
-python -X utf8 -m pytest tests/test_environment.py tests/test_output_store.py tests/test_task_state.py tests/test_agent_loop.py tests/test_stepwise.py tests/test_native_tools.py tests/test_prompt_prefix.py tests/test_response_contract.py -q
+python -X utf8 -m pytest tests/test_environment.py tests/test_output_store.py tests/test_task_state.py tests/test_agent_loop.py tests/test_stepwise.py tests/test_clock.py tests/test_native_tools.py tests/test_prompt_prefix.py tests/test_response_contract.py -q
 ```
 
 这些测试检查实际 wire 的角色、Schema、预算说明和 typed arguments，不调用模型，也不代表真实模型任务成功率。
