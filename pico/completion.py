@@ -1,5 +1,8 @@
 """Evidence required before completing an explicitly verified repair task."""
 
+import json
+
+
 class CompletionGate:
     def __init__(self, agent):
         self.agent = agent
@@ -41,8 +44,16 @@ class CompletionGate:
             self.state['status']='stale'
         if self.state['status']=='passed':
             return None
-        return (f"Completion rejected: verification is {self.state['status']}. "
-                f"Run the exact verification command {self.command!r} through run_shell after the latest edit. "
-                "Read the actual failure output and repair implementation contracts, including return types; do not change tests. "
-                "A statement that you will fix or test something is not execution evidence. "
-                "Use a tool call now; return <final> only after verification passes. Approval is still required.")
+        message = (f"Completion rejected: verification is {self.state['status']}. "
+                   f"Run the exact verification command {self.command!r} through run_shell after the latest edit. "
+                   "Read the actual failure output and repair implementation contracts, including return types; do not change tests. "
+                   "A statement that you will fix or test something is not execution evidence. "
+                   "Use a tool call now; return <final> only after verification passes. Approval is still required.")
+        if getattr(self.agent, 'compact_prompt', False):
+            # 1.5B-3B models often cannot translate "use a tool call" into the
+            # exact syntax. Give the literal call; nothing about the requirement
+            # is relaxed.
+            call = json.dumps({"name": "run_shell",
+                               "args": {"command": self.command, "timeout": 60}})
+            message += f' Reply with exactly this and nothing else: <tool>{call}</tool>'
+        return message

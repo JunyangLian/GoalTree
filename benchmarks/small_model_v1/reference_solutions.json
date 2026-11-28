@@ -1,0 +1,26 @@
+{
+  "clamp_value": {
+    "clamp_value.py": "def clamp(value, low, high):\n    if low > high:\n        raise ValueError('low must be <= high')\n    if value < low:\n        return low\n    if value > high:\n        return high\n    return value\n"
+  },
+  "slugify_title": {
+    "slugify_title.py": "import re\n\ndef slugify(text):\n    text = text.lower()\n    text = re.sub(r'[^a-z0-9]+', '-', text)\n    return text.strip('-')\n"
+  },
+  "parse_env_line": {
+    "parse_env_line.py": "def parse_env_line(line):\n    if not line or line.lstrip().startswith('#'):\n        return None\n    if '=' not in line:\n        return None\n    key, value = line.split('=', 1)\n    value = value.strip()\n    if len(value) >= 2 and value[0] == value[-1] and value[0] in '\\\"\\'':\n        value = value[1:-1]\n    return key.strip(), value\n"
+  },
+  "dedupe_keep_order": {
+    "dedupe_keep_order.py": "def dedupe(items):\n    seen = set()\n    result = []\n    for item in items:\n        if item not in seen:\n            seen.add(item)\n            result.append(item)\n    return result\n"
+  },
+  "chunk_list": {
+    "chunk_list.py": "def chunk(items, size):\n    if size <= 0:\n        raise ValueError('size must be positive')\n    return [items[i:i + size] for i in range(0, len(items), size)]\n"
+  },
+  "merge_counts": {
+    "merge_counts.py": "def merge_counts(left, right):\n    result = dict(left)\n    for key, value in right.items():\n        result[key] = result.get(key, 0) + value\n    return result\n"
+  },
+  "format_bytes": {
+    "format_bytes.py": "def format_bytes(size):\n    if size < 1024:\n        return f'{size} B'\n    for unit in ('KB', 'MB', 'GB'):\n        size /= 1024\n        if size < 1024 or unit == 'GB':\n            return f'{size:.1f} {unit}'\n"
+  },
+  "top_k": {
+    "top_k.py": "def top_k(values, k):\n    return sorted(values, reverse=True)[:k]\n"
+  }
+}

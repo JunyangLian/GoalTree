@@ -89,6 +89,9 @@ class Pico:
         environment=None,
         wire_protocol='auto',
         scientific_verification=True,
+        compact_prompt=False,
+        auto_verify_after_write=False,
+        structured_repair_path=None,
     ):
         if environment is not None and not isinstance(environment, EnvironmentProfile):
             raise TypeError('environment must be an EnvironmentProfile or None')
@@ -127,6 +130,16 @@ class Pico:
         # Enables the science-constraint gate in the loop (inert unless the
         # instruction states an explicit statistical requirement).
         self.scientific_verification = bool(scientific_verification)
+        # Opt-in prompt profile for 1.5B-3B models. Default off: the classic
+        # prefix and therefore big-model behaviour are unchanged.
+        self.compact_prompt = bool(compact_prompt)
+        # Opt-in scaffold: after a successful edit, run the configured
+        # verification command and show its real output to the model. This does
+        # not mark the task complete; the completion gate still needs exit 0.
+        self.auto_verify_after_write = bool(auto_verify_after_write)
+        # Opt-in structured repair: when the reply is plain code instead of a
+        # tool call, treat the fenced block as this file's full content.
+        self.structured_repair_path = structured_repair_path
         if shell_backend not in {"host", "appcontainer"}:
             raise ValueError("shell_backend must be host or appcontainer")
         if shell_backend == "appcontainer":
@@ -333,7 +346,9 @@ class Pico:
         return build_prompt_prefix(workspace=self.workspace, tools=self.tools,
                                    verification_command=self.verification_command if not self.read_only else None,
                                    task_executor=getattr(self,'goal_binding',{}).get('mode')=='execute',
-                                   environment=self.environment)
+                                   environment=self.environment,
+                                   compact=self.compact_prompt,
+                                   structured_path=self.structured_repair_path)
 
     def _apply_prefix_state(self, prefix_state):
         self.prefix_state = prefix_state

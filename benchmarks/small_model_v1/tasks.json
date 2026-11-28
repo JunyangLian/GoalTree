@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "tasks": [
+    {
+      "id": "clamp_value",
+      "cohort": "dev",
+      "category": "single_file_repair",
+      "files": {
+        "clamp_value.py": "def clamp(value, low, high):\n    if low > high:\n        raise ValueError('low must be <= high')\n    if value < low:\n        return high\n    if value > high:\n        return high\n    return value\n",
+        "test_clamp_value.py": "import unittest\nfrom clamp_value import clamp\n\nclass ClampTests(unittest.TestCase):\n    def test_below(self):\n        self.assertEqual(clamp(-3, 0, 10), 0)\n    def test_above(self):\n        self.assertEqual(clamp(12, 0, 10), 10)\n    def test_inside(self):\n        self.assertEqual(clamp(5, 0, 10), 5)\n    def test_bad_bounds(self):\n        with self.assertRaises(ValueError):\n            clamp(1, 5, 2)\n"
+      },
+      "prompt": "The function clamp in clamp_value.py returns the wrong bound. Fix clamp_value.py so clamping a value below `low` returns `low`, and keep the existing validation. Run the tests to confirm.",
+      "editable_files": [
+        "clamp_value.py"
+      ],
+      "expected_tests": 4
+    },
+    {
+      "id": "slugify_title",
+      "cohort": "dev",
+      "category": "single_file_repair",
+      "files": {
+        "slugify_title.py": "import re\n\ndef slugify(text):\n    text = text.lower()\n    text = re.sub(r'[^a-z0-9]+', '-', text)\n    return text\n",
+        "test_slugify_title.py": "import unittest\nfrom slugify_title import slugify\n\nclass SlugifyTests(unittest.TestCase):\n    def test_words(self):\n        self.assertEqual(slugify('Hello World'), 'hello-world')\n    def test_padding(self):\n        self.assertEqual(slugify('  A  B  '), 'a-b')\n    def test_symbols(self):\n        self.assertEqual(slugify('C++ & Python!'), 'c-python')\n    def test_already_slug(self):\n        self.assertEqual(slugify('already-slug'), 'already-slug')\n"
+      },
+      "prompt": "slugify in slugify_title.py leaves leading and trailing dashes. Fix it so surrounding punctuation or spaces do not produce a dash at either end, and run the tests.",
+      "editable_files": [
+        "slugify_title.py"
+      ],
+      "expected_tests": 4
+    },
+    {
+      "id": "parse_env_line",
+      "cohort": "dev",
+      "category": "single_file_repair",
+      "files": {
+        "parse_env_line.py": "def parse_env_line(line):\n    if not line or line.lstrip().startswith('#'):\n        return None\n    key, value = line.split('=')\n    return key.strip(), value.strip()\n",
+        "test_parse_env_line.py": "import unittest\nfrom parse_env_line import parse_env_line\n\nclass EnvLineTests(unittest.TestCase):\n    def test_plain(self):\n        self.assertEqual(parse_env_line('A=1'), ('A', '1'))\n    def test_spaces_and_quotes(self):\n        self.assertEqual(parse_env_line('B = \"x y\"'), ('B', 'x y'))\n    def test_comment_and_blank(self):\n        self.assertIsNone(parse_env_line('  # note'))\n        self.assertIsNone(parse_env_line(''))\n    def test_empty_value(self):\n        self.assertEqual(parse_env_line('EMPTY='), ('EMPTY', ''))\n    def test_no_equals(self):\n        self.assertIsNone(parse_env_line('NO_EQUALS'))\n    def test_value_with_equals(self):\n        self.assertEqual(parse_env_line('TOKEN=a=b'), ('TOKEN', 'a=b'))\n"
+      },
+      "prompt": "parse_env_line in parse_env_line.py crashes on lines without '=' and keeps surrounding quotes. Fix it: return None when there is no '=', split only on the first '=', and strip one matching pair of quotes. Run the tests.",
+      "editable_files": [
+        "parse_env_line.py"
+      ],
+      "expected_tests": 6
+    },
+    {
+      "id": "dedupe_keep_order",
+      "cohort": "dev",
+      "category": "single_file_repair",
+      "files": {
+        "dedupe_keep_order.py": "def dedupe(items):\n    return list(set(items))\n",
+        "test_dedupe_keep_order.py": "import unittest\nfrom dedupe_keep_order import dedupe\n\nclass DedupeTests(unittest.TestCase):\n    def test_order(self):\n        self.assertEqual(dedupe([3, 1, 3, 2, 1]), [3, 1, 2])\n    def test_strings(self):\n        self.assertEqual(dedupe(['b', 'a', 'b']), ['b', 'a'])\n    def test_empty(self):\n        self.assertEqual(dedupe([]), [])\n"
+      },
+      "prompt": "dedupe in dedupe_keep_order.py loses the original order. Fix it so the first occurrence of each item is kept in order, then run the tests.",
+      "editable_files": [
+        "dedupe_keep_order.py"
+      ],
+      "expected_tests": 3
+    },
+    {
+      "id": "chunk_list",
+      "cohort": "dev",
+      "category": "single_file_repair",
+      "files": {
+        "chunk_list.py": "def chunk(items, size):\n    if size <= 0:\n        raise ValueError('size must be positive')\n    return [items[i:i + size] for i in range(0, len(items) - size, size)]\n",
+        "test_chunk_list.py": "import unittest\nfrom chunk_list import chunk\n\nclass ChunkTests(unittest.TestCase):\n    def test_tail_included(self):\n        self.assertEqual(chunk([1, 2, 3, 4, 5], 2), [[1, 2], [3, 4], [5]])\n    def test_size_larger_than_list(self):\n        self.assertEqual(chunk([1, 2], 5), [[1, 2]])\n    def test_invalid_size(self):\n        with self.assertRaises(ValueError):\n            chunk([1], 0)\n"
+      },
+      "prompt": "chunk in chunk_list.py drops the last partial chunk. Fix the range so every item is returned exactly once, then run the tests.",
+      "editable_files": [
+        "chunk_list.py"
+      ],
+      "expected_tests": 3
+    },
+    {
+      "id": "merge_counts",
+      "cohort": "holdout",
+      "category": "single_file_repair",
+      "files": {
+        "merge_counts.py": "def merge_counts(left, right):\n    result = dict(left)\n    result.update(right)\n    return result\n",
+        "test_merge_counts.py": "import unittest\nfrom merge_counts import merge_counts\n\nclass MergeTests(unittest.TestCase):\n    def test_overlap_sums(self):\n        self.assertEqual(merge_counts({'a': 2}, {'a': 3, 'b': 1}), {'a': 5, 'b': 1})\n    def test_empty(self):\n        self.assertEqual(merge_counts({}, {'x': -1}), {'x': -1})\n    def test_no_overlap(self):\n        self.assertEqual(merge_counts({'a': 1}, {'b': 2}), {'a': 1, 'b': 2})\n"
+      },
+      "prompt": "merge_counts in merge_counts.py overwrites shared keys instead of adding them. Fix it to sum counts for keys present in both inputs, then run the tests.",
+      "editable_files": [
+        "merge_counts.py"
+      ],
+      "expected_tests": 3
+    },
+    {
+      "id": "format_bytes",
+      "cohort": "holdout",
+      "category": "single_file_repair",
+      "files": {
+        "format_bytes.py": "def format_bytes(size):\n    return f'{size / 1000:.1f} KB'\n",
+        "test_format_bytes.py": "import unittest\nfrom format_bytes import format_bytes\n\nclass FormatTests(unittest.TestCase):\n    def test_bytes(self):\n        self.assertEqual(format_bytes(0), '0 B')\n        self.assertEqual(format_bytes(512), '512 B')\n    def test_kilobytes(self):\n        self.assertEqual(format_bytes(1024), '1.0 KB')\n        self.assertEqual(format_bytes(1536), '1.5 KB')\n    def test_megabytes(self):\n        self.assertEqual(format_bytes(1048576), '1.0 MB')\n"
+      },
+      "prompt": "format_bytes in format_bytes.py always prints kilobytes using base 1000. Fix it: bytes below 1024 print as '<n> B'; otherwise use 1024-based KB/MB/GB with one decimal. Run the tests.",
+      "editable_files": [
+        "format_bytes.py"
+      ],
+      "expected_tests": 3
+    },
+    {
+      "id": "top_k",
+      "cohort": "holdout",
+      "category": "single_file_repair",
+      "files": {
+        "top_k.py": "def top_k(values, k):\n    return sorted(values)[:k]\n",
+        "test_top_k.py": "import unittest\nfrom top_k import top_k\n\nclass TopKTests(unittest.TestCase):\n    def test_descending(self):\n        self.assertEqual(top_k([3, 1, 2], 2), [3, 2])\n    def test_k_larger_than_input(self):\n        self.assertEqual(top_k([1], 5), [1])\n    def test_zero(self):\n        self.assertEqual(top_k([1, 2], 0), [])\n    def test_duplicates(self):\n        self.assertEqual(top_k([2, 2, 1], 2), [2, 2])\n"
+      },
+      "prompt": "top_k in top_k.py returns the smallest values. Fix it to return the k largest values in descending order, then run the tests.",
+      "editable_files": [
+        "top_k.py"
+      ],
+      "expected_tests": 4
+    }
+  ]
+}

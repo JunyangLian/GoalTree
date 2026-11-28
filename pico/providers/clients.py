@@ -51,12 +51,16 @@ class FakeModelClient:
 
 
 class OllamaModelClient:
-    def __init__(self, model, host, temperature, top_p, timeout):
+    def __init__(self, model, host, temperature, top_p, timeout,
+                 repeat_penalty=1.1, repeat_last_n=64, num_ctx=None):
         self.model = model
         self.host = host.rstrip("/")
         self.temperature = temperature
         self.top_p = top_p
         self.timeout = timeout
+        self.repeat_penalty = repeat_penalty
+        self.repeat_last_n = repeat_last_n
+        self.num_ctx = num_ctx
         self.supports_prompt_cache = False
         self.last_completion_metadata = {}
 
@@ -75,6 +79,9 @@ class OllamaModelClient:
                 "num_predict": max_new_tokens,
                 "temperature": self.temperature,
                 "top_p": self.top_p,
+                "repeat_penalty": self.repeat_penalty,
+                "repeat_last_n": self.repeat_last_n,
+                **({"num_ctx": self.num_ctx} if self.num_ctx else {}),
             },
         }
         request = urllib.request.Request(
@@ -99,6 +106,13 @@ class OllamaModelClient:
 
         if data.get("error"):
             raise RuntimeError(f"Ollama error: {data['error']}")
+        # Ollama reports its own counters; keep them in the same metadata shape
+        # the OpenAI-compatible client uses so callers can record cost/usage.
+        self.last_completion_metadata = {
+            "input_tokens": int(data.get("prompt_eval_count") or 0),
+            "output_tokens": int(data.get("eval_count") or 0),
+            "calls": 1,
+        }
         return data.get("response", "")
 
 

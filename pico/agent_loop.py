@@ -1,5 +1,6 @@
 """Agent control loop extracted from the runtime facade."""
 
+import re
 import time
 from collections import deque
 
@@ -8,6 +9,35 @@ from .task_state import TaskState
 from .completion import CompletionGate
 from .stepwise import AgentStep, StepInput
 from .workspace import clip, now
+
+
+def _extract_code_block(text):
+    """Longest fenced code block that looks like a file, minus test sections.
+
+    Only used by the opt-in structured-repair path: a tiny model that answers with
+    plain code instead of a tool call can still be executed through the normal
+    write_file tool. Returns None when no plausible block is present.
+    """
+    blocks = re.findall(r"```(?:python)?\s*\n(.*?)```", text or "", flags=re.S)
+    if not blocks and text and "<tool>" not in text and "def " in text:
+        # Tiny models often drop the fence. Accept the tail starting at the first
+        # code-looking line, but only when there is no competing tool markup.
+        lines = text.splitlines()
+        start = next((i for i, line in enumerate(lines)
+                      if re.match(r"\s*(import |from \w+ import |def |class )", line)), None)
+        if start is not None:
+            blocks = ["\n".join(lines[start:])]
+    for block in sorted(blocks, key=len, reverse=True):
+        lines = block.splitlines()
+        for index, line in enumerate(lines):
+            if (re.match(r"\s*(import unittest|from unittest|class \w+Tests?\s*[(:])", line)
+                    or re.match(r"\s*#\s*(test|example|usage)", line, re.I)
+                    or re.match(r"\s*assert\s", line)):
+                block = "\n".join(lines[:index])
+                break
+        if "def " in block or "class " in block:
+            return block.strip() + "\n"
+    return None
 
 
 class AgentLoop:
@@ -183,6 +213,31 @@ class AgentLoop:
             kind, payload = raw.action_kind, raw.action
         else:
             kind, payload = agent.parse(raw)
+        repair_path = getattr(agent, 'structured_repair_path', None)
+        if kind != 'tool' and repair_path:
+            # Structured-output repair for tiny models: when the reply is plain
+            # code instead of a tool call, treat the fenced block as the complete
+            # file content. Approval, sandboxing and the completion gate still
+            # apply; nothing is accepted on the model's word.
+            code = _extract_code_block(raw)
+            if code:
+                target = None
+                try:
+                    target = agent.path(repair_path)
+                except (ValueError, TypeError):
+                    target = None
+                current = (target.read_text(encoding="utf-8", errors="replace")
+                           if target is not None and target.is_file() else None)
+                verify_state = getattr(agent, 'last_verification', {}) or {}
+                if code == current and verify_state.get('status') == 'passed':
+                    # The model repeated the already-verified file: treat it as a
+                    # final answer instead of rewriting forever.
+                    kind, payload = 'final', 'done'
+                else:
+                    kind, payload = 'tool', {'name': 'write_file',
+                                             'args': {'path': repair_path, 'content': code}}
+                    agent.emit_trace(task_state, 'structured_repair_used',
+                                     {'path': repair_path, 'chars': len(code)})
         agent.emit_trace(
             task_state,
             "model_parsed",
@@ -694,6 +749,27 @@ class AgentLoop:
         if scientific is not None:
             scientific.observe(name, args, tool_result.content)
         result = tool_result.content
+        command = getattr(agent, 'verification_command', None)
+        if (getattr(agent, 'auto_verify_after_write', False) and command
+                and name in {'write_file', 'patch_file', 'apply_changes'}
+                and tool_result.metadata.get('tool_status') == 'ok'
+                and not getattr(agent, 'read_only', False)):
+            # Small-model scaffold: the host runs the *real* verification command
+            # after each successful edit and shows the actual output in the same
+            # observation. Requirement unchanged: completion still needs exit 0.
+            verify_args = {'command': command, 'timeout': 60}
+            agent.emit_trace(task_state, 'auto_verify_started',
+                             {'command': command, 'after': name})
+            started_verify = time.monotonic()
+            verify = agent.execute_tool('run_shell', verify_args)
+            completion.observe('run_shell', verify_args, verify.metadata)
+            if scientific is not None:
+                scientific.observe('run_shell', verify_args, verify.content)
+            result += (f"\n\n[AUTO-VERIFY exit={verify.metadata.get('exit_code')}]\n"
+                       f"{verify.content}")
+            agent.emit_trace(task_state, 'auto_verify_executed', {
+                'command': command, 'exit_code': verify.metadata.get('exit_code'),
+                'duration_ms': int((time.monotonic() - started_verify) * 1000)})
         working = agent.session['working_state']
         working['verification'] = dict(completion.state)
         working['changed_files'] = sorted(set(working['changed_files']) | set(tool_result.metadata.get('affected_paths', [])))

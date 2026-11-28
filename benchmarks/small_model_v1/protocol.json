@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "suite": "small_model_v1",
+  "verify_command": "python -B -m unittest discover -v",
+  "counts": {
+    "total": 8,
+    "dev": 5,
+    "holdout": 3
+  },
+  "policy": "Prompts and tests are frozen. Dev tasks may guide harness work; holdout tasks are measured only after the harness is frozen. Editing tests in the workspace cannot pass the pristine external verifier."
+}

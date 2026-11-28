@@ -38,7 +38,7 @@ def tool_signature(tools):
     return hashlib.sha256(json.dumps(payload, sort_keys=True).encode("utf-8")).hexdigest()
 
 
-def build_prompt_prefix(workspace, tools, built_at=None, verification_command=None, task_executor=False, environment=None):
+def build_prompt_prefix(workspace, tools, built_at=None, verification_command=None, task_executor=False, environment=None, compact=False, structured_path=None):
     tool_lines = []
     for name, tool in tools.items():
         declarations = tool.get("schema")
@@ -136,7 +136,26 @@ def build_prompt_prefix(workspace, tools, built_at=None, verification_command=No
             {completion_rule}
             """
         ).strip()
-    if is_goal_coordinator(tools) or task_executor:
+    if structured_path and environment is None and not (is_goal_coordinator(tools) or task_executor):
+        # Structured-repair profile: the host writes the returned file and runs
+        # verification, so the prompt must not show tool syntax at all. Tiny
+        # models otherwise imitate example labels ("Read:/Write:") verbatim.
+        text = textwrap.dedent(
+            f"""\
+            You are a small local coding agent. Rewrite one Python file.
+
+            File to rewrite: {structured_path}
+
+            Rules:
+            - Reply with the COMPLETE corrected file content inside one ```python block.
+            - Do not call tools; the host writes the file and runs the tests.
+            - Keep existing functions and classes; change only what the task requires.
+            - If tests fail, the host will show the real output and ask again.
+
+            {workspace.text()}
+            """
+        ).strip()
+    elif is_goal_coordinator(tools) or task_executor:
         role = GOAL_COORDINATOR_INSTRUCTIONS if is_goal_coordinator(tools) else GOAL_EXECUTOR_INSTRUCTIONS
         text = (role + '\n\n'
                 'Return exactly one <tool>...</tool> or one <final>...</final>. '
@@ -144,6 +163,29 @@ def build_prompt_prefix(workspace, tools, built_at=None, verification_command=No
                 'Tool arguments containing JSON arrays or objects must be JSON-encoded strings '
                 'when the schema declares str. Final format: <final>your answer</final>.\n\n'
                 'Tools:\n' + tool_text + '\n\n' + workspace.text() + '\n' + completion_rule)
+    elif compact and environment is None:
+        # Small-model profile (opt-in): the classic prefix is a long rule list
+        # that 1.5B-3B models often ignore or get lost in. Keep the protocol and
+        # the tools, drop everything else. Default behaviour is unchanged.
+        text = textwrap.dedent(
+            f"""\
+            You are a small local coding agent. Fix the single file named in the task, then verify.
+
+            Response format (exactly one per turn):
+            - Read: <tool>{{"name":"read_file","args":{{"path":"file.py","start":1,"end":200}}}}</tool>
+            - Write: <tool name="write_file" path="file.py"><content>FULL FILE CONTENT</content></tool>
+            - Verify: <tool>{{"name":"run_shell","args":{{"command":"python -B -m unittest discover -v","timeout":60}}}}</tool>
+            - Finish only after verification exits 0: <final>done</final>
+            - Do not edit test files. Do not repeat an identical failing call.
+            - Never invent tool results.
+
+            Tools:
+            {tool_text}
+
+            {workspace.text()}
+            {completion_rule}
+            """
+        ).strip()
     signature = tool_signature(tools)
     return PromptPrefix(
         text=text,
