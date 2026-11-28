@@ -92,6 +92,9 @@ class Pico:
         compact_prompt=False,
         auto_verify_after_write=False,
         structured_repair_path=None,
+        small_model_executor=False,
+        small_model_rounds=3,
+        small_model_reference_paths=None,
     ):
         if environment is not None and not isinstance(environment, EnvironmentProfile):
             raise TypeError('environment must be an EnvironmentProfile or None')
@@ -140,6 +143,22 @@ class Pico:
         # Opt-in structured repair: when the reply is plain code instead of a
         # tool call, treat the fenced block as this file's full content.
         self.structured_repair_path = structured_repair_path
+        # Opt-in small-model executor: host-driven rounds that rebuild the
+        # request from the current file and the real verification output instead
+        # of replaying the conversation. It needs a target file and a real
+        # verification command; otherwise "success" would be unverifiable.
+        self.small_model_executor = bool(small_model_executor)
+        if self.small_model_executor:
+            if not self.structured_repair_path:
+                raise ValueError('small_model_executor requires structured_repair_path')
+            if not self.verification_command:
+                raise ValueError('small_model_executor requires verification_command')
+            self.auto_verify_after_write = True
+        if int(small_model_rounds) < 1:
+            raise ValueError('small_model_rounds must be at least 1')
+        self.small_model_rounds = int(small_model_rounds)
+        self.small_model_reference_paths = tuple(
+            str(path) for path in (small_model_reference_paths or ()) if str(path).strip())
         if shell_backend not in {"host", "appcontainer"}:
             raise ValueError("shell_backend must be host or appcontainer")
         if shell_backend == "appcontainer":
@@ -148,6 +167,7 @@ class Pico:
                 raise ValueError("AppContainer requires the exact approved unittest verification command")
         self.shell_backend = shell_backend
         self.last_verification = {}
+        self.last_auto_verify = {}
         self.shell_env_allowlist = tuple(shell_env_allowlist or DEFAULT_SHELL_ENV_ALLOWLIST)
         self.secret_env_names = {str(name).upper() for name in (secret_env_names or ())}
         self.feature_flags = dict(DEFAULT_FEATURE_FLAGS)

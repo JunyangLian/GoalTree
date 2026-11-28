@@ -7,6 +7,12 @@ oneshot        Single model call, no tools. The model receives the buggy module
 agent          GoalTree/Pico with the classic prompt and full tool set.
 agent-compact  GoalTree/Pico with the opt-in compact prompt and a minimal tool
                set, aimed at 1.5B-3B local models.
+agent-repair   Pico plus host-side verification after every successful edit.
+agent-structured Pico structured profile: a plain code reply is written as the
+               target file, and the host runs the real tests.
+small-executor Pico's host-driven executor: every round rebuilds the request
+               from the current file, visible tests and the latest real failure
+               output instead of replaying the conversation.
 
 Success is judged by the pristine external verifier (frozen files + tests), so
 editing tests inside the workspace cannot fake a pass. Nothing is scored from
@@ -33,7 +39,8 @@ from pico.evaluation.repair_suite import (install, verify_pristine,  # noqa: E40
                                           VERIFY_COMMAND)
 
 SUITE = ROOT / "benchmarks" / "small_model_v1"
-MODES = ("oneshot", "agent", "agent-compact", "agent-repair", "agent-structured", "scaffold")
+MODES = ("oneshot", "agent", "agent-compact", "agent-repair", "agent-structured",
+         "small-executor", "scaffold")
 
 
 def load_tasks(cohort: str, task_ids: list[str] | None) -> list[dict]:
@@ -186,8 +193,10 @@ def run_scaffold(task: dict, workspace: Path, args, client: CountingClient) -> d
 
 
 def run_agent(task: dict, workspace: Path, args, client: CountingClient,
-              compact: bool, auto_verify: bool = False, structured: bool = False) -> dict:
+              compact: bool, auto_verify: bool = False, structured: bool = False,
+              executor: bool = False) -> dict:
     module = task["editable_files"][0]
+    test_name = next(n for n in task["files"] if n != module)
     context = WorkspaceContext(str(workspace), str(workspace), "-", "-", "fresh fixture", [], {})
     allowed = (["read_file", "write_file", "run_shell"] if compact else
                ["list_files", "read_file", "write_file", "patch_file", "run_shell"])
@@ -197,7 +206,10 @@ def run_agent(task: dict, workspace: Path, args, client: CountingClient,
                  verification_command=VERIFY_COMMAND, allowed_tools=allowed,
                  scientific_verification=False, compact_prompt=compact,
                  auto_verify_after_write=auto_verify,
-                 structured_repair_path=module if structured else None)
+                 structured_repair_path=module if (structured or executor) else None,
+                 small_model_executor=executor,
+                 small_model_rounds=getattr(args, "executor_rounds", 3),
+                 small_model_reference_paths=[test_name] if executor else None)
     def approve(name, tool_args):
         try:
             if name == "run_shell":
@@ -221,13 +233,14 @@ def run_agent(task: dict, workspace: Path, args, client: CountingClient,
 
     agent.execute_tool = counted
     started = time.monotonic()
-    outcome = {"mode": ("agent-structured" if structured else
-                        ("agent-repair" if auto_verify else
-                         ("agent-compact" if compact else "agent")))}
+    outcome = {"mode": ("small-executor" if executor else
+                        ("agent-structured" if structured else
+                         ("agent-repair" if auto_verify else
+                          ("agent-compact" if compact else "agent"))))}
     timer = threading.Timer(args.run_timeout, agent.cancel)
     timer.start()
     request = task["prompt"] + f"\n\nOnly edit {module}. Verify with the test command."
-    if structured:
+    if structured and not executor:
         # The structured profile forbids tool calls, so the one file it may
         # rewrite has to travel with the request; otherwise a tiny model
         # rewrites from memory and silently drops existing validation.
@@ -257,9 +270,11 @@ def evaluate(task: dict, mode: str, workspace: Path, args) -> dict:
         outcome = run_scaffold(task, workspace, args, client)
     else:
         outcome = run_agent(task, workspace, args, client,
-                            compact=(mode in {"agent-compact", "agent-repair", "agent-structured"}),
-                            auto_verify=(mode in {"agent-repair", "agent-structured"}),
-                            structured=(mode == "agent-structured"))
+                            compact=(mode in {"agent-compact", "agent-repair",
+                                              "agent-structured", "small-executor"}),
+                            auto_verify=(mode in {"agent-repair", "agent-structured", "small-executor"}),
+                            structured=(mode == "agent-structured"),
+                            executor=(mode == "small-executor"))
     implementation = {name: (workspace / name).read_bytes()
                       for name in task["editable_files"] if (workspace / name).is_file()}
     verifier = verify_pristine(task, implementation, workspace.parent / "pristine")
@@ -290,6 +305,7 @@ def main(argv=None) -> int:
     parser.add_argument("--request-timeout", type=float, default=300)
     parser.add_argument("--run-timeout", type=float, default=600)
     parser.add_argument("--scaffold-rounds", type=int, default=3)
+    parser.add_argument("--executor-rounds", type=int, default=3)
     parser.add_argument("--temperature", type=float, default=0.3)
     parser.add_argument("--top-p", type=float, default=0.9)
     parser.add_argument("--repeat-penalty", type=float, default=1.15)

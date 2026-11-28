@@ -341,6 +341,155 @@ class AgentLoop:
         from .stepwise import AgentRun
         return AgentRun(self.agent).start(user_message).run_to_completion()
 
+    def _small_model_round_prompt(self, user_message, feedback):
+        """One self-contained request: task, current file, optional references.
+
+        The executor deliberately does not replay earlier assistant/tool turns.
+        A 1.5B model tends to anchor on its own previous code, so each round is
+        built from the *current* file and the latest real verification output.
+        """
+        agent = self.agent
+        module = agent.structured_repair_path
+        try:
+            target = agent.path(module)
+            current = (target.read_text(encoding='utf-8', errors='replace')
+                       if target.is_file() else '')
+        except (ValueError, OSError):
+            current = ''
+        parts = [agent.prefix, user_message,
+                 f"Current {module}:\n```python\n{current}\n```"]
+        for reference in agent.small_model_reference_paths:
+            try:
+                path = agent.path(reference)
+            except (ValueError, OSError):
+                continue
+            if path.is_file():
+                parts.append(f"Reference file {reference}:\n```python\n"
+                             f"{path.read_text(encoding='utf-8', errors='replace')}\n```")
+        if feedback:
+            parts.append(feedback)
+        parts.append(f"Reply with the COMPLETE corrected {module} in one ```python block. "
+                     "Do not include tests, examples or explanations.")
+        return agent.redact_text("\n\n".join(parts))
+
+    @staticmethod
+    def _small_model_round_feedback(module, exit_code, output, repeated):
+        if repeated:
+            lead = "The file you returned is identical to the previous attempt."
+        elif exit_code is None:
+            lead = "No corrected file was written."
+        else:
+            lead = "The tests still fail."
+        message = lead
+        if output:
+            message += f"\nReal verification output (exit={exit_code}):\n```\n{output[-1500:]}\n```"
+        if repeated:
+            message += "\nChange the code so the failing assertions pass; do not resend the same file."
+        return message + f"\nRewrite {module} completely, starting from the current file above."
+
+    def _run_small_model_executor(self, task_state, user_message, completion, run_started_at):
+        """Host-driven rounds for tiny models; every round ends in a real check."""
+        agent = self.agent
+        module = agent.structured_repair_path
+        rounds = max(1, min(agent.small_model_rounds, max(1, agent.max_steps)))
+        agent.remaining_tool_steps = agent.max_steps
+        feedback = ''
+        previous_code = None
+        repeats = 0
+        agent.emit_trace(task_state, 'small_model_executor_started', {
+            'path': module,
+            'max_rounds': rounds,
+            'reference_paths': list(agent.small_model_reference_paths),
+            'verification_command': agent.verification_command,
+        })
+        for round_index in range(1, rounds + 1):
+            if agent.cancellation.event.is_set():
+                agent.cancellation.check()
+            if agent.remaining_tool_steps <= 0:
+                break
+            agent.last_auto_verify = {}
+            prompt = self._small_model_round_prompt(user_message, feedback)
+            metadata = {
+                'prompt_cache_key': agent.prefix_state.hash,
+                'prefix_chars': len(agent.prefix),
+                'request_chars': len(user_message),
+                'executor_round': round_index,
+            }
+            agent.emit_trace(task_state, 'small_model_round_started', {
+                'round': round_index, 'max_rounds': rounds, 'prompt_chars': len(prompt),
+            })
+            task_state.record_attempt()
+            agent.run_store.write_task_state(task_state)
+            raw, kind, payload = self._request_model(
+                task_state, user_message, prompt, metadata, run_started_at,
+                purpose='small_model_round')
+            code = _extract_code_block(raw) if kind in {'tool', 'tools'} else None
+            if kind in {'tool', 'tools'}:
+                actions = payload if kind == 'tools' else [payload]
+                results = []
+                for action in actions:
+                    if agent.remaining_tool_steps <= 0:
+                        agent.emit_trace(task_state, 'tool_not_executed', {
+                            'name': action.get('name'), 'reason': 'budget_exhausted'})
+                        continue
+                    agent.remaining_tool_steps -= 1
+                    tool_result = self._execute_action(
+                        action, task_state, completion, False, user_message)
+                    results.append({'name': action.get('name'), 'args': action.get('args', {}),
+                                    'content': tool_result.content,
+                                    'metadata': dict(tool_result.metadata)})
+                if results:
+                    executed = tuple(actions[:len(results)])
+                    yield AgentStep('action', actions=executed, task_state=task_state)
+                    yield AgentStep('observation', actions=executed,
+                                    observations=tuple(results), task_state=task_state)
+                if completion.state.get('status') == 'passed':
+                    agent.emit_trace(task_state, 'small_model_round_finished', {
+                        'round': round_index, 'status': 'passed',
+                        'exit_code': completion.state.get('exit_code'),
+                    })
+                    agent.emit_trace(task_state, 'small_model_executor_finished',
+                                     {'rounds': round_index, 'status': 'passed'})
+                    return self._finish_success(task_state, user_message, 'done', run_started_at)
+                verify = dict(agent.last_auto_verify or {})
+                exit_code = verify.get('exit_code', completion.state.get('exit_code'))
+                output = str(verify.get('content') or '')
+            else:
+                exit_code = completion.state.get('exit_code')
+                output = ''
+            repeated = bool(code) and code == previous_code
+            repeats = repeats + 1 if repeated else 0
+            if repeated:
+                failure_class = 'capability_limit'
+            elif code:
+                failure_class = 'insufficient_reasoning'
+            else:
+                failure_class = 'output_format'
+            agent.emit_trace(task_state, 'small_model_round_finished', {
+                'round': round_index,
+                'status': 'failed',
+                'exit_code': exit_code,
+                'failure_class': failure_class,
+                'repeated': repeated,
+            })
+            if repeats >= 1:
+                agent.emit_trace(task_state, 'small_model_executor_finished',
+                                 {'rounds': round_index, 'status': 'repeated_identical_output'})
+                return self._finish_stopped(
+                    task_state, user_message, 'repeated_identical_output',
+                    f"Stopped after {round_index} rounds: the model repeated the same file "
+                    "without passing the real verification.", run_started_at)
+            previous_code = code or previous_code
+            feedback = self._small_model_round_feedback(module, exit_code, output, repeated)
+        reason = ('executor_tool_budget' if agent.remaining_tool_steps <= 0
+                  else 'executor_rounds_exhausted')
+        agent.emit_trace(task_state, 'small_model_executor_finished',
+                         {'rounds': rounds, 'status': reason})
+        return self._finish_stopped(
+            task_state, user_message, reason,
+            f"Stopped after {rounds} executor rounds without passing the real verification.",
+            run_started_at)
+
     def run_steps(self, user_message):
         agent = self.agent
         agent._run_history_start = len(agent.session.get('history', []))
@@ -472,6 +621,12 @@ class AgentLoop:
                 "effective_wire_protocol": agent.effective_wire_protocol,
             },
         )
+
+        if getattr(agent, 'small_model_executor', False):
+            if native:
+                raise ValueError('small_model_executor requires the text wire protocol')
+            return (yield from self._run_small_model_executor(
+                task_state, user_message, completion, run_started_at))
 
         tool_steps = 0
         attempts = 0
@@ -765,6 +920,11 @@ class AgentLoop:
             completion.observe('run_shell', verify_args, verify.metadata)
             if scientific is not None:
                 scientific.observe('run_shell', verify_args, verify.content)
+            agent.last_auto_verify = {
+                'command': command,
+                'exit_code': verify.metadata.get('exit_code'),
+                'content': verify.content,
+            }
             result += (f"\n\n[AUTO-VERIFY exit={verify.metadata.get('exit_code')}]\n"
                        f"{verify.content}")
             agent.emit_trace(task_state, 'auto_verify_executed', {

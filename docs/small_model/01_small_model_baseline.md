@@ -30,6 +30,7 @@
 | C | `agent-compact` | 小模型档位：短 prompt + 仅 read/write/run_shell + 完成拒绝时给出**字面**验证调用 |
 | D | `agent-repair` | Pico + 写盘后由宿主自动执行真实验证（`auto_verify_after_write`） |
 | E | `agent-structured` | Pico 结构化 profile：模型只回完整文件，宿主写盘并自动验证；请求携带当前目标文件（`structured_repair_path`） |
+| F | `small-executor` | Pico 内建多轮执行器：每轮重建“任务 + 当前文件 + 可见测试 + 最新真实验证输出”，连续两轮相同文件早停（`small_model_executor`） |
 | C' | `scaffold` | Harness 级修复回路：模型只输出完整文件，Harness 写盘并运行真实测试，把失败输出回贴，最多 2 轮 |
 
 C' 单独记录，**不与 Pico agent 混算**：它验证“去掉工具协议负担、保留真实反馈”是否有效。
@@ -49,6 +50,7 @@ dev（3 题，k=1）：
 | `agent-compact` | 0/3 | 310.6 s |
 | `agent-repair`（Pico + 自动验证） | 0/3 | 312.1 s |
 | `agent-structured`（Pico 结构化修复） | 1/3 | 237.6 s |
+| `small-executor`（Pico 多轮执行器） | 3/3 | 50.7 s |
 | `scaffold` | 3/3 | 59.7 s |
 
 holdout（3 题，k=1）：
@@ -57,10 +59,12 @@ holdout（3 题，k=1）：
 |---|---|---|
 | `oneshot` | 1/3 | 42.8 s |
 | `agent-structured` | 2/3 | 235.1 s |
+| `small-executor` | 2/3 | 34.2 s |
 | `scaffold` | 2/3 | 51.4 s |
 
 `agent` / `agent-compact` / `agent-repair` 在 holdout 上 **Not Run**（成本原因，且 dev 已 0/3）。
-`agent-structured` 的原始逐运行记录在 `D:\1Bio_Soft\small_model_structured\runs.jsonl`；
+`agent-structured` 的原始逐运行记录在 `D:\1Bio_Soft\small_model_structured\runs.jsonl`，
+`small-executor` 在 `D:\1Bio_Soft\small_model_executor\runs.jsonl`；
 失败模式与诚实边界见 `02_harness_optimization.md`。
 
 ## 5. 复现命令
@@ -79,6 +83,14 @@ python -X utf8 scripts/run_small_model_eval.py \
   --cohort dev --tasks clamp_value,slugify_title,chunk_list \
   --k 1 --max-steps 4 --max-new-tokens 512 --run-timeout 240 --scaffold-rounds 2 \
   --out D:/1Bio_Soft/small_model_p0_p1
+
+# Pico 小模型执行器（dev + holdout）
+python -X utf8 scripts/run_small_model_eval.py \
+  --model qwen2.5-coder:1.5b-local \
+  --modes small-executor --cohort all \
+  --tasks clamp_value,slugify_title,chunk_list,merge_counts,format_bytes,top_k \
+  --k 1 --max-steps 10 --max-new-tokens 1200 --executor-rounds 3 \
+  --out D:/1Bio_Soft/small_model_executor
 ```
 
 ## 6. 诚实边界

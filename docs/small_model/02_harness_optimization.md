@@ -29,6 +29,7 @@
 | **Pico 内建自动验证** | `pico/agent_loop.py`（`auto_verify_after_write`）、`pico/runtime.py`、`pico/cli.py` | 写盘成功后由宿主执行真实验证命令，输出并入同一观察；完成门仍要求 exit 0 |
 | **Pico 结构化修复** | `pico/agent_loop.py`（`structured_repair_path`）、`pico/runtime.py`、`pico/cli.py` | 模型回复纯代码块时，按目标文件交给 `write_file`；不要求 `<tool>` 语法，审批/沙箱/完成门不变 |
 | **结构化请求携带目标文件** | `scripts/run_small_model_eval.py`（`agent-structured`） | 该 profile 禁用工具，请求里必须带当前文件内容；否则 1.5B 会凭记忆重写并丢掉原有校验 |
+| **Pico 小模型执行器** | `pico/agent_loop.py`（`small_model_executor`）、`pico/runtime.py`、`pico/cli.py` | 宿主驱动多轮：每轮重建“任务 + 当前文件 + 可见测试 + 最新真实验证输出”，不重放会话；连续两轮相同文件则早停 |
 
 `auto_verify_after_write` 的边界：只对 `write_file/patch_file/apply_changes` 的成功结果触发；
 命令就是配置的 `verification_command`，仍走原有审批；不改完成标准，也不代替模型修复。
@@ -39,7 +40,14 @@
 该行不是模型运行结果，删除目录后已重跑（见下文 536 s 的正式记录）。
 
 `scaffold` **不是 Pico 的主循环**，它是本轮用于验证“去掉工具协议负担后，真实反馈是否足够”的对照臂；
-如果有效，下一阶段再以 `compact_prompt` 之外的 profile 形式并入 Pico，而不是另起一套 Agent。
+本轮已把它的机制以 `small_model_executor` 的形式并入 Pico，而不是另起一套 Agent。
+
+`small_model_executor` 的边界：
+- 必须同时配置 `structured_repair_path` 与 `verification_command`，否则初始化直接报错；
+- 每轮写盘仍走原有审批、沙箱与完成门，只有真实验证 exit 0 才结束；
+- `small_model_reference_paths` 只把**可见验收测试**放进请求（等价于 agent 用 `read_file` 能读到的信息），
+  不参与判分；判分仍由 pristine 外部验证器完成；
+- 连续两轮返回同一文件时以 `repeated_identical_output` 早停，避免 1.5B 空转到步数上限。
 
 ## 3. 消融结果（dev，3 个任务，k=1）
 
@@ -47,6 +55,7 @@
 `D:\1Bio_Soft\small_model_agents\report.json`（Pico agent 两档），均在仓库外。
 `agent-structured` 的逐运行记录：`D:\1Bio_Soft\small_model_structured\runs.jsonl`
 （该目录的 `report.json` 只覆盖最后一次单题进程，不用于汇总）。
+`small-executor` 的逐运行记录：`D:\1Bio_Soft\small_model_executor\runs.jsonl`。
 
 | 模式 | 通过 | 均值 wall | 运行验证命令 | 备注 |
 |---|---|---|---|---|
@@ -55,15 +64,16 @@
 | `agent-compact` | **0/3** | 310.6 s | 2/3 | 每题 2–3 次工具调用、10–12 次模型调用（协议重试） |
 | `agent-repair`（Pico + 自动验证） | **0/3** | 312.1 s | 1/3（自动） | 2 题在 12 次模型调用中**没有产出任何合法工具调用**；1 题写了文件并触发自动验证，但仍未修对 |
 | `agent-structured`（Pico 内建结构化修复） | **1/3** | 237.6 s | 3/3（自动） | clamp 2 次模型调用、31.0 s 通过；slugify/chunk 各 11 次调用内**重复同一份错误代码**，步数耗尽 |
+| `small-executor`（Pico 内建多轮执行器） | **3/3** | 50.7 s | 3/3（自动） | clamp 1 次调用 33.1 s；slugify 2 次 96.2 s；chunk 2 次 22.9 s |
 | `scaffold`（Harness 回路） | **3/3** | 59.7 s | Harness 自动 | 最多 2 轮；clamp 1 轮、slugify/chunk 各 2 轮 |
 
 逐题：
 
-| 任务 | oneshot | agent | agent-compact | agent-repair | agent-structured | scaffold |
-|---|---|---|---|---|---|---|
-| clamp_value | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| slugify_title | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| chunk_list | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| 任务 | oneshot | agent | agent-compact | agent-repair | agent-structured | small-executor | scaffold |
+|---|---|---|---|---|---|---|---|
+| clamp_value | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| slugify_title | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| chunk_list | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
 
 解读：
 - 在这个 1.5B 模型上，**工具协议是主要成本**：两档 agent 的 token 足够（7k–13k 输入），但没有把“写对文件 + 跑验证 + 修到通过”串起来。
@@ -71,7 +81,10 @@
 - **把自动验证并进 Pico 也没有解决根本问题**：`agent-repair` 的 3 题里有 2 题在 12 次模型调用内没有产出任何合法工具调用，自动验证根本没有机会触发。
 - **`agent-structured` 首次让 Pico 主循环自己“写对 + 验证通过 + 完成”**：clamp 2 次模型调用、2 次工具调用、31.0 s 通过；不再是 patch 循环或空转。
   但它只解决“输出格式”，不解决“重复错误答案”：slugify/chunk 收到真实失败输出后仍原样重发同一份代码，11 次调用后步数耗尽。
-- `scaffold` 去掉工具协议，只保留“完整文件 + 真实失败输出”，3/3 通过；仍是本轮最强对照臂。
+- **`small-executor` 把 scaffold 的机制并入 Pico 后，dev 3/3、holdout 2/3，与 scaffold 持平**，
+  但通过时模型调用只有 1–2 次（33.1 s / 96.2 s / 22.9 s）；这是本轮最强的 **Pico 主循环**结果，
+  不再是 Harness 旁路。slugify 第 2 轮、chunk 第 2 轮修正成功，说明“全新上下文 + 真实失败 + 可见测试”有效。
+- `scaffold` 去掉工具协议，只保留“完整文件 + 真实失败输出”，3/3 通过；现在它主要作为执行器的独立对照。
 
 holdout（3 题，k=1，未参与调参；agent 两档与 agent-repair 未跑，标 Not Run）：
 
@@ -79,18 +92,22 @@ holdout（3 题，k=1，未参与调参；agent 两档与 agent-repair 未跑，
 |---|---|---|---|
 | `oneshot` | **1/3** | 42.8 s | merge_counts ✅ / format_bytes ❌ / top_k ❌ |
 | `agent-structured` | **2/3** | 235.1 s | merge_counts ✅（146.6 s）/ format_bytes ❌（536.1 s）/ top_k ✅（22.7 s） |
+| `small-executor` | **2/3** | 34.2 s | merge_counts ✅（39.1 s，1 轮）/ format_bytes ❌（46.3 s，2 轮早停）/ top_k ✅（17.2 s，1 轮） |
 | `scaffold` | **2/3** | 51.4 s | merge_counts ✅ / format_bytes ❌ / top_k ✅ |
 
 `scaffold` 从 dev 3/3 降到 holdout 2/3：**方向一致但不是“稳定解决”**；format_bytes 在两档都失败（模型对 1024 进制与 B/KB 边界处理错误）。
 `agent-structured` 在 holdout 上也是 2/3，且 format_bytes 同样失败；但两题通过时都只有 2 次模型调用（22.7 s / 146.6 s），
 说明“去掉工具协议”本身能让 1.5B 一次写对，**失败集中在模型反复重发同一份错误实现**，而不是 Harness 执行链。
+`small-executor` 在 holdout 同样是 2/3，但均值 34.2 s：通过题 1 轮完成，format_bytes 连续两轮相同后立即早停，
+不再出现 536 s 的空转。`format_bytes` 在 oneshot / structured / executor / scaffold 四条臂上都失败，
+是当前 1.5B 的稳定能力边界（KB/MB 边界与 `0 B` 格式）。
 
 
 ## 4. 解释与诚实边界
 
 - 3 个 dev 任务、k=1，**不足以给出泛化结论**；holdout 只在最后测量，不参与调参。
-- `agent` / `agent-structured` 与 `scaffold` 不是同一层机制：前两者是真正的 GoalTree/Pico 循环
-  （工具审批、写盘、完成门、trace 全在环内），后者是 Harness 级回路。报告里分列，不能把 `scaffold`
-  的成功算成“Pico 主循环变强”；`agent-structured` 的通过可以算 Pico 主循环，但样本只有 3+3 题、k=1。
+- `agent` / `agent-structured` / `small-executor` 与 `scaffold` 不是同一层机制：前三者是真正的 GoalTree/Pico 循环
+  （工具审批、写盘、完成门、trace 全在环内），后者是 Harness 级回路。`small-executor` 与 `scaffold` 的通过率相同，
+  但执行器在环内，可以计入 Pico 主循环；样本仍只有 3+3 题、k=1，不能外推。
 - 小模型在 text 协议下的不稳定（重复 token、非结构化输出）是模型行为，不是 Harness 能完全消除的；
   repeat penalty 只是缓解。

@@ -249,6 +249,11 @@ def build_agent(args):
     session_id = args.resume
     if session_id == "latest":
         session_id = store.latest()
+    small_model_reference_paths = [
+        path.strip()
+        for path in str(getattr(args, 'small_model_reference_paths', '') or '').split(',')
+        if path.strip()
+    ] or None
     if session_id:
         return Pico.from_session(
             model_client=model,
@@ -269,6 +274,9 @@ def build_agent(args):
             compact_prompt=getattr(args, 'compact_prompt', False),
             auto_verify_after_write=getattr(args, 'auto_verify_after_write', False),
             structured_repair_path=getattr(args, 'structured_repair_path', None),
+            small_model_executor=getattr(args, 'small_model_executor', False),
+            small_model_rounds=getattr(args, 'small_model_rounds', 3),
+            small_model_reference_paths=small_model_reference_paths,
         )
     return Pico(
         model_client=model,
@@ -288,6 +296,9 @@ def build_agent(args):
         compact_prompt=getattr(args, 'compact_prompt', False),
         auto_verify_after_write=getattr(args, 'auto_verify_after_write', False),
         structured_repair_path=getattr(args, 'structured_repair_path', None),
+        small_model_executor=getattr(args, 'small_model_executor', False),
+        small_model_rounds=getattr(args, 'small_model_rounds', 3),
+        small_model_reference_paths=small_model_reference_paths,
     )
 
 
@@ -305,6 +316,12 @@ def build_arg_parser():
                         help='After each successful edit, run the verification command and show its real output (default: off).')
     parser.add_argument('--structured-repair-path', default=None,
                         help='Treat a plain fenced code reply as this file\'s full content (tiny-model profile; default: off).')
+    parser.add_argument('--small-model-executor', action='store_true',
+                        help='Run host-driven retry rounds built from the current file and real verification output (requires --structured-repair-path and --verify-command).')
+    parser.add_argument('--small-model-rounds', type=int, default=3,
+                        help='Maximum executor rounds before stopping (default: 3).')
+    parser.add_argument('--small-model-reference-paths', default='',
+                        help='Comma-separated files shown in every executor round, e.g. the visible test file.')
     parser.add_argument('--embedding', choices=('off', 'siliconflow'), default='off', help='Explicit dense retrieval; off is labeled lexical mode')
     parser.add_argument('--network-route', choices=('environment', 'direct'), default='environment', help='Explicit route; TLS verification remains enabled')
     parser.add_argument(

@@ -30,6 +30,10 @@ constraint_violation | output_format | insufficient_reasoning | capability_limit
 infrastructure | unknown
 ```
 
+P1 的 `small_model_executor` 已在 trace 中记录其中三类：`output_format`（未产出文件）、
+`insufficient_reasoning`（新文件但验证失败）、`capability_limit`（连续两轮相同文件）。
+P2 直接扩展这张表，不新增第二套分类。
+
 ### 1.2 Teacher 调用契约（最小）
 
 ```python

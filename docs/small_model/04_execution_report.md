@@ -15,6 +15,7 @@
 | `agent` / `agent-compact`（Pico 主循环） | `agent` **0/3**（均值 148.8 s，验证 1/3）；`agent-compact` **0/3**（均值 310.6 s，验证 2/3） | `D:\1Bio_Soft\small_model_agents\report.json` |
 | `agent-repair`（Pico + 写盘后自动验证） | **0/3**（均值 312.1 s）；2 题 12 次模型调用内**无合法工具调用**，仅 1 题触发自动验证且未修对 | `D:\1Bio_Soft\small_model_repair\report.json` |
 | `agent-structured`（Pico 内建结构化修复） | dev **1/3**（均值 237.6 s，3/3 自动验证）；holdout **2/3**（均值 235.1 s）；通过时均 2 次模型调用 | `D:\1Bio_Soft\small_model_structured\runs.jsonl` |
+| `small-executor`（Pico 内建多轮执行器） | dev **3/3**（均值 50.7 s）、holdout **2/3**（均值 34.2 s）；通过题 1–2 轮、1–2 次模型调用；重复文件早停 | `D:\1Bio_Soft\small_model_executor\runs.jsonl` |
 | holdout（独立留出，未调参） | `oneshot` **1/3**、`agent-structured` **2/3**、`scaffold` **2/3**（format_bytes 三条臂均失败） | `D:\1Bio_Soft\small_model_holdout\report.json`、`small_model_structured\runs.jsonl` |
 
 ## 2. 已完成并实际运行的修正（本轮内部问题）
@@ -29,12 +30,14 @@
 | structured 回贴测试段 | 模型在代码块后附 `# Test cases` + `assert`，写盘后模块导入失败 | 抽取时在 `import unittest` / `assert` / `# test` 处截断（单测覆盖） |
 | structured 反复重写同一文件 | 代码与当前文件相同且已验证通过时仍继续写，直至步数耗尽 | 视为 final；未通过时保留重写，让真实失败继续可见 |
 | 把可见测试也放进 structured 请求（v2） | 结果更差：slugify 772 s、merge_counts 由 ✅ 变 ❌、chunk 321 s | 已回退，保留“只给当前文件”的 v1 请求格式（见 `02`） |
+| structured 在会话内反复重发同一答案 | 11 次模型调用后步数耗尽，slugify/chunk/format 均失败 | 新增 `small_model_executor`：每轮重建请求（任务 + 当前文件 + 可见测试 + 最新失败），连续两轮相同文件即早停 |
 
 ## 3. 仅通过单元测试 / 离线验证
 
-- `tests/test_small_model_harness.py`：9 个用例（compact prompt、Ollama usage、代码抽取含测试段截断、字面验证调用、自动验证、纯代码块写盘、无 fence 代码、structured prompt 不含 `<tool>`、任务预检）。
-- 本轮回归：`test_small_model_harness` → **9 passed**（8.6 s）；
-  `test_pico + test_prompt_prefix + test_safety_invariants` → **77 passed**（69.5 s）。
+- `tests/test_small_model_harness.py`：12 个用例（compact prompt、Ollama usage、代码抽取含测试段截断、字面验证调用、自动验证、纯代码块写盘、无 fence 代码、structured prompt 不含 `<tool>`、执行器 fresh-context 重试、重复输出早停、执行器参数校验、任务预检）。
+- 本轮回归（执行器改动后）：`test_small_model_harness` → **12 passed**（12.9 s）；
+  `test_pico + test_prompt_prefix + test_safety_invariants` → **77 passed**（78.8 s）；
+  `test_agent_loop + test_stepwise` → **15 passed**（35.6 s）。
 - 资产预检：8/8 buggy 失败、8/8 reference 通过（离线，无模型调用）。
 
 ## 4. 使用 Mock 验证
@@ -67,4 +70,8 @@
 5c. **`agent-structured` 是 Pico 主循环内的第一个正向前进**：dev 1/3、holdout 2/3；通过时 2 次模型调用（clamp 31.0 s、top_k 22.7 s、merge_counts 146.6 s）。
    它证明“模型只输出完整文件、宿主写盘 + 真实验证”可以作为 Pico 的一个 profile 工作；但仍低于 `scaffold` 的 dev 3/3，
    失败模式是**模型收到真实失败后原样重发同一份错误代码**（slugify/chunk/format_bytes 均 11 次调用后步数耗尽），不是执行链故障。
-6. 当前证据不足以宣称“不训练就让小模型更可靠”；能站住的是：**在这个模型与这 8 个单文件任务上，协议负担是主要瓶颈，完整文件 + 真实反馈的回路有效（dev 3/3、holdout 2/3）；Pico 内建 structured profile 能部分复现该收益（1/3、2/3）**。更大模型、更多任务、k>1 才能判断边界。
+5d. **`small_model_executor` 把 scaffold 的机制并入 Pico 后，达到 dev 3/3、holdout 2/3**（均值 50.7 s / 34.2 s），
+   与 scaffold 通过率相同，但它是**真正的 Pico 主循环**（审批、写盘、完成门、trace 全在环内），且通过题只需 1–2 次模型调用。
+   slugify 与 chunk 都在第 2 轮用真实失败输出修正成功；format_bytes 连续两轮相同后早停，不再空转。
+   这支持“协议负担 + 会话内自我锚定是主要瓶颈”，但不能外推为稳定解决（3+3 题、k=1）。
+6. 当前证据不足以宣称“不训练就让小模型更可靠”；能站住的是：**在这个模型与这 8 个单文件任务上，协议负担与会话内自我锚定是主要瓶颈；Pico 内建 `small_model_executor` 以“每轮重建上下文 + 真实验证”达到 dev 3/3、holdout 2/3，与 Harness 级 scaffold 持平，且通过时只需 1–2 次模型调用**。更大模型、更多任务、k>1 才能判断边界；`format_bytes` 仍是稳定失败点。

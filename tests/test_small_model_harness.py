@@ -179,6 +179,84 @@ def test_structured_prefix_has_no_tool_syntax(tmp_path):
     assert "write_file" not in prefix.text
 
 
+def test_small_model_executor_retries_with_fresh_context(tmp_path):
+    from pico import FakeModelClient, Pico, SessionStore
+    from pico.workspace import WorkspaceContext
+    from pico.evaluation.repair_suite import VERIFY_COMMAND
+
+    (tmp_path / "demo.py").write_text("def value():\n    return 2\n", encoding="utf-8")
+    (tmp_path / "test_demo.py").write_text(
+        "import unittest\nfrom demo import value\nclass T(unittest.TestCase):\n"
+        "    def test_x(self):\n        self.assertEqual(value(), 1)\n", encoding="utf-8")
+    model = FakeModelClient([
+        "```python\ndef value():\n    return 2\n```",
+        "```python\ndef value():\n    return 1\n```",
+    ])
+    agent = Pico(model, WorkspaceContext.build(tmp_path, lightweight=True),
+                 SessionStore(tmp_path / ".pico/sessions"), approval_policy="auto",
+                 max_steps=6, verification_command=VERIFY_COMMAND,
+                 structured_repair_path="demo.py", small_model_executor=True,
+                 small_model_rounds=3,
+                 small_model_reference_paths=["test_demo.py"])
+    final = agent.ask("fix demo.py")
+
+    assert final == "done"
+    assert (tmp_path / "demo.py").read_text(encoding="utf-8") == "def value():\n    return 1\n"
+    assert len(model.prompts) == 2
+    # The second round is rebuilt from the current file, the visible tests and
+    # the real failure, not from the transcript of the first attempt.
+    second = model.prompts[1]
+    assert "Reference file test_demo.py" in second
+    assert "return 2" in second
+    assert "FAILED" in second or "AssertionError" in second
+    assert "<tool>" not in second
+    state = agent.current_task_state
+    assert state.status == "completed"
+    assert state.task_outcome == "completed"
+    trace = (agent.current_run_dir / "trace.jsonl").read_text(encoding="utf-8")
+    assert '"event": "small_model_round_started"' in trace
+    assert '"status": "passed"' in trace
+
+
+def test_small_model_executor_stops_on_repeated_identical_output(tmp_path):
+    from pico import FakeModelClient, Pico, SessionStore
+    from pico.workspace import WorkspaceContext
+    from pico.evaluation.repair_suite import VERIFY_COMMAND
+
+    (tmp_path / "demo.py").write_text("def value():\n    return 2\n", encoding="utf-8")
+    (tmp_path / "test_demo.py").write_text(
+        "import unittest\nfrom demo import value\nclass T(unittest.TestCase):\n"
+        "    def test_x(self):\n        self.assertEqual(value(), 1)\n", encoding="utf-8")
+    repeated = "```python\ndef value():\n    return 2\n```"
+    model = FakeModelClient([repeated, repeated, repeated])
+    agent = Pico(model, WorkspaceContext.build(tmp_path, lightweight=True),
+                 SessionStore(tmp_path / ".pico/sessions"), approval_policy="auto",
+                 max_steps=6, verification_command=VERIFY_COMMAND,
+                 structured_repair_path="demo.py", small_model_executor=True,
+                 small_model_rounds=3)
+    agent.ask("fix demo.py")
+
+    assert len(model.prompts) == 2
+    assert agent.current_task_state.stop_reason == "repeated_identical_output"
+    assert agent.current_task_state.status == "stopped"
+
+
+def test_small_model_executor_requires_target_and_verification(tmp_path):
+    import pytest
+    from pico import FakeModelClient, Pico, SessionStore
+    from pico.workspace import WorkspaceContext
+    from pico.evaluation.repair_suite import VERIFY_COMMAND
+
+    workspace = WorkspaceContext.build(tmp_path, lightweight=True)
+    store = SessionStore(tmp_path / ".pico/sessions")
+    with pytest.raises(ValueError):
+        Pico(FakeModelClient([]), workspace, store,
+             structured_repair_path="demo.py", small_model_executor=True)
+    with pytest.raises(ValueError):
+        Pico(FakeModelClient([]), workspace, store,
+             verification_command=VERIFY_COMMAND, small_model_executor=True)
+
+
 def test_small_model_assets_fail_before_the_fix_and_pass_after(tmp_path):
     from pico.evaluation.repair_suite import verify_pristine
 
