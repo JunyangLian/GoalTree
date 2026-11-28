@@ -292,6 +292,15 @@ class AgentLoop:
         if agent.capabilities:
             agent.cancellation.check()
         completion = CompletionGate(agent)
+        # Science-constraint gate (P1/P2/P3). Inert unless this turn's instruction
+        # states an explicit statistical requirement, so ordinary runs are
+        # unaffected. It only rejects completion on positively observed drift.
+        scientific = None
+        if getattr(agent, 'scientific_verification', True):
+            from goaltree.scientific.gate import ScientificGate
+            candidate = ScientificGate(user_message)
+            scientific = candidate if candidate.enabled else None
+        agent._scientific_gate = scientific
         from .response_contract import from_request
         agent.response_contract = from_request(user_message)
         format_repairs = 0
@@ -536,6 +545,10 @@ class AgentLoop:
 
             final = (payload or raw).strip()
             problem = completion.problem() or (agent.goal_sync_problem() if getattr(agent,'goal_sync_problem',None) else '')
+            if not problem and scientific is not None:
+                problem = scientific.problem(final) or ''
+                if problem:
+                    agent.emit_trace(task_state, 'scientific_violation', dict(scientific.state))
             layout_problem = self._reply_problem(final) if not problem else None
             if layout_problem:
                 format_repairs += 1
@@ -677,6 +690,9 @@ class AgentLoop:
                 'content': clip(tool_result.content, 500),
             })
         completion.observe(name, args, tool_result.metadata)
+        scientific = getattr(agent, '_scientific_gate', None)
+        if scientific is not None:
+            scientific.observe(name, args, tool_result.content)
         result = tool_result.content
         working = agent.session['working_state']
         working['verification'] = dict(completion.state)

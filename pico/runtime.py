@@ -88,6 +88,7 @@ class Pico:
         network_route='environment',
         environment=None,
         wire_protocol='auto',
+        scientific_verification=True,
     ):
         if environment is not None and not isinstance(environment, EnvironmentProfile):
             raise TypeError('environment must be an EnvironmentProfile or None')
@@ -123,6 +124,9 @@ class Pico:
         if verification_command is not None and (not isinstance(verification_command, str) or not verification_command.strip()):
             raise ValueError('verification_command must be a non-empty string or None')
         self.verification_command = verification_command.strip() if verification_command else None
+        # Enables the science-constraint gate in the loop (inert unless the
+        # instruction states an explicit statistical requirement).
+        self.scientific_verification = bool(scientific_verification)
         if shell_backend not in {"host", "appcontainer"}:
             raise ValueError("shell_backend must be host or appcontainer")
         if shell_backend == "appcontainer":
